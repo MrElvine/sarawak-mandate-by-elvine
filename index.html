@@ -1,210 +1,375 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sarawak Political Simulator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sarawak Political Simulator</title>
 
-<style>
-:root {
-  --bg: #0b1020;
-  --panel: #131b2e;
-  --panel2: #19243a;
-  --border: #2b3852;
-  --text: #edf2ff;
-  --muted: #9aa9c4;
-  --accent: #f0b429;
-}
+  <style>
+    :root {
+      --bg: #0b1120;
+      --panel: #111a2d;
+      --panel-light: #17233a;
+      --border: #26344d;
+      --text: #e8eef8;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --sidebar-width: 230px;
+    }
 
-* { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, sans-serif;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border);
-  background: var(--panel);
-}
+    button {
+      font: inherit;
+    }
 
-.brand {
-  font-size: 20px;
-  font-weight: 800;
-}
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    }
 
-button {
-  padding: 9px 13px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--panel2);
-  color: var(--text);
-  cursor: pointer;
-}
+    /* Sidebar */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 16px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
 
-button:hover { border-color: var(--accent); }
+    .brand {
+      padding: 0 10px;
+    }
 
-.app {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  min-height: calc(100vh - 66px);
-}
+    .brand h1 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.4;
+      letter-spacing: 0.02em;
+    }
 
-.sidebar {
-  padding: 18px 12px;
-  border-right: 1px solid var(--border);
-  background: var(--panel);
-}
+    .brand p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-.nav-button {
-  display: block;
-  width: 100%;
-  margin-bottom: 8px;
-  text-align: left;
-}
+    .nav {
+      display: grid;
+      gap: 7px;
+    }
 
-.nav-button.active {
-  background: var(--accent);
-  color: #17130a;
-  font-weight: 700;
-}
+    .nav button {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      cursor: pointer;
+      transition: background 160ms ease, color 160ms ease,
+        border-color 160ms ease;
+    }
 
-main { padding: 24px; }
+    .nav button:hover {
+      background: var(--panel-light);
+      color: var(--text);
+    }
 
-.page-title {
-  margin: 0 0 8px;
-  font-size: 26px;
-}
+    .nav button.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: rgba(56, 189, 248, 0.22);
+    }
 
-.subtitle {
-  margin: 0 0 22px;
-  color: var(--muted);
-}
+    /* Main area */
+    .main {
+      min-width: 0;
+      padding: 28px 32px;
+    }
 
-.placeholder {
-  padding: 24px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--panel);
-}
+    .topbar {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 0 0 22px;
+      border-bottom: 1px solid var(--border);
+    }
 
-@media (max-width: 700px) {
-  .app { grid-template-columns: 1fr; }
-  .sidebar {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-button {
-    width: auto;
-    flex: 0 0 auto;
-    margin: 0;
-  }
-  main { padding: 16px; }
-}
-</style>
+    .page-heading h2 {
+      margin: 0;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .page-heading p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .language-toggle {
+      flex-shrink: 0;
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease;
+    }
+
+    .language-toggle:hover {
+      border-color: var(--accent);
+      background: var(--panel-light);
+    }
+
+    .content {
+      padding-top: 28px;
+    }
+
+    .placeholder {
+      min-height: 220px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+    }
+
+    .placeholder h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .placeholder p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    /* Responsive layout */
+    @media (max-width: 760px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        padding: 18px;
+        gap: 18px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .main {
+        padding: 22px 18px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .page-heading h2 {
+        font-size: 21px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .topbar {
+        flex-direction: column;
+      }
+
+      .language-toggle {
+        align-self: flex-start;
+      }
+
+      .nav {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-<header>
-  <div class="brand" id="brandTitle">🏛 Sarawak Political Simulator</div>
-  <button id="languageToggle">Bahasa Melayu</button>
-</header>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1 data-i18n="brand">Sarawak Political Simulator</h1>
+        <p data-i18n="subtitle">Political strategy game</p>
+      </div>
 
-<div class="app">
-  <nav class="sidebar" id="sidebar">
-    <button class="nav-button active" data-page="dashboard" data-en="Dashboard" data-ms="Dashboard">Dashboard</button>
-    <button class="nav-button" data-page="dun" data-en="DUN" data-ms="DUN">DUN</button>
-    <button class="nav-button" data-page="parties" data-en="Parties" data-ms="Parti">Parties</button>
-    <button class="nav-button" data-page="election" data-en="Election" data-ms="Pilihan Raya">Election</button>
-    <button class="nav-button" data-page="cabinet" data-en="Cabinet" data-ms="Kabinet">Cabinet</button>
-    <button class="nav-button" data-page="policies" data-en="Policies" data-ms="Polisi">Policies</button>
-  </nav>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="active" data-page="dashboard" data-i18n="dashboard">
+          Dashboard
+        </button>
+        <button data-page="dun" data-i18n="dun">DUN</button>
+        <button data-page="parties" data-i18n="parties">Parties</button>
+        <button data-page="election" data-i18n="election">Election</button>
+        <button data-page="cabinet" data-i18n="cabinet">Cabinet</button>
+        <button data-page="policies" data-i18n="policies">Policies</button>
+      </nav>
+    </aside>
 
-  <main>
-    <h1 class="page-title" id="pageTitle">Dashboard</h1>
-    <p class="subtitle" id="pageSubtitle">Manage Sarawak's political simulation.</p>
-    <section class="placeholder" id="pageContent">
-      Dashboard foundation is ready. Features will be added step by step.
-    </section>
-  </main>
-</div>
+    <main class="main">
+      <header class="topbar">
+        <div class="page-heading">
+          <h2 id="pageTitle">Dashboard</h2>
+          <p id="pageSubtitle">Welcome to the Sarawak Political Simulator.</p>
+        </div>
 
-<script>
-let language = "en";
+        <button
+          class="language-toggle"
+          id="languageToggle"
+          type="button"
+          aria-label="Switch language"
+        >
+          BM
+        </button>
+      </header>
 
-const pageNames = {
-  en: {
-    dashboard: "Dashboard",
-    dun: "DUN",
-    parties: "Parties",
-    election: "Election",
-    cabinet: "Cabinet",
-    policies: "Policies"
-  },
-  ms: {
-    dashboard: "Dashboard",
-    dun: "DUN",
-    parties: "Parti",
-    election: "Pilihan Raya",
-    cabinet: "Kabinet",
-    policies: "Polisi"
-  }
-};
+      <section class="content">
+        <div class="placeholder">
+          <h3 id="contentTitle">Dashboard</h3>
+          <p id="contentDescription">
+            This section is ready for the next development step.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
 
-const subtitles = {
-  en: "Manage Sarawak's political simulation.",
-  ms: "Urus simulasi politik Sarawak."
-};
+  <script>
+    const translations = {
+      en: {
+        brand: "Sarawak Political Simulator",
+        subtitle: "Political strategy game",
+        dashboard: "Dashboard",
+        dun: "DUN",
+        parties: "Parties",
+        election: "Election",
+        cabinet: "Cabinet",
+        policies: "Policies",
+        pageSubtitle: "Welcome to the Sarawak Political Simulator.",
+        contentDescription: "This section is ready for the next development step."
+      },
+      bm: {
+        brand: "Simulator Politik Sarawak",
+        subtitle: "Permainan strategi politik",
+        dashboard: "Dashboard",
+        dun: "DUN",
+        parties: "Parti",
+        election: "Pilihan Raya",
+        cabinet: "Kabinet",
+        policies: "Dasar",
+        pageSubtitle: "Selamat datang ke Simulator Politik Sarawak.",
+        contentDescription: "Bahagian ini sedia untuk langkah pembangunan seterusnya."
+      }
+    };
 
-function setLanguage() {
-  document.documentElement.lang = language === "en" ? "en" : "ms";
-  document.getElementById("languageToggle").textContent =
-    language === "en" ? "Bahasa Melayu" : "English";
+    const pageKeys = [
+      "dashboard",
+      "dun",
+      "parties",
+      "election",
+      "cabinet",
+      "policies"
+    ];
 
-  document.querySelectorAll(".nav-button").forEach(button => {
-    button.textContent = button.dataset[language];
-  });
+    let currentLanguage = "en";
+    let currentPage = "dashboard";
 
-  document.getElementById("pageSubtitle").textContent = subtitles[language];
-  showPage(document.querySelector(".nav-button.active").dataset.page);
-}
+    const pageTitle = document.getElementById("pageTitle");
+    const pageSubtitle = document.getElementById("pageSubtitle");
+    const contentTitle = document.getElementById("contentTitle");
+    const contentDescription = document.getElementById("contentDescription");
+    const languageToggle = document.getElementById("languageToggle");
+    const navButtons = document.querySelectorAll(".nav button");
 
-function showPage(page) {
-  document.querySelectorAll(".nav-button").forEach(button => {
-    button.classList.toggle("active", button.dataset.page === page);
-  });
+    function updateLanguage() {
+      const language = translations[currentLanguage];
 
-  document.getElementById("pageTitle").textContent = pageNames[language][page];
+      document.documentElement.lang = currentLanguage;
 
-  const content = {
-    en: "This section is ready for its next feature.",
-    ms: "Bahagian ini sedia untuk ciri seterusnya."
-  };
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        const key = element.dataset.i18n;
+        if (language[key]) {
+          element.textContent = language[key];
+        }
+      });
 
-  document.getElementById("pageContent").textContent = content[language];
-}
+      pageSubtitle.textContent = language.pageSubtitle;
+      contentDescription.textContent = language.contentDescription;
+      languageToggle.textContent = currentLanguage === "en" ? "BM" : "EN";
 
-document.getElementById("languageToggle").addEventListener("click", () => {
-  language = language === "en" ? "ms" : "en";
-  setLanguage();
-});
+      updatePage();
+    }
 
-document.querySelectorAll(".nav-button").forEach(button => {
-  button.addEventListener("click", () => showPage(button.dataset.page));
-});
+    function updatePage() {
+      const language = translations[currentLanguage];
+      const title = language[currentPage];
 
-setLanguage();
-</script>
+      pageTitle.textContent = title;
+      contentTitle.textContent = title;
+
+      navButtons.forEach((button) => {
+        const isActive = button.dataset.page === currentPage;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-current", isActive ? "page" : "false");
+      });
+    }
+
+    navButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        currentPage = button.dataset.page;
+        updatePage();
+      });
+    });
+
+    languageToggle.addEventListener("click", () => {
+      currentLanguage = currentLanguage === "en" ? "bm" : "en";
+      updateLanguage();
+    });
+
+    updateLanguage();
+  </script>
 </body>
 </html>
