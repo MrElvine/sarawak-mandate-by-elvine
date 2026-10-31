@@ -2,451 +2,184 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sarawak Political Simulator</title>
 <style>
-:root{
-  --bg:#0b1018;--panel:#121b27;--panel2:#192637;--line:#29384a;
-  --text:#edf3fa;--muted:#93a4b8;--gold:#e5b95c;--green:#55c69a;
-  --red:#ed7777;--blue:#78aefb;--radius:16px
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,sans-serif}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
+:root{--bg:#0b1018;--panel:#121b27;--panel2:#192637;--line:#29384a;--text:#edf3fa;--muted:#93a4b8;--gold:#e5b95c;--green:#55c69a;--red:#ed7777;--radius:16px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,system-ui,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
 .app{display:grid;grid-template-columns:225px minmax(0,1fr);min-height:100vh}
-.sidebar{background:#0e1621;border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:28px}
-.brand{display:flex;align-items:center;gap:12px;padding:0 8px}
-.brand-mark{width:38px;height:38px;border-radius:12px;background:var(--gold);color:#151a20;display:grid;place-items:center;font-weight:900}
-.brand strong{display:block}.brand small{color:var(--muted);font-size:11px}
-.nav-label{color:#63768c;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:0 12px;margin-bottom:8px}
-.nav{display:grid;gap:5px}
-.nav button{border:0;background:transparent;color:var(--muted);text-align:left;padding:11px 12px;border-radius:10px;display:flex;gap:12px;align-items:center}
-.nav button:hover,.nav button.active{background:#1b2939;color:var(--text)}
-.nav button.active{box-shadow:inset 3px 0 var(--gold)}
-.nav .ico{width:20px;text-align:center}
-.sidebar-bottom{margin-top:auto;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
-.sidebar-bottom small{color:var(--muted)}
-main{min-width:0;padding:28px clamp(16px,3vw,42px) 50px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}
-.eyebrow{color:var(--gold);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
-h1{font-size:clamp(24px,3vw,32px);line-height:1.2;margin:5px 0}
-.subtitle{color:var(--muted);margin:5px 0 0}
-.top-actions{display:flex;gap:8px;align-items:center}
-.turn-pill{border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--muted);white-space:nowrap}
-.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 14px;border-radius:10px;font-weight:700}
-.btn:hover{filter:brightness(1.15)}
-.btn.primary{background:var(--gold);border-color:var(--gold);color:#151a20}
-.btn.small{padding:6px 10px;font-size:12px}
-.page{display:none}.page.active{display:block}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
-.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
-.stat{padding:18px}.stat .label{color:var(--muted);font-size:12px}
-.stat .value{font-size:28px;font-weight:800;margin:5px 0}.stat .hint{font-size:11px;color:var(--muted)}
-.grid-2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:16px}
-.card{padding:20px;margin-bottom:16px;min-width:0}
-.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-.card h2{font-size:16px;margin:0}.muted{color:var(--muted)}
-.party-list{display:grid;gap:12px}
-.party-row{display:grid;grid-template-columns:minmax(100px,1fr) 2fr 35px;gap:12px;align-items:center}
-.party-name{display:flex;align-items:center;gap:8px;font-weight:700}
-.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.bar{height:8px;background:#253345;border-radius:99px;overflow:hidden}
-.bar span{display:block;height:100%;border-radius:99px}
-.party-count{text-align:right;font-weight:800}
-.majority-box{padding:16px;border-radius:12px;background:#1a2938;margin-bottom:12px}
-.majority-box strong{font-size:23px;display:block}
-.action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.action{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:left;color:var(--text)}
-.action:hover{border-color:var(--gold)}
-.action b{display:block;margin:7px 0 2px}.action small{color:var(--muted)}
-.activity{display:grid}
-.activity-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
-.activity-item:last-child{border-bottom:0}
-.activity-icon{width:30px;height:30px;border-radius:9px;background:var(--panel2);display:grid;place-items:center;flex-shrink:0}
-.activity-item small{display:block;color:var(--muted);margin-top:2px}
-.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
-.toolbar input,.toolbar select,.field input,.field select,.field textarea{width:100%;background:#0d1520;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none}
-.toolbar input{max-width:280px}.toolbar select{width:auto;min-width:150px}
-input:focus,select:focus,textarea:focus{border-color:var(--gold)}
-/* DUN semicircle */
-.dun-layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:16px}
-.dun-card{overflow:hidden}
-.dun-stage{position:relative;width:100%;max-width:760px;margin:0 auto;aspect-ratio:1.75;min-height:260px}
-.dun-seat{position:absolute;width:clamp(12px,1.8vw,19px);height:clamp(12px,1.8vw,19px);border-radius:50%;border:2px solid #0b1018;transform:translate(-50%,-50%);padding:0;transition:opacity .15s,transform .15s,box-shadow .15s}
-.dun-seat:hover{transform:translate(-50%,-50%) scale(1.35);z-index:5;box-shadow:0 0 0 2px white}
-.dun-seat.party-dim{opacity:.12}
-.dun-seat.party-match{box-shadow:0 0 0 2px #fff8;z-index:2}
-.dun-seat.selected{box-shadow:0 0 0 2px white,0 0 0 5px #ffffff30}
-.dun-center-label{position:absolute;left:50%;top:83%;transform:translate(-50%,-50%);text-align:center;color:var(--muted);font-size:11px;pointer-events:none}
-.dun-center-label strong{display:block;color:var(--text);font-size:14px}
-.dun-legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:12px}
-.legend-item{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;cursor:pointer}
-.legend-item:hover{color:var(--text)}
-.seat-info{position:sticky;top:20px;height:max-content}
-.party-swatch{height:6px;border-radius:99px;margin-bottom:14px}
-.seat-info .big{font-size:28px;font-weight:800}
-.seat-meta{display:grid;gap:10px;margin-top:16px}
-.meta-line{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:8px}
-.constituency-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.const-card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px}
-.const-card .top{display:flex;justify-content:space-between;gap:8px}
-.const-card h3{margin:0;font-size:14px}.const-card p{margin:7px 0;color:var(--muted);font-size:12px}
-.badge{display:inline-flex;align-items:center;border-radius:99px;padding:4px 8px;font-size:10px;font-weight:800;background:#263548;color:#c9d7e8;white-space:nowrap}
-.badge.green{background:#17382e;color:#7fe0b6}.badge.red{background:#3a2028;color:#ffaaaa}.badge.gold{background:#3b301c;color:#f0cf80}
-.policy-list{display:grid;gap:10px}
-.policy-item{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
-.policy-item p{margin:4px 0 0;color:var(--muted);font-size:12px}
-.policy-actions{display:flex;gap:6px;flex-wrap:wrap}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.field{display:grid;gap:6px}.field label{color:var(--muted);font-size:12px}
-.field textarea{resize:vertical;min-height:90px}
-.field.full{grid-column:1/-1}
-.form-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
-.cabinet-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.minister{padding:15px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}
-.minister small{display:block;color:var(--muted);margin-top:4px}
-.empty{padding:24px;text-align:center;color:var(--muted)}
-.toast{position:fixed;bottom:22px;right:22px;background:var(--gold);color:#141920;padding:12px 18px;border-radius:12px;font-weight:800;display:none;z-index:10}
-.modal-backdrop{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}
-.modal-backdrop.open{display:flex}
-.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.modal-head h2{margin:0;font-size:18px}.close{background:transparent;border:0;color:var(--muted);font-size:22px}
-@media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.grid-2,.dun-layout{grid-template-columns:1fr}.seat-info{position:static}.constituency-grid{grid-template-columns:repeat(2,1fr)}.cabinet-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){
- .app{grid-template-columns:1fr}.sidebar{padding:12px;gap:12px;border-right:0;border-bottom:1px solid var(--line)}
- .brand{padding:0 4px}.sidebar .nav-label,.sidebar-bottom{display:none}.nav{display:flex;overflow-x:auto}.nav button{white-space:nowrap;padding:9px 12px}
- main{padding:20px 14px 40px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%;justify-content:space-between}
- .stats{gap:8px}.stat{padding:13px}.stat .value{font-size:23px}.constituency-grid,.cabinet-grid{grid-template-columns:1fr}
- .dun-stage{min-height:220px}.dun-seat{width:11px;height:11px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
- .party-row{grid-template-columns:90px 1fr 25px;gap:8px}
-}
+.sidebar{background:#0e1621;border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 7px}.brand-mark{width:38px;height:38px;border-radius:12px;background:var(--gold);color:#151a20;display:grid;place-items:center;font-weight:900}.brand strong{display:block}.brand small{color:var(--muted);font-size:11px}
+.nav-label{color:#63768c;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:0 12px;margin-bottom:8px}.nav{display:grid;gap:4px}
+.nav button{border:0;background:transparent;color:var(--muted);text-align:left;padding:10px 12px;border-radius:10px;display:flex;gap:11px;align-items:center}.nav button:hover,.nav button.active{background:#1b2939;color:var(--text)}.nav button.active{box-shadow:inset 3px 0 var(--gold)}.ico{width:20px;text-align:center}
+.sidebar-bottom{margin-top:auto;padding:13px;background:var(--panel);border:1px solid var(--line);border-radius:12px}.sidebar-bottom small{color:var(--muted)}
+main{min-width:0;padding:26px clamp(14px,3vw,40px) 48px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px}.eyebrow{color:var(--gold);font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}h1{font-size:clamp(24px,3vw,32px);line-height:1.2;margin:5px 0}.subtitle{color:var(--muted);margin:5px 0 0}.top-actions{display:flex;gap:8px;align-items:center}.turn-pill{border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--muted);white-space:nowrap}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 13px;border-radius:10px;font-weight:700}.btn:hover{filter:brightness(1.15)}.btn.primary{background:var(--gold);border-color:var(--gold);color:#151a20}.btn.small{padding:6px 10px;font-size:12px}.btn.danger{color:#ffaaaa}
+.page{display:none}.page.active{display:block}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}.stat{padding:16px}.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:27px;font-weight:800;margin:5px 0}.hint{font-size:11px;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(270px,.8fr);gap:15px}.card{padding:18px;margin-bottom:15px;min-width:0}.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}.card h2{font-size:16px;margin:0}.muted{color:var(--muted)}
+.action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.action{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px;text-align:left;color:var(--text)}.action:hover{border-color:var(--gold)}.action b{display:block;margin:6px 0 2px}.action small{color:var(--muted)}
+.party-list{display:grid;gap:11px}.party-row{display:grid;grid-template-columns:minmax(90px,1fr) 2fr 32px;gap:10px;align-items:center}.party-name{display:flex;align-items:center;gap:8px;font-weight:700}.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}.bar{height:8px;background:#253345;border-radius:99px;overflow:hidden}.bar span{display:block;height:100%;border-radius:99px}.party-count{text-align:right;font-weight:800}
+.majority-box{padding:15px;border-radius:12px;background:#1a2938;margin-bottom:12px}.majority-box strong{font-size:23px;display:block}.meta-line{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:9px 0}.badge{display:inline-flex;align-items:center;border-radius:99px;padding:4px 8px;font-size:10px;font-weight:800;background:#263548;color:#c9d7e8;white-space:nowrap}.badge.green{background:#17382e;color:#7fe0b6}.badge.red{background:#3a2028;color:#ffaaaa}.badge.gold{background:#3b301c;color:#f0cf80}
+.activity{display:grid}.activity-item{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}.activity-item:last-child{border-bottom:0}.activity-icon{width:29px;height:29px;border-radius:9px;background:var(--panel2);display:grid;place-items:center;flex-shrink:0}.activity-item small{display:block;color:var(--muted);margin-top:2px}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}.toolbar input,.toolbar select,.field input,.field select,.field textarea{background:#0d1520;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;width:100%}.toolbar input{max-width:300px}.toolbar select{width:auto;min-width:150px}input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+/* DUN: semicircular seating chart */
+.dun-layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:15px}.dun-card{overflow:hidden}
+.dun-stage{position:relative;width:100%;max-width:760px;margin:0 auto;aspect-ratio:1.75;min-height:250px}
+.dun-seat{position:absolute;width:clamp(12px,1.7vw,19px);height:clamp(12px,1.7vw,19px);border:2px solid #0b1018;border-radius:50%;padding:0;transform:translate(-50%,-50%);transition:opacity .12s,transform .12s,box-shadow .12s}
+.dun-seat:hover{transform:translate(-50%,-50%) scale(1.35);z-index:5;box-shadow:0 0 0 2px white}.dun-seat.party-dim{opacity:.12}.dun-seat.party-match{box-shadow:0 0 0 2px #fff8;z-index:2}.dun-seat.selected{box-shadow:0 0 0 2px white,0 0 0 5px #ffffff30}
+.dun-center-label{position:absolute;left:50%;top:83%;transform:translate(-50%,-50%);text-align:center;color:var(--muted);font-size:11px;pointer-events:none}.dun-center-label strong{display:block;color:var(--text);font-size:14px}
+.dun-legend{display:flex;flex-wrap:wrap;gap:10px 15px;margin-top:10px}.legend-item{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;cursor:pointer}.legend-item:hover{color:var(--text)}
+.seat-info{position:sticky;top:18px;height:max-content}.party-swatch{height:6px;border-radius:99px;margin-bottom:14px}.seat-meta{display:grid;gap:8px;margin-top:14px}
+.party-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.party-card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px}.party-card h3{margin:8px 0 3px;font-size:15px}.party-card p{color:var(--muted);font-size:12px;margin:6px 0}.party-card .party-card-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px}
+.constituency-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.const-card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px}.const-card .top{display:flex;justify-content:space-between;gap:8px}.const-card h3{margin:0;font-size:14px}.const-card p{margin:7px 0;color:var(--muted);font-size:12px}
+.policy-list{display:grid;gap:10px}.policy-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}.policy-item p{margin:4px 0;color:var(--muted);font-size:12px}.policy-actions{display:flex;gap:6px;flex-wrap:wrap}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:6px}.field label{color:var(--muted);font-size:12px}.field textarea{resize:vertical;min-height:90px}.field.full{grid-column:1/-1}.form-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.cabinet-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.minister{padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:12px}.minister small{display:block;color:var(--muted);margin-top:4px}
+.empty{padding:22px;text-align:center;color:var(--muted)}.toast{position:fixed;bottom:20px;right:20px;background:var(--gold);color:#141920;padding:12px 17px;border-radius:12px;font-weight:800;display:none;z-index:10}
+.modal-backdrop{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal-backdrop.open{display:flex}.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:21px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h2{margin:0;font-size:18px}.close{background:transparent;border:0;color:var(--muted);font-size:22px}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.grid-2,.dun-layout{grid-template-columns:1fr}.seat-info{position:static}.party-grid{grid-template-columns:repeat(2,1fr)}.constituency-grid{grid-template-columns:repeat(2,1fr)}.cabinet-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.app{grid-template-columns:1fr}.sidebar{padding:11px;gap:11px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 4px}.sidebar .nav-label,.sidebar-bottom{display:none}.nav{display:flex;overflow-x:auto}.nav button{white-space:nowrap;padding:9px 11px}main{padding:18px 13px 35px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%;justify-content:space-between}.stats{gap:8px}.stat{padding:12px}.stat .value{font-size:22px}.party-grid,.constituency-grid,.cabinet-grid{grid-template-columns:1fr}.dun-stage{min-height:210px}.dun-seat{width:11px;height:11px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.party-row{grid-template-columns:85px 1fr 25px;gap:7px}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
-  <div class="brand"><div class="brand-mark">SP</div><div><strong>Sarawak Politics</strong><small>Political Simulator</small></div></div>
-  <div><div class="nav-label" data-i18n="navLabel">SIMULATION</div><nav class="nav">
-    <button class="active" data-page="dashboard"><span class="ico">◫</span><span data-i18n="dashboard">Dashboard</span></button>
-    <button data-page="dun"><span class="ico">◉</span><span data-i18n="dun">DUN Assembly</span></button>
-    <button data-page="constituencies"><span class="ico">⌖</span><span data-i18n="constituencies">Constituencies</span></button>
-    <button data-page="policies"><span class="ico">▤</span><span data-i18n="policies">Policies</span></button>
-    <button data-page="cabinet"><span class="ico">♙</span><span data-i18n="cabinet">Cabinet</span></button>
-    <button data-page="election"><span class="ico">⚑</span><span data-i18n="election">Election</span></button>
-  </nav></div>
-  <div class="sidebar-bottom"><small data-i18n="simStatus">SIMULATION STATUS</small><div style="font-weight:800;margin-top:5px">● <span data-i18n="active">Active Session</span></div><small id="sidebarTurn">Turn 1 · 2026</small></div>
+ <div class="brand"><div class="brand-mark">SP</div><div><strong>Sarawak Politics</strong><small>Political Simulator</small></div></div>
+ <div><div class="nav-label" data-t="nav">SIMULATION</div><nav class="nav">
+  <button class="active" data-page="dashboard"><span class="ico">◫</span><span data-t="dashboard">Dashboard</span></button>
+  <button data-page="dun"><span class="ico">◉</span><span data-t="dun">DUN Assembly</span></button>
+  <button data-page="parties"><span class="ico">♟</span><span data-t="parties">Political Parties</span></button>
+  <button data-page="constituencies"><span class="ico">⌖</span><span data-t="constituencies">Constituencies</span></button>
+  <button data-page="policies"><span class="ico">▤</span><span data-t="policies">Policies</span></button>
+  <button data-page="cabinet"><span class="ico">♙</span><span data-t="cabinet">Cabinet</span></button>
+  <button data-page="election"><span class="ico">⚑</span><span data-t="election">Election</span></button>
+  <button data-page="records"><span class="ico">☷</span><span data-t="records">Records</span></button>
+ </nav></div>
+ <div class="sidebar-bottom"><small data-t="status">SIMULATION STATUS</small><div style="font-weight:800;margin-top:5px">● <span data-t="active">Active Session</span></div><small id="sidebarTurn">Turn 1 · 2026</small></div>
 </aside>
-
 <main>
-<header class="topbar">
- <div><div class="eyebrow" id="pageEyebrow">STATE GOVERNMENT</div><h1 id="pageTitle">Dashboard</h1><p class="subtitle" id="pageSubtitle">Manage your government and shape Sarawak's future.</p></div>
- <div class="top-actions"><button class="btn" id="langToggle">🇲🇾 BM</button><span class="turn-pill" id="turnPill">Turn 1 · 2026</span><button class="btn primary" id="nextTurn"><span data-i18n="nextTurn">Next Turn →</span></button></div>
-</header>
+<header class="topbar"><div><div class="eyebrow" id="eyebrow">STATE GOVERNMENT</div><h1 id="pageTitle">Dashboard</h1><p class="subtitle" id="pageSubtitle">Manage your government and shape Sarawak's future.</p></div>
+<div class="top-actions"><button class="btn" id="langBtn">🇲🇾 BM</button><span class="turn-pill" id="turnPill">Turn 1 · 2026</span><button class="btn primary" id="nextTurn" data-t="nextTurn">Next Turn →</button></div></header>
 
 <section class="page active" id="page-dashboard">
- <div class="stats">
-  <div class="stat"><div class="label" data-i18n="dunSeats">DUN Seats</div><div class="value" id="statSeats">82</div><div class="hint" data-i18n="totalSeats">Total assembly seats</div></div>
-  <div class="stat"><div class="label" data-i18n="govSeats">Government Seats</div><div class="value" id="statGov">46</div><div class="hint" id="statGovHint">Majority required: 42</div></div>
-  <div class="stat"><div class="label" data-i18n="approval">Approval Rating</div><div class="value" id="statApproval">58%</div><div class="hint" data-i18n="publicSentiment">Public sentiment</div></div>
-  <div class="stat"><div class="label" data-i18n="stateBudget">State Budget</div><div class="value" id="statBudget">RM 5.0B</div><div class="hint" data-i18n="availableFunds">Available funds</div></div>
- </div>
- <div class="grid-2"><div>
-  <div class="card"><div class="card-head"><h2 data-i18n="politicalActions">Political Actions</h2><span class="badge gold" data-i18n="yourMove">Your Move</span></div>
-   <div class="action-grid">
-    <button class="action" data-action="policy">▤<b data-i18n="proposePolicy">Propose Policy</b><small data-i18n="introducePolicy">Introduce a new state initiative</small></button>
-    <button class="action" data-action="cabinet">♙<b data-i18n="manageCabinet">Manage Cabinet</b><small data-i18n="assignMinisters">Assign ministers and portfolios</small></button>
-    <button class="action" data-action="budget">▣<b data-i18n="budgetInvestment">Budget Investment</b><small data-i18n="fundServices">Fund public services</small></button>
-    <button class="action" data-action="election">⚑<b data-i18n="callElection">Call Election</b><small data-i18n="testMandate">Test your mandate</small></button>
-   </div>
-  </div>
-  <div class="card"><div class="card-head"><h2 data-i18n="partyDistribution">Party Distribution</h2><button class="btn small" data-go="dun" data-i18n="viewDun">View DUN</button></div><div class="party-list" id="partyList"></div></div>
- </div><div>
-  <div class="card"><div class="card-head"><h2 data-i18n="govStatus">Government Status</h2><span class="badge green" id="majorityBadge">Majority</span></div>
-   <div class="majority-box"><small class="muted" data-i18n="coalitionStrength">Coalition strength</small><strong id="coalitionSeats">46 / 82</strong><div class="bar" style="margin-top:10px"><span id="coalitionBar" style="background:var(--green);width:56%"></span></div></div>
-   <div class="meta-line"><span class="muted" data-i18n="majorityThreshold">Majority threshold</span><b id="threshold">42 seats</b></div>
-   <div class="meta-line"><span class="muted" data-i18n="stability">Government stability</span><b id="stability">Stable</b></div>
-   <div class="meta-line"><span class="muted" data-i18n="pendingPolicies">Pending policies</span><b id="pendingCount">0</b></div>
-  </div>
-  <div class="card"><div class="card-head"><h2 data-i18n="latestActivity">Latest Activity</h2><button class="btn small" data-go="records" data-i18n="viewAll">View all</button></div><div class="activity" id="activityList"></div></div>
+<div class="stats">
+ <div class="stat"><div class="label" data-t="dunSeats">DUN Seats</div><div class="value" id="statSeats">82</div><div class="hint" data-t="totalSeats">Total assembly seats</div></div>
+ <div class="stat"><div class="label" data-t="govSeats">Government Seats</div><div class="value" id="statGov">80</div><div class="hint" id="statGovHint">Majority required: 42</div></div>
+ <div class="stat"><div class="label" data-t="approval">Approval Rating</div><div class="value" id="statApproval">58%</div><div class="hint" data-t="sentiment">Public sentiment</div></div>
+ <div class="stat"><div class="label" data-t="budget">State Budget</div><div class="value" id="statBudget">RM 5.0B</div><div class="hint" data-t="funds">Available funds</div></div>
+</div>
+<div class="grid-2"><div>
+ <div class="card"><div class="card-head"><h2 data-t="actions">Political Actions</h2><span class="badge gold" data-t="yourMove">Your Move</span></div><div class="action-grid">
+ <button class="action" data-action="policy">▤<b data-t="propose">Propose Policy</b><small data-t="proposeHint">Introduce a state initiative</small></button>
+ <button class="action" data-action="cabinet">♙<b data-t="manageCabinet">Manage Cabinet</b><small data-t="cabinetHint">Assign ministers and portfolios</small></button>
+ <button class="action" data-action="budget">▣<b data-t="invest">Budget Investment</b><small data-t="investHint">Fund public services</small></button>
+ <button class="action" data-action="election">⚑<b data-t="callElection">Call Election</b><small data-t="electionHint">Test your mandate</small></button>
  </div></div>
-</section>
-
-<section class="page" id="page-dun">
- <div class="dun-layout">
-  <div class="card dun-card">
-   <div class="card-head"><h2 data-i18n="seatingChart">DUN Seating Chart</h2><span class="muted" data-i18n="hoverSeat">Hover over a seat</span></div>
-   <div class="dun-stage" id="dunStage"><div class="dun-center-label"><strong>DUN SARAWAK</strong><span id="dunTotalLabel">82 seats</span></div></div>
-   <div class="dun-legend" id="dunLegend"></div>
-  </div>
-  <aside class="card seat-info">
-   <div class="party-swatch" id="infoSwatch" style="background:var(--gold)"></div>
-   <div class="eyebrow" data-i18n="seatDetails">SEAT DETAILS</div>
-   <h2 id="seatTitle" data-i18n="hoverInstruction">Hover over a seat</h2>
-   <p class="muted" id="seatDescription" data-i18n="partyHighlightInstruction">The whole party will be highlighted and its seat count shown here.</p>
-   <div class="seat-meta" id="seatMeta"></div>
-  </aside>
+ <div class="card"><div class="card-head"><h2 data-t="distribution">Party Distribution</h2><button class="btn small" data-go="dun" data-t="viewDun">View DUN</button></div><div class="party-list" id="partyList"></div></div>
+</div><div>
+ <div class="card"><div class="card-head"><h2 data-t="govStatus">Government Status</h2><span class="badge green" id="majorityBadge">Majority</span></div>
+ <div class="majority-box"><small class="muted" data-t="coalitionStrength">Coalition strength</small><strong id="coalitionSeats">80 / 82</strong><div class="bar" style="margin-top:10px"><span id="coalitionBar" style="background:var(--green);width:97%"></span></div></div>
+ <div class="meta-line"><span class="muted" data-t="threshold">Majority threshold</span><b id="threshold">42 seats</b></div><div class="meta-line"><span class="muted" data-t="stability">Government stability</span><b id="stability">Stable</b></div><div class="meta-line"><span class="muted" data-t="pending">Pending policies</span><b id="pendingCount">0</b></div>
  </div>
+ <div class="card"><div class="card-head"><h2 data-t="latest">Latest Activity</h2><button class="btn small" data-go="records" data-t="viewAll">View all</button></div><div class="activity" id="activityList"></div></div>
+</div></div>
 </section>
 
-<section class="page" id="page-constituencies">
- <div class="toolbar"><input id="constSearch" data-placeholder="searchPlaceholder" placeholder="Search constituency or representative…"><select id="partyFilter"><option value="" data-i18n="allParties">All parties</option></select></div>
- <div class="constituency-grid" id="constituencyGrid"></div>
+<section class="page" id="page-dun"><div class="dun-layout">
+ <div class="card dun-card"><div class="card-head"><h2 data-t="seating">DUN Seating Chart</h2><span class="muted" data-t="hoverSeat">Hover over a seat</span></div>
+ <div class="dun-stage" id="dunStage"><div class="dun-center-label"><strong>DUN SARAWAK</strong><span id="dunTotal">82 seats</span></div></div><div class="dun-legend" id="dunLegend"></div></div>
+ <aside class="card seat-info"><div class="party-swatch" id="infoSwatch" style="background:var(--gold)"></div><div class="eyebrow" data-t="seatDetails">SEAT DETAILS</div><h2 id="seatTitle" data-t="hoverInstruction">Hover over a seat</h2><p class="muted" id="seatDescription" data-t="hoverDescription">Hover a seat to highlight its party.</p><div class="seat-meta" id="seatMeta"></div></aside>
+</div></section>
+
+<section class="page" id="page-parties"><div class="card"><div class="card-head"><div><h2 data-t="partyDirectory">Sarawak Party Directory</h2><p class="muted" data-t="partyDirectoryHint">Parties, coalitions, component parties and historical parties.</p></div><button class="btn primary" id="newParty" data-t="createParty">+ Create Party</button></div>
+<div class="toolbar"><input id="partySearch" data-ph="searchParty" placeholder="Search party…"><select id="partyType"><option value="all" data-t="allStatuses">All statuses</option><option value="active" data-t="activeParties">Active</option><option value="historical" data-t="historical">Historical</option></select></div><div class="party-grid" id="partyDirectory"></div></div>
+<div class="card"><div class="card-head"><h2 data-t="coalitions">Coalitions & Alliances</h2><button class="btn" id="manageCoalition" data-t="manageCoalition">Manage Government</button></div><div id="coalitionList"></div></div>
 </section>
 
-<section class="page" id="page-policies">
- <div class="card"><div class="card-head"><h2 data-i18n="policyCentre">Policy Centre</h2><button class="btn primary" id="newPolicy" data-i18n="newPolicy">+ New Policy</button></div><p class="muted" data-i18n="policyDescription">Draft proposals, submit them for assembly approval, and track their outcomes.</p><div class="policy-list" id="policyList"></div></div>
-</section>
-
-<section class="page" id="page-cabinet">
- <div class="card"><div class="card-head"><h2 data-i18n="cabinetTitle">Cabinet</h2><button class="btn primary" id="editCabinet" data-i18n="assignMinister">Assign Minister</button></div><p class="muted" data-i18n="cabinetDescription">Manage the cabinet and distribute government responsibilities.</p><div class="cabinet-grid" id="cabinetGrid"></div></div>
-</section>
-
-<section class="page" id="page-election">
- <div class="grid-2"><div class="card"><div class="card-head"><h2 data-i18n="electionCentre">Election Centre</h2><span class="badge gold" data-i18n="simulation">Simulation</span></div><p class="muted" data-i18n="electionDescription">Call a snap election to test your government's public mandate.</p><div class="majority-box"><small class="muted" data-i18n="currentGovernment">Current government</small><strong id="electionGov">46 seats</strong><div id="electionApproval" class="muted">Approval rating: 58%</div></div><button class="btn primary" id="runElection" data-i18n="snapElection">Call Snap Election</button></div>
- <div class="card"><div class="card-head"><h2 data-i18n="electionResults">Election Results</h2></div><div id="electionResults" class="empty" data-i18n="noElection">No election has been held this session.</div></div></div>
-</section>
-<section class="page" id="page-records"><div class="card"><div class="card-head"><h2 data-i18n="sessionRecords">Session Records</h2></div><div class="activity" id="recordsList"></div></div></section>
+<section class="page" id="page-constituencies"><div class="toolbar"><input id="constSearch" data-ph="searchConstituency" placeholder="Search constituency or representative…"><select id="constFilter"><option value="" data-t="allParties">All parties</option></select></div><div class="constituency-grid" id="constituencyGrid"></div></section>
+<section class="page" id="page-policies"><div class="card"><div class="card-head"><h2 data-t="policyCentre">Policy Centre</h2><button class="btn primary" id="newPolicy" data-t="newPolicy">+ New Policy</button></div><p class="muted" data-t="policyHint">Draft proposals, submit them, and track assembly votes.</p><div class="policy-list" id="policyList"></div></div></section>
+<section class="page" id="page-cabinet"><div class="card"><div class="card-head"><h2 data-t="cabinetTitle">Cabinet</h2><button class="btn primary" id="editCabinet" data-t="assignMinister">Assign Minister</button></div><div class="cabinet-grid" id="cabinetGrid"></div></div></section>
+<section class="page" id="page-election"><div class="grid-2"><div class="card"><h2 data-t="electionCentre">Election Centre</h2><p class="muted" data-t="electionHintLong">Call an election and simulate a new DUN result.</p><div class="majority-box"><small class="muted" data-t="currentGovernment">Current government</small><strong id="electionGov">80 seats</strong><div id="electionApproval" class="muted">Approval: 58%</div></div><button class="btn primary" id="runElection" data-t="snapElection">Call Snap Election</button></div><div class="card"><h2 data-t="results">Election Results</h2><div id="electionResults" class="empty" data-t="noElection">No election held this session.</div></div></div></section>
+<section class="page" id="page-records"><div class="card"><h2 data-t="records">Session Records</h2><div class="activity" id="recordsList"></div></div></section>
 </main></div>
-
-<div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal-head"><h2 id="modalTitle">New Proposal</h2><button class="close" id="closeModal">×</button></div><div id="modalBody"></div></div></div>
-<div class="toast" id="toast"></div>
+<div class="modal-backdrop" id="backdrop"><div class="modal"><div class="modal-head"><h2 id="modalTitle">Form</h2><button class="close" id="closeModal">×</button></div><div id="modalBody"></div></div></div><div class="toast" id="toast"></div>
 
 <script>
-const translations={
-en:{
-navLabel:"SIMULATION",dashboard:"Dashboard",dun:"DUN Assembly",constituencies:"Constituencies",policies:"Policies",cabinet:"Cabinet",election:"Election",simStatus:"SIMULATION STATUS",active:"Active Session",
-nextTurn:"Next Turn →",dunSeats:"DUN Seats",totalSeats:"Total assembly seats",govSeats:"Government Seats",approval:"Approval Rating",publicSentiment:"Public sentiment",stateBudget:"State Budget",availableFunds:"Available funds",
-politicalActions:"Political Actions",yourMove:"Your Move",proposePolicy:"Propose Policy",introducePolicy:"Introduce a new state initiative",manageCabinet:"Manage Cabinet",assignMinisters:"Assign ministers and portfolios",budgetInvestment:"Budget Investment",fundServices:"Fund public services",callElection:"Call Election",testMandate:"Test your mandate",partyDistribution:"Party Distribution",viewDun:"View DUN",govStatus:"Government Status",coalitionStrength:"Coalition strength",majorityThreshold:"Majority threshold",stability:"Government stability",pendingPolicies:"Pending policies",latestActivity:"Latest Activity",viewAll:"View all",
-seatingChart:"DUN Seating Chart",hoverSeat:"Hover over a seat",seatDetails:"SEAT DETAILS",hoverInstruction:"Hover over a seat",partyHighlightInstruction:"The whole party will be highlighted and its seat count shown here.",
-searchPlaceholder:"Search constituency or representative…",allParties:"All parties",policyCentre:"Policy Centre",newPolicy:"+ New Policy",policyDescription:"Draft proposals, submit them for assembly approval, and track their outcomes.",
-cabinetTitle:"Cabinet",assignMinister:"Assign Minister",cabinetDescription:"Manage the cabinet and distribute government responsibilities.",electionCentre:"Election Centre",simulation:"Simulation",electionDescription:"Call a snap election to test your government's public mandate.",currentGovernment:"Current government",snapElection:"Call Snap Election",electionResults:"Election Results",noElection:"No election has been held this session.",sessionRecords:"Session Records",
-majority:"Majority",minority:"Minority",stable:"Stable",atRisk:"At risk",seats:"seats",party:"Party",area:"Area",draft:"Draft",submitted:"Submitted",passed:"Passed",rejected:"Rejected",submit:"Submit",vote:"Vote",delete:"Delete",policyTitle:"Policy title",category:"Category",cost:"Estimated cost (RM billions)",description:"Description",saveDraft:"Save Draft",cancel:"Cancel",policyCreated:"Policy saved as draft",policySubmitted:"Policy submitted for approval",policyPassed:"Policy passed",policyRejected:"Policy rejected",draftDeleted:"Draft deleted",budgetTitle:"Budget Investment",investmentArea:"Investment area",amount:"Investment amount (RM billions)",invest:"Invest",insufficient:"Insufficient budget",investmentApproved:"Investment approved",ministerName:"Minister name",partyLabel:"Party",assign:"Assign",cabinetUpdated:"Cabinet updated",confirmElection:"Call a snap election? This will change the DUN seat distribution.",electionHeld:"Election results are in",newTurn:"New turn started",turnStarted:"Turn started",policyDrafted:"Policy drafted",ministerAppointed:"appointed as",electionWon:"secured a majority.",electionNoMajority:"won the most seats but lacks a majority.",noResults:"No constituencies found.",turn:"Turn",approvalRating:"Approval rating",policyCost:"Budget",rural:"Rural",urban:"Urban",coastal:"Coastal",highland:"Highland"
-},
-ms:{
-navLabel:"SIMULASI",dashboard:"Papan Pemuka",dun:"Dewan Undangan",constituencies:"Kawasan DUN",policies:"Dasar",cabinet:"Kabinet",election:"Pilihan Raya",simStatus:"STATUS SIMULASI",active:"Sesi Aktif",
-nextTurn:"Giliran Seterusnya →",dunSeats:"Kerusi DUN",totalSeats:"Jumlah kerusi dewan",govSeats:"Kerusi Kerajaan",approval:"Kelulusan Awam",publicSentiment:"Sentimen rakyat",stateBudget:"Belanjawan Negeri",availableFunds:"Dana tersedia",
-politicalActions:"Tindakan Politik",yourMove:"Giliran Anda",proposePolicy:"Cadang Dasar",introducePolicy:"Perkenalkan inisiatif negeri baharu",manageCabinet:"Urus Kabinet",assignMinisters:"Lantik menteri dan portfolio",budgetInvestment:"Pelaburan Belanjawan",fundServices:"Biayai perkhidmatan awam",callElection:"Adakan Pilihan Raya",testMandate:"Uji mandat anda",partyDistribution:"Agihan Parti",viewDun:"Lihat DUN",govStatus:"Status Kerajaan",coalitionStrength:"Kekuatan gabungan",majorityThreshold:"Ambang majoriti",stability:"Kestabilan kerajaan",pendingPolicies:"Dasar tertangguh",latestActivity:"Aktiviti Terkini",viewAll:"Lihat semua",
-seatingChart:"Susunan Tempat Duduk DUN",hoverSeat:"Halakan kursor pada kerusi",seatDetails:"BUTIRAN KERUSI",hoverInstruction:"Halakan kursor pada kerusi",partyHighlightInstruction:"Semua kerusi parti akan diserlahkan dan jumlah kerusinya dipaparkan di sini.",
-searchPlaceholder:"Cari kawasan DUN atau wakil…",allParties:"Semua parti",policyCentre:"Pusat Dasar",newPolicy:"+ Dasar Baharu",policyDescription:"Rangka cadangan, kemukakan untuk kelulusan dewan dan pantau keputusan.",
-cabinetTitle:"Kabinet",assignMinister:"Lantik Menteri",cabinetDescription:"Urus kabinet dan agihkan tanggungjawab kerajaan.",electionCentre:"Pusat Pilihan Raya",simulation:"Simulasi",electionDescription:"Adakan pilihan raya mengejut untuk menguji mandat kerajaan.",currentGovernment:"Kerajaan semasa",snapElection:"Adakan Pilihan Raya Mengejut",electionResults:"Keputusan Pilihan Raya",noElection:"Tiada pilihan raya diadakan dalam sesi ini.",sessionRecords:"Rekod Sesi",
-majority:"Majoriti",minority:"Minoriti",stable:"Stabil",atRisk:"Berisiko",seats:"kerusi",party:"Parti",area:"Kawasan",draft:"Draf",submitted:"Dikemukakan",passed:"Diluluskan",rejected:"Ditolak",submit:"Kemukakan",vote:"Undi",delete:"Padam",policyTitle:"Tajuk dasar",category:"Kategori",cost:"Anggaran kos (RM bilion)",description:"Penerangan",saveDraft:"Simpan Draf",cancel:"Batal",policyCreated:"Dasar disimpan sebagai draf",policySubmitted:"Dasar dikemukakan untuk kelulusan",policyPassed:"Dasar diluluskan",policyRejected:"Dasar ditolak",draftDeleted:"Draf dipadam",budgetTitle:"Pelaburan Belanjawan",investmentArea:"Bidang pelaburan",amount:"Jumlah pelaburan (RM bilion)",invest:"Labur",insufficient:"Belanjawan tidak mencukupi",investmentApproved:"Pelaburan diluluskan",ministerName:"Nama menteri",partyLabel:"Parti",assign:"Lantik",cabinetUpdated:"Kabinet dikemas kini",confirmElection:"Adakan pilihan raya mengejut? Agihan kerusi DUN akan berubah.",electionHeld:"Keputusan pilihan raya tersedia",newTurn:"Giliran baharu bermula",turnStarted:"Giliran bermula",policyDrafted:"Dasar dirangka",ministerAppointed:"dilantik sebagai",electionWon:"memperoleh majoriti.",electionNoMajority:"memperoleh kerusi terbanyak tetapi tiada majoriti.",noResults:"Tiada kawasan DUN ditemui.",turn:"Giliran",approvalRating:"Kelulusan awam",policyCost:"Belanjawan",rural:"Luar bandar",urban:"Bandar",coastal:"Pesisir",highland:"Pedalaman"
-}};
-let lang="en";
-const parties=[
-{id:"gps",name:"Sarawak Unity Party",short:"SUP",color:"#d6a84b",seats:46},
-{id:"reform",name:"People's Reform Party",short:"PRP",color:"#5c9be8",seats:20},
-{id:"progress",name:"Progressive Sarawak",short:"PS",color:"#55b68a",seats:10},
-{id:"ind",name:"Independent",short:"IND",color:"#a78bca",seats:6}
-];
-const totalSeats=parties.reduce((s,p)=>s+p.seats,0),threshold=Math.floor(totalSeats/2)+1;
-let turn=1,year=2026,approval=58,budget=5,govPartyIds=["gps"],hoverParty=null,selectedSeat=null;
-let policies=[
-{id:1,title:"Rural Connectivity Upgrade",category:"Infrastructure",cost:.8,description:"Improve rural road access and connectivity.",status:"Draft"},
-{id:2,title:"Skills & Employment Initiative",category:"Education",cost:.4,description:"Expand technical training and youth employment.",status:"Draft"}
-];
-let activity=[{icon:"✦",text:"Simulation started",detail:"New state government formed · Turn 1"}];
-let cabinet=[
-{portfolio:"Premier",minister:"Dato' Alex Jawan",party:"gps"},{portfolio:"Finance",minister:"Maya Lian",party:"gps"},
-{portfolio:"Infrastructure",minister:"Daniel Rantai",party:"gps"},{portfolio:"Education",minister:"Alicia Ting",party:"gps"},
-{portfolio:"Health",minister:"Rafiq Bujang",party:"gps"},{portfolio:"Rural Development",minister:"Julius Mawan",party:"gps"}
-];
-const areas=["Urban","Rural","Coastal","Highland"];
-let constituencies=Array.from({length:totalSeats},(_,i)=>{
-let p=parties.find(p=>i<p.seats);return{id:i+1,name:`DUN ${String(i+1).padStart(2,"0")}`,representative:`Representative ${String(i+1).padStart(2,"0")}`,party:p.id,area:areas[i%4]};
-});
-const tr=k=>translations[lang][k]||k;
-const partyById=id=>parties.find(p=>p.id===id)||parties[0];
-const partySeats=id=>constituencies.filter(c=>c.party===id).length;
-const govSeats=()=>constituencies.filter(c=>govPartyIds.includes(c.party)).length;
-const money=n=>"RM "+n.toFixed(1)+"B";
-function log(icon,text,detail=`${tr("turn")} ${turn}`){activity.unshift({icon,text,detail});activity=activity.slice(0,40)}
-function toast(msg){let t=document.getElementById("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",2200)}
-const pageData={
-dashboard:["STATE GOVERNMENT","Dashboard","Manage your government and shape Sarawak's future."],
-dun:["LEGISLATIVE ASSEMBLY","DUN Assembly","Explore the seating arrangement and party representation."],
-constituencies:["ELECTORAL MAP","Constituencies","Browse all constituencies and their representatives."],
-policies:["GOVERNMENT BUSINESS","Policies","Draft, submit, and track policy proposals."],
-cabinet:["EXECUTIVE BRANCH","Cabinet","Assign ministers and manage government portfolios."],
-election:["DEMOCRATIC MANDATE","Election","Test your support in a simulated state election."],
-records:["SESSION HISTORY","Session Records","Review actions and events from this simulation."]
+const T={
+en:{nav:"SIMULATION",dashboard:"Dashboard",dun:"DUN Assembly",parties:"Political Parties",constituencies:"Constituencies",policies:"Policies",cabinet:"Cabinet",election:"Election",records:"Records",status:"SIMULATION STATUS",active:"Active Session",nextTurn:"Next Turn →",dunSeats:"DUN Seats",totalSeats:"Total assembly seats",govSeats:"Government Seats",approval:"Approval Rating",sentiment:"Public sentiment",budget:"State Budget",funds:"Available funds",actions:"Political Actions",yourMove:"Your Move",propose:"Propose Policy",proposeHint:"Introduce a state initiative",manageCabinet:"Manage Cabinet",cabinetHint:"Assign ministers and portfolios",invest:"Budget Investment",investHint:"Fund public services",callElection:"Call Election",electionHint:"Test your mandate",distribution:"Party Distribution",viewDun:"View DUN",govStatus:"Government Status",coalitionStrength:"Coalition strength",threshold:"Majority threshold",stability:"Government stability",pending:"Pending policies",latest:"Latest Activity",viewAll:"View all",seating:"DUN Seating Chart",hoverSeat:"Hover over a seat",seatDetails:"SEAT DETAILS",hoverInstruction:"Hover over a seat",hoverDescription:"Hover a seat to highlight its party.",partyDirectory:"Sarawak Party Directory",partyDirectoryHint:"Parties, coalitions, component parties and historical parties.",createParty:"+ Create Party",searchParty:"Search party…",allStatuses:"All statuses",activeParties:"Active",historical:"Historical",coalitions:"Coalitions & Alliances",manageCoalition:"Manage Government",searchConstituency:"Search constituency or representative…",allParties:"All parties",policyCentre:"Policy Centre",newPolicy:"+ New Policy",policyHint:"Draft proposals, submit them, and track assembly votes.",cabinetTitle:"Cabinet",assignMinister:"Assign Minister",electionCentre:"Election Centre",electionHintLong:"Call an election and simulate a new DUN result.",currentGovernment:"Current government",snapElection:"Call Snap Election",results:"Election Results",noElection:"No election held this session.",party:"Party",seats:"seats",majority:"Majority",minority:"Minority",stable:"Stable",risk:"At risk",active:"Active",historicalLabel:"Historical",component:"GPS component",opposition:"Opposition",independent:"Independent",draft:"Draft",submitted:"Submitted",passed:"Passed",rejected:"Rejected",submit:"Submit",vote:"Vote",delete:"Delete",save:"Save",cancel:"Cancel",partyName:"Party name",abbreviation:"Abbreviation",color:"Party color",statusLabel:"Status",description:"Description",portfolio:"Portfolio",ministerName:"Minister name",partyLabel:"Party",policyTitle:"Policy title",category:"Category",cost:"Estimated cost (RM billions)",saveDraft:"Save Draft",investAmount:"Investment amount (RM billions)",area:"Investment area",appoint:"Appoint",policyCreated:"Policy saved",policySubmitted:"Policy submitted",policyPassed:"Policy passed",policyRejected:"Policy rejected",budgetOk:"Investment approved",noFunds:"Insufficient budget",partySaved:"Party saved",govUpdated:"Government updated",turnStarted:"New turn started",confirmElection:"Call a snap election? The seat distribution will change.",electionDone:"Election completed",noResults:"No results found.",government:"Government",oppositionParty:"Opposition",createCoalition:"Create / update government",coalitionMembers:"Government parties",submitGov:"Save Government",coalitionSeats:"Government seats",historicalNote:"Historical party — not included in current seat allocation",deleteParty:"Delete party",partyCreated:"Party created",oppositionSeats:"Opposition seats",appointed:"appointed as",approved:"Approved",rejectedLabel:"Rejected",votePass:"The policy passed.",voteFail:"The policy failed.",newTurn:"Turn advanced",publicSupport:"Public support",startComposition:"Current DUN composition",realDataNote:"Illustrative simulator data; party descriptions and seat counts reflect the selected starting scenario."},
+ms:{nav:"SIMULASI",dashboard:"Papan Pemuka",dun:"Dewan Undangan",parties:"Parti Politik",constituencies:"Kawasan DUN",policies:"Dasar",cabinet:"Kabinet",election:"Pilihan Raya",records:"Rekod",status:"STATUS SIMULASI",active:"Sesi Aktif",nextTurn:"Giliran Seterusnya →",dunSeats:"Kerusi DUN",totalSeats:"Jumlah kerusi dewan",govSeats:"Kerusi Kerajaan",approval:"Kelulusan Awam",sentiment:"Sentimen rakyat",budget:"Belanjawan Negeri",funds:"Dana tersedia",actions:"Tindakan Politik",yourMove:"Giliran Anda",propose:"Cadang Dasar",proposeHint:"Perkenalkan inisiatif negeri",manageCabinet:"Urus Kabinet",cabinetHint:"Lantik menteri dan portfolio",invest:"Pelaburan Belanjawan",investHint:"Biayai perkhidmatan awam",callElection:"Adakan Pilihan Raya",electionHint:"Uji mandat anda",distribution:"Agihan Parti",viewDun:"Lihat DUN",govStatus:"Status Kerajaan",coalitionStrength:"Kekuatan gabungan",threshold:"Ambang majoriti",stability:"Kestabilan kerajaan",pending:"Dasar tertangguh",latest:"Aktiviti Terkini",viewAll:"Lihat semua",seating:"Susunan Kerusi DUN",hoverSeat:"Halakan kursor pada kerusi",seatDetails:"BUTIRAN KERUSI",hoverInstruction:"Halakan kursor pada kerusi",hoverDescription:"Halakan kursor pada kerusi untuk menyerlahkan parti.",partyDirectory:"Direktori Parti Sarawak",partyDirectoryHint:"Parti, gabungan, parti komponen dan parti sejarah.",createParty:"+ Cipta Parti",searchParty:"Cari parti…",allStatuses:"Semua status",activeParties:"Aktif",historical:"Sejarah",coalitions:"Gabungan & Pakatan",manageCoalition:"Urus Kerajaan",searchConstituency:"Cari kawasan DUN atau wakil…",allParties:"Semua parti",policyCentre:"Pusat Dasar",newPolicy:"+ Dasar Baharu",policyHint:"Rangka dasar, kemukakan dan pantau undian DUN.",cabinetTitle:"Kabinet",assignMinister:"Lantik Menteri",electionCentre:"Pusat Pilihan Raya",electionHintLong:"Adakan pilihan raya dan simulasikan keputusan DUN baharu.",currentGovernment:"Kerajaan semasa",snapElection:"Adakan Pilihan Raya Mengejut",results:"Keputusan Pilihan Raya",noElection:"Tiada pilihan raya diadakan dalam sesi ini.",party:"Parti",seats:"kerusi",majority:"Majoriti",minority:"Minoriti",stable:"Stabil",risk:"Berisiko",active:"Aktif",historicalLabel:"Sejarah",component:"Komponen GPS",opposition:"Pembangkang",independent:"Bebas",draft:"Draf",submitted:"Dikemukakan",passed:"Diluluskan",rejected:"Ditolak",submit:"Kemukakan",vote:"Undi",delete:"Padam",save:"Simpan",cancel:"Batal",partyName:"Nama parti",abbreviation:"Singkatan",color:"Warna parti",statusLabel:"Status",description:"Penerangan",portfolio:"Portfolio",ministerName:"Nama menteri",partyLabel:"Parti",policyTitle:"Tajuk dasar",category:"Kategori",cost:"Anggaran kos (RM bilion)",saveDraft:"Simpan Draf",investAmount:"Jumlah pelaburan (RM bilion)",area:"Bidang pelaburan",appoint:"Lantik",policyCreated:"Dasar disimpan",policySubmitted:"Dasar dikemukakan",policyPassed:"Dasar diluluskan",policyRejected:"Dasar ditolak",budgetOk:"Pelaburan diluluskan",noFunds:"Belanjawan tidak mencukupi",partySaved:"Parti disimpan",govUpdated:"Kerajaan dikemas kini",turnStarted:"Giliran baharu bermula",confirmElection:"Adakan pilihan raya mengejut? Agihan kerusi akan berubah.",electionDone:"Pilihan raya selesai",noResults:"Tiada hasil ditemui.",government:"Kerajaan",oppositionParty:"Pembangkang",createCoalition:"Cipta / kemas kini kerajaan",coalitionMembers:"Parti kerajaan",submitGov:"Simpan Kerajaan",coalitionSeats:"Kerusi kerajaan",historicalNote:"Parti sejarah — tidak termasuk dalam agihan kerusi semasa",deleteParty:"Padam parti",partyCreated:"Parti dicipta",oppositionSeats:"Kerusi pembangkang",appointed:"dilantik sebagai",approved:"Diluluskan",rejectedLabel:"Ditolak",votePass:"Dasar diluluskan.",voteFail:"Dasar gagal diluluskan.",newTurn:"Giliran diteruskan",publicSupport:"Sokongan awam",startComposition:"Komposisi DUN semasa",realDataNote:"Data simulasi; status parti dan kerusi berdasarkan senario permulaan yang dipilih."}
 };
-function go(page){
-document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id==="page-"+page));
-document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
-const d=pageData[page];document.getElementById("pageEyebrow").textContent=d[0];document.getElementById("pageTitle").textContent=tr(page);
-document.getElementById("pageSubtitle").textContent=tr(page+"Subtitle")||d[2];
-if(page==="records")renderRecords();
-}
-document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>go(b.dataset.page));
-document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
-function render(){
-document.documentElement.lang=lang;
-document.getElementById("sidebarTurn").textContent=`${tr("turn")} ${turn} · ${year}`;
-document.getElementById("turnPill").textContent=`${tr("turn")} ${turn} · ${year}`;
-document.getElementById("statSeats").textContent=totalSeats;document.getElementById("statGov").textContent=govSeats();
-document.getElementById("statGovHint").textContent=`${tr("majorityThreshold")}: ${threshold}`;
-document.getElementById("statApproval").textContent=approval+"%";document.getElementById("statBudget").textContent=money(budget);
-document.getElementById("coalitionSeats").textContent=`${govSeats()} / ${totalSeats}`;
-document.getElementById("threshold").textContent=threshold+" "+tr("seats");
-document.getElementById("coalitionBar").style.width=govSeats()/totalSeats*100+"%";
-let majority=govSeats()>=threshold;document.getElementById("majorityBadge").textContent=tr(majority?"majority":"minority");
-document.getElementById("majorityBadge").className="badge "+(majority?"green":"red");
-document.getElementById("stability").textContent=tr(majority?"stable":"atRisk");
-document.getElementById("pendingCount").textContent=policies.filter(p=>["Draft","Submitted"].includes(p.status)).length;
-document.getElementById("dunTotalLabel").textContent=totalSeats+" "+tr("seats");
-renderPartyList();renderDun();renderConstituencies();renderPolicies();renderCabinet();renderActivity();
-document.getElementById("electionGov").textContent=govSeats()+" "+tr("seats");
-document.getElementById("electionApproval").textContent=tr("approvalRating")+": "+approval+"%";
-}
-function renderPartyList(){
-let el=document.getElementById("partyList");el.innerHTML="";
-[...parties].sort((a,b)=>partySeats(b.id)-partySeats(a.id)).forEach(p=>{
-let count=partySeats(p.id),row=document.createElement("div");row.className="party-row";
-row.innerHTML=`<div class="party-name"><span class="dot" style="background:${p.color}"></span>${p.short}</div><div class="bar"><span style="width:${count/totalSeats*100}%;background:${p.color}"></span></div><div class="party-count">${count}</div>`;el.appendChild(row);
-});
-}
-/* Seat positions follow a semicircular arc, preserving the familiar DUN layout. */
-function renderDun(){
-const stage=document.getElementById("dunStage");stage.querySelectorAll(".dun-seat").forEach(x=>x.remove());
-const n=constituencies.length;
-const rows=6,counts=[8,10,12,14,16,22];let index=0;
-counts.forEach((count,row)=>{
-for(let j=0;j<count&&index<n;j++,index++){
-const c=constituencies[index],p=partyById(c.party),seat=document.createElement("button");
-const angle=Math.PI-(Math.PI*j/(count-1));
-const rx=44-row*4.7,ry=43-row*4.2;
-const x=50+rx*Math.cos(angle),y=82-ry*Math.sin(angle);
-seat.className="dun-seat";seat.style.left=x+"%";seat.style.top=y+"%";seat.style.background=p.color;
-seat.title=`${c.name} · ${p.name} · ${partySeats(p.id)} ${tr("seats")}`;
-seat.setAttribute("aria-label",seat.title);
-if(hoverParty)seat.classList.toggle("party-dim",c.party!==hoverParty);
-if(hoverParty===c.party)seat.classList.add("party-match");
-if(selectedSeat===c.id)seat.classList.add("selected");
-seat.onmouseenter=()=>{hoverParty=c.party;showParty(c);renderDun()};
-seat.onmouseleave=()=>{hoverParty=null;renderDun()};
-seat.onclick=()=>{selectedSeat=c.id;showSeat(c);};
-stage.appendChild(seat);
-}
-});
-const legend=document.getElementById("dunLegend");legend.innerHTML="";
-parties.forEach(p=>{
-let item=document.createElement("div");item.className="legend-item";
-item.innerHTML=`<span class="dot" style="background:${p.color}"></span>${p.name} (${partySeats(p.id)})`;
-item.onmouseenter=()=>{hoverParty=p.id;showPartyById(p.id);renderDun()};
-item.onmouseleave=()=>{hoverParty=null;renderDun()};
-item.onclick=()=>showPartyById(p.id);legend.appendChild(item);
-});
-}
-function showParty(c){const p=partyById(c.party);showPartyById(p.id,c)}
-function showPartyById(id,c=null){
-const p=partyById(id),count=partySeats(id);
-document.getElementById("infoSwatch").style.background=p.color;
-document.getElementById("seatTitle").textContent=p.name;
-document.getElementById("seatDescription").textContent=c?`${c.name} · ${c.representative}`:p.name;
-document.getElementById("seatMeta").innerHTML=`<div class="meta-line"><span class="muted">${tr("party")}</span><b>${p.name}</b></div><div class="meta-line"><span class="muted">${tr("seats")}</span><b>${count} / ${totalSeats}</b></div><div class="meta-line"><span class="muted">${tr("govStatus")}</span><b>${govPartyIds.includes(id)?tr("majority"):"Opposition"}</b></div>`;
-}
-function showSeat(c){
-const p=partyById(c.party);document.getElementById("infoSwatch").style.background=p.color;
-document.getElementById("seatTitle").textContent=c.name;document.getElementById("seatDescription").textContent=c.representative;
-document.getElementById("seatMeta").innerHTML=`<div class="meta-line"><span class="muted">${tr("party")}</span><b>${p.name}</b></div><div class="meta-line"><span class="muted">${tr("area")}</span><b>${tr(c.area.toLowerCase())}</b></div><div class="meta-line"><span class="muted">${tr("seats")}</span><b>${partySeats(p.id)}</b></div>`;
-}
-function renderConstituencies(){
-let q=document.getElementById("constSearch").value.toLowerCase(),filter=document.getElementById("partyFilter").value,grid=document.getElementById("constituencyGrid");grid.innerHTML="";
-constituencies.filter(c=>(!filter||c.party===filter)&&(`${c.name} ${c.representative} ${c.area}`).toLowerCase().includes(q)).forEach(c=>{
-const p=partyById(c.party),card=document.createElement("div");card.className="const-card";
-card.innerHTML=`<div class="top"><h3>${c.name}</h3><span class="badge">${tr(c.area.toLowerCase())}</span></div><p>${c.representative}</p><div class="party-name"><span class="dot" style="background:${p.color}"></span>${p.name}</div>`;grid.appendChild(card);
-});
-if(!grid.children.length)grid.innerHTML=`<div class="empty">${tr("noResults")}</div>`;
-}
-parties.forEach(p=>{let o=document.createElement("option");o.value=p.id;o.textContent=p.name;document.getElementById("partyFilter").appendChild(o)});
-document.getElementById("constSearch").oninput=renderConstituencies;document.getElementById("partyFilter").onchange=renderConstituencies;
-function renderPolicies(){
-let el=document.getElementById("policyList");el.innerHTML="";
-if(!policies.length){el.innerHTML='<div class="empty">—</div>';return}
-policies.forEach(p=>{
-let row=document.createElement("div");row.className="policy-item";
-let cls=p.status==="Passed"?"green":p.status==="Rejected"?"red":p.status==="Submitted"?"gold":"";
-row.innerHTML=`<div><b>${p.title}</b><p>${p.category} · ${money(p.cost)} · ${p.description}</p><span class="badge ${cls}">${tr(p.status.toLowerCase())}</span></div><div class="policy-actions"></div>`;
-let actions=row.querySelector(".policy-actions");
-if(p.status==="Draft")actions.append(makeButton(tr("submit"),"small",()=>submitPolicy(p.id)),makeButton(tr("delete"),"small",()=>{policies=policies.filter(x=>x.id!==p.id);render();toast(tr("draftDeleted"))}));
-if(p.status==="Submitted")actions.append(makeButton(tr("vote"),"small",()=>votePolicy(p.id)));
-el.appendChild(row);
-});
-}
-function makeButton(text,cls,fn){let b=document.createElement("button");b.className="btn "+cls;b.textContent=text;b.onclick=fn;return b}
-function submitPolicy(id){let p=policies.find(x=>x.id===id);p.status="Submitted";log("▤",`${tr("policySubmitted")}: ${p.title}`);render();toast(tr("policySubmitted"))}
-function votePolicy(id){
-let p=policies.find(x=>x.id===id),passed=Math.random()<Math.min(.9,Math.max(.2,govSeats()/totalSeats));
-if(passed&&budget>=p.cost){p.status="Passed";budget-=p.cost;approval=Math.min(95,approval+2);log("✓",`${tr("policyPassed")}: ${p.title}`);toast(tr("policyPassed"))}
-else{p.status="Rejected";approval=Math.max(10,approval-2);log("✕",`${tr("policyRejected")}: ${p.title}`);toast(tr("policyRejected"))}
-render();
-}
-function renderCabinet(){
-let el=document.getElementById("cabinetGrid");el.innerHTML="";
-cabinet.forEach(m=>{let p=partyById(m.party),card=document.createElement("div");card.className="minister";
-card.innerHTML=`<span class="badge">${m.portfolio}</span><h3 style="margin-top:10px">${m.minister}</h3><small><span class="dot" style="display:inline-block;background:${p.color}"></span> ${p.name}</small>`;el.appendChild(card)});
-}
-function renderActivity(){
-let el=document.getElementById("activityList");el.innerHTML="";
-activity.slice(0,5).forEach(a=>{let row=document.createElement("div");row.className="activity-item";row.innerHTML=`<div class="activity-icon">${a.icon}</div><div><b>${a.text}</b><small>${a.detail}</small></div>`;el.appendChild(row)});
-}
-function renderRecords(){
-let el=document.getElementById("recordsList");el.innerHTML="";
-activity.forEach(a=>{let row=document.createElement("div");row.className="activity-item";row.innerHTML=`<div class="activity-icon">${a.icon}</div><div><b>${a.text}</b><small>${a.detail}</small></div>`;el.appendChild(row)});
-}
-function openModal(title,html,onSave){
-document.getElementById("modalTitle").textContent=title;document.getElementById("modalBody").innerHTML=html;document.getElementById("modalBackdrop").classList.add("open");
-document.getElementById("modalBody").querySelector("form").onsubmit=e=>{e.preventDefault();onSave(new FormData(e.target))};
-}
-function closeModal(){document.getElementById("modalBackdrop").classList.remove("open")}
-document.getElementById("closeModal").onclick=closeModal;
-document.getElementById("modalBackdrop").onclick=e=>{if(e.target.id==="modalBackdrop")closeModal()};
-function newPolicy(){
-openModal(tr("newPolicy"),`<form><div class="form-grid">
-<div class="field full"><label>${tr("policyTitle")}</label><input name="title" required></div>
-<div class="field"><label>${tr("category")}</label><select name="category"><option>Infrastructure</option><option>Education</option><option>Healthcare</option><option>Economy</option><option>Environment</option><option>Rural Development</option></select></div>
-<div class="field"><label>${tr("cost")}</label><input name="cost" type="number" min="0" step=".1" value=".2" required></div>
-<div class="field full"><label>${tr("description")}</label><textarea name="description"></textarea></div></div>
-<div class="form-footer"><button type="button" class="btn" onclick="closeModal()">${tr("cancel")}</button><button class="btn primary">${tr("saveDraft")}</button></div></form>`,f=>{
-policies.unshift({id:Date.now(),title:f.get("title"),category:f.get("category"),cost:Math.max(0,Number(f.get("cost"))||0),description:f.get("description")||"—",status:"Draft"});
-log("＋",`${tr("policyDrafted")}: ${f.get("title")}`);closeModal();render();toast(tr("policyCreated"));
-});
-}
-document.getElementById("newPolicy").onclick=newPolicy;
-document.querySelectorAll("[data-action]").forEach(b=>b.onclick=()=>{
-let a=b.dataset.action;if(a==="policy"){go("policies");newPolicy()}if(a==="cabinet"){go("cabinet");editCabinet()}if(a==="budget")budgetModal();if(a==="election")go("election");
-});
-function budgetModal(){
-openModal(tr("budgetTitle"),`<form><div class="field"><label>${tr("investmentArea")}</label><select name="area"><option>Healthcare</option><option>Education</option><option>Infrastructure</option><option>Rural Development</option><option>Public Transport</option></select></div><div class="field" style="margin-top:12px"><label>${tr("amount")}</label><input name="amount" type="number" min=".1" max="${budget}" step=".1" value=".2" required></div><p class="muted">${money(budget)}</p><div class="form-footer"><button type="button" class="btn" onclick="closeModal()">${tr("cancel")}</button><button class="btn primary">${tr("invest")}</button></div></form>`,f=>{
-let amount=Number(f.get("amount")),area=f.get("area");if(amount>budget){toast(tr("insufficient"));return}
-budget-=amount;approval=Math.min(95,approval+Math.max(1,Math.round(amount*3)));log("▣",`${tr("investmentApproved")}: ${area}`,`−${money(amount)} · ${tr("turn")} ${turn}`);closeModal();render();toast(tr("investmentApproved"));
-});
-}
-function editCabinet(){
-openModal(tr("assignMinister"),`<form><div class="field"><label>${tr("portfolio")||"Portfolio"}</label><select name="portfolio">${["Premier","Finance","Infrastructure","Education","Health","Rural Development","Tourism","Housing","Utilities","Transport"].map(x=>`<option>${x}</option>`).join("")}</select></div><div class="field" style="margin-top:12px"><label>${tr("ministerName")}</label><input name="minister" required></div><div class="field" style="margin-top:12px"><label>${tr("partyLabel")}</label><select name="party">${parties.map(p=>`<option value="${p.id}">${p.name}</option>`).join("")}</select></div><div class="form-footer"><button type="button" class="btn" onclick="closeModal()">${tr("cancel")}</button><button class="btn primary">${tr("assign")}</button></div></form>`,f=>{
-let port=f.get("portfolio"),minister=f.get("minister"),party=f.get("party"),existing=cabinet.find(x=>x.portfolio===port);
-if(existing){existing.minister=minister;existing.party=party}else cabinet.push({portfolio:port,minister,party});
-log("♙",`${minister} ${tr("ministerAppointed")} ${port}`);closeModal();render();toast(tr("cabinetUpdated"));
-});
-}
-document.getElementById("editCabinet").onclick=editCabinet;
-function runElection(){
-let result=parties.map(p=>{let share=partySeats(p.id)/totalSeats;if(govPartyIds.includes(p.id))share+=((approval-50)/100)*.08;share+=(Math.random()-.5)*.06;return{party:p,seats:Math.max(0,Math.round(share*totalSeats))}});
-let sum=result.reduce((s,r)=>s+r.seats,0);
-while(sum!==totalSeats){let r=result.reduce((a,b)=>sum>totalSeats?(a.seats>b.seats?a:b):(a.seats<b.seats?a:b));r.seats+=sum>totalSeats?-1:1;sum+=sum>totalSeats?-1:1}
-result.sort((a,b)=>b.seats-a.seats);let winner=result[0];govPartyIds=[winner.party.id];
-const pool=[];result.forEach(r=>{for(let i=0;i<r.seats;i++)pool.push(r.party.id)});
-const shuffled=[...pool].sort(()=>Math.random()-.5);constituencies.forEach((c,i)=>c.party=shuffled[i]);
-let majority=winner.seats>=threshold;approval=majority?Math.min(95,approval+3):Math.max(10,approval-8);
-document.getElementById("electionResults").innerHTML=result.map(r=>`<div class="party-row" style="margin:12px 0"><div class="party-name"><span class="dot" style="background:${r.party.color}"></span>${r.party.short}</div><div class="bar"><span style="width:${r.seats/totalSeats*100}%;background:${r.party.color}"></span></div><div class="party-count">${r.seats}</div></div>`).join("")+`<p class="muted">${winner.party.name} ${majority?tr("electionWon"):tr("electionNoMajority")}</p>`;
-log("⚑",`Election held: ${winner.party.name} won ${winner.seats} ${tr("seats")}`,`${tr("turn")} ${turn} · ${approval}%`);render();toast(tr("electionHeld"));
-}
-document.getElementById("runElection").onclick=()=>{if(confirm(tr("confirmElection")))runElection()};
-document.getElementById("nextTurn").onclick=()=>{turn++;if(turn%4===0)year++;approval=Math.max(10,Math.min(95,approval+(Math.random()<.5?-1:1)));budget+=.25;log("◷",tr("newTurn"),`${tr("turn")} ${turn} · ${year}`);render();toast(`${tr("turn")} ${turn}`)};
-document.getElementById("langToggle").onclick=()=>{lang=lang==="en"?"ms":"en";document.getElementById("langToggle").textContent=lang==="en"?"🇲🇾 BM":"🇬🇧 EN";document.querySelectorAll("[data-i18n]").forEach(el=>{let k=el.dataset.i18n;if(translations[lang][k])el.textContent=translations[lang][k]});document.querySelectorAll("[data-placeholder]").forEach(el=>el.placeholder=tr(el.dataset.placeholder));render();const active=document.querySelector(".page.active").id.replace("page-","");go(active)};
-render();
+let lang="en",turn=1,year=2026,approval=58,budget=5,hoverParty=null,selectedSeat=null;
+const majority=42;
+const parties=[
+{id:"pbb",name:"Parti Pesaka Bumiputera Bersatu",short:"PBB",color:"#d5a84d",seats:47,status:"active",type:"component",coalition:"gps",desc:"GPS component party."},
+{id:"supp",name:"Sarawak United Peoples' Party",short:"SUPP",color:"#b87542",seats:13,status:"active",type:"component",coalition:"gps",desc:"GPS component party."},
+{id:"prs",name:"Parti Rakyat Sarawak",short:"PRS",color:"#c45d67",seats:11,status:"active",type:"component",coalition:"gps",desc:"GPS component party."},
+{id:"pdp",name:"Progressive Democratic Party",short:"PDP",color:"#7c8bce",seats:8,status:"active",type:"component",coalition:"gps",desc:"GPS component party; includes former PSB representatives."},
+{id:"dap",name:"Democratic Action Party",short:"DAP",color:"#d94b55",seats:2,status:"active",type:"opposition",coalition:"",desc:"Party represented in the Sarawak DUN."},
+{id:"ind",name:"Independent",short:"IND",color:"#a78bca",seats:1,status:"active",type:"independent",coalition:"gps",desc:"Independent representative aligned with the government."},
+{id:"pbk",name:"Parti Bumi Kenyalang",short:"PBK",color:"#e17d55",seats:0,status:"active",type:"opposition",coalition:"",desc:"Sarawak-based political party."},
+{id:"pbds",name:"Parti Bansa Dayak Sarawak",short:"PBDS",color:"#65a77e",seats:0,status:"active",type:"opposition",coalition:"",desc:"Sarawak-based political party."},
+{id:"aspirasi",name:"Parti Aspirasi Rakyat Sarawak",short:"ASPIRASI",color:"#b18a58",seats:0,status:"active",type:"opposition",coalition:"",desc:"Sarawak-based political party."},
+{id:"sedar",name:"Parti Sedar Rakyat Sarawak",short:"SEDAR",color:"#6aafbd",seats:0,status:"active",type:"opposition",coalition:"",desc:"Sarawak-based political party."},
+{id:"teras",name:"Parti Tenaga Rakyat Sarawak",short:"TERAS",color:"#9a82bc",seats:0,status:"active",type:"opposition",coalition:"",desc:"Sarawak-based political party."},
+{id:"gasak",name:"Gabungan Anak Sarawak",short:"GASAK",color:"#8c9b62",seats:0,status:"active",type:"opposition",coalition:"",desc:"Sarawak political grouping."},
+{id:"pkr",name:"Parti Keadilan Rakyat",short:"PKR",color:"#e28b46",seats:0,status:"active",type:"opposition",coalition:"ph",desc:"Pakatan Harapan component party."},
+{id:"amanah",name:"Parti Amanah Negara",short:"AMANAH",color:"#65a9a2",seats:0,status:"active",type:"opposition",coalition:"ph",desc:"Pakatan Harapan component party."},
+{id:"psb",name:"Parti Sarawak Bersatu",short:"PSB",color:"#5d9fcb",seats:0,status:"historical",type:"historical",coalition:"",desc:"Historical party; dissolved and former representatives joined PDP."}
+];
+let govIds=["pbb","supp","prs","pdp","ind"];
+let constituencies=[];
+function buildSeats(){const arr=[];parties.filter(p=>p.seats>0).forEach(p=>{for(let i=0;i<p.seats;i++)arr.push({id:arr.length+1,name:`DUN ${String(arr.length+1).padStart(2,"0")}`,rep:`Representative ${String(arr.length+1).padStart(2,"0")}`,party:p.id,area:["Urban","Rural","Coastal","Highland"][arr.length%4]})});const extras=82-arr.length;for(let i=0;i<extras;i++)arr.push({id:arr.length+1,name:`DUN ${String(arr.length+1).padStart(2,"0")}`,rep:`Representative ${String(arr.length+1).padStart(2,"0")}`,party:"dap",area:["Urban","Rural","Coastal","Highland"][arr.length%4]});return arr}
+const total=82;const seats=()=>constituencies.length;const pby=id=>parties.find(p=>p.id===id)||parties[0];const pSeats=id=>constituencies.filter(c=>c.party===id).length;const govSeats=()=>constituencies.filter(c=>govIds.includes(c.party)).length;const tr=k=>T[lang][k]||k;const money=n=>"RM "+n.toFixed(1)+"B";
+let policies=[{id:1,title:"Rural Connectivity Upgrade",category:"Infrastructure",cost:.8,desc:"Improve rural road access and connectivity.",status:"Draft"}];
+let cabinet=[{portfolio:"Premier",name:"Abang Johari (Demo)",party:"pbb"},{portfolio:"Finance",name:"Minister A (Demo)",party:"pbb"},{portfolio:"Infrastructure",name:"Minister B (Demo)",party:"prs"},{portfolio:"Education",name:"Minister C (Demo)",party:"supp"},{portfolio:"Health",name:"Minister D (Demo)",party:"pdp"}];
+let logs=[{icon:"✦",text:"Simulation started",detail:"Pre-election DUN scenario · 2026"}];
+const pageTitles={dashboard:["STATE GOVERNMENT","Dashboard"],dun:["LEGISLATIVE ASSEMBLY","DUN Assembly"],parties:["PARTY LANDSCAPE","Political Parties"],constituencies:["ELECTORAL MAP","Constituencies"],policies:["GOVERNMENT BUSINESS","Policies"],cabinet:["EXECUTIVE BRANCH","Cabinet"],election:["DEMOCRATIC MANDATE","Election"],records:["SESSION HISTORY","Records"]};
+function log(icon,text,detail=`Turn ${turn}`){logs.unshift({icon,text,detail});logs=logs.slice(0,50)}
+function toast(s){let e=document.getElementById("toast");e.textContent=s;e.style.display="block";setTimeout(()=>e.style.display="none",2200)}
+function go(page){document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+page));document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===page));document.getElementById("eyebrow").textContent=pageTitles[page][0];document.getElementById("pageTitle").textContent=tr(page);document.getElementById("pageSubtitle").textContent="";if(page==="records")renderRecords()}
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+function applyLanguage(){document.documentElement.lang=lang;document.querySelectorAll("[data-t]").forEach(el=>{let k=el.dataset.t;if(T[lang][k])el.textContent=T[lang][k]});document.querySelectorAll("[data-ph]").forEach(el=>el.placeholder=tr(el.dataset.ph));document.getElementById("langBtn").textContent=lang==="en"?"🇲🇾 BM":"🇬🇧 EN";const pg=document.querySelector(".page.active")?.id.replace("page-","")||"dashboard";go(pg);render()}
+document.getElementById("langBtn").onclick=()=>{lang=lang==="en"?"ms":"en";applyLanguage()};
+function render(){document.getElementById("sidebarTurn").textContent=`${tr("turn")||"Turn"} ${turn} · ${year}`;document.getElementById("turnPill").textContent=`${tr("turn")||"Turn"} ${turn} · ${year}`;
+document.getElementById("statSeats").textContent=total;document.getElementById("statGov").textContent=govSeats();document.getElementById("statGovHint").textContent=`${tr("threshold")}: ${majority}`;document.getElementById("statApproval").textContent=approval+"%";document.getElementById("statBudget").textContent=money(budget);
+document.getElementById("coalitionSeats").textContent=`${govSeats()} / ${total}`;document.getElementById("threshold").textContent=majority+" "+tr("seats");document.getElementById("coalitionBar").style.width=govSeats()/total*100+"%";
+let maj=govSeats()>=majority;document.getElementById("majorityBadge").textContent=tr(maj?"majority":"minority");document.getElementById("majorityBadge").className="badge "+(maj?"green":"red");document.getElementById("stability").textContent=tr(maj?"stable":"risk");document.getElementById("pendingCount").textContent=policies.filter(p=>["Draft","Submitted"].includes(p.status)).length;
+document.getElementById("dunTotal").textContent=total+" "+tr("seats");document.getElementById("electionGov").textContent=govSeats()+" "+tr("seats");document.getElementById("electionApproval").textContent=tr("approval")+": "+approval+"%";
+renderPartyBars();renderDun();renderPartyDirectory();renderCoalitions();renderConstituencies();renderPolicies();renderCabinet();renderActivity()}
+function renderPartyBars(){let el=document.getElementById("partyList");el.innerHTML="";parties.filter(p=>pSeats(p.id)>0).sort((a,b)=>pSeats(b.id)-pSeats(a.id)).forEach(p=>{let n=pSeats(p.id),r=document.createElement("div");r.className="party-row";r.innerHTML=`<div class="party-name"><span class="dot" style="background:${p.color}"></span>${p.short}</div><div class="bar"><span style="width:${n/total*100}%;background:${p.color}"></span></div><div class="party-count">${n}</div>`;el.appendChild(r)})}
+function renderDun(){let stage=document.getElementById("dunStage");stage.querySelectorAll(".dun-seat").forEach(x=>x.remove());const rowCounts=[8,10,12,14,16,22];let idx=0;
+rowCounts.forEach((count,row)=>{for(let j=0;j<count&&idx<constituencies.length;j++,idx++){let c=constituencies[idx],p=pby(c.party),s=document.createElement("button");let a=Math.PI-Math.PI*j/(count-1),rx=44-row*4.7,ry=43-row*4.2;s.className="dun-seat";s.dataset.party=c.party;s.dataset.seat=c.id;s.style.left=(50+rx*Math.cos(a))+"%";s.style.top=(82-ry*Math.sin(a))+"%";s.style.background=p.color;s.title=`${c.name} · ${p.name} · ${pSeats(p.id)} ${tr("seats")}`;if(selectedSeat===c.id)s.classList.add("selected");s.onmouseenter=()=>{hoverParty=c.party;updateHighlight();showPartyInfo(c.party,c)};s.onmouseleave=()=>{hoverParty=null;updateHighlight()};s.onclick=()=>{selectedSeat=c.id;showSeat(c);stage.querySelectorAll(".dun-seat").forEach(x=>x.classList.toggle("selected",Number(x.dataset.seat)===c.id))};stage.appendChild(s)}});
+let legend=document.getElementById("dunLegend");legend.innerHTML="";parties.filter(p=>pSeats(p.id)>0).forEach(p=>{let x=document.createElement("div");x.className="legend-item";x.innerHTML=`<span class="dot" style="background:${p.color}"></span>${p.short} (${pSeats(p.id)})`;x.onmouseenter=()=>{hoverParty=p.id;updateHighlight();showPartyInfo(p.id)};x.onmouseleave=()=>{hoverParty=null;updateHighlight()};x.onclick=()=>showPartyInfo(p.id);legend.appendChild(x)})}
+function updateHighlight(){document.querySelectorAll(".dun-seat").forEach(s=>{let match=s.dataset.party===hoverParty;s.classList.toggle("party-dim",!!hoverParty&&!match);s.classList.toggle("party-match",!!hoverParty&&match)})}
+function showPartyInfo(id,c=null){let p=pby(id);document.getElementById("infoSwatch").style.background=p.color;document.getElementById("seatTitle").textContent=p.name;document.getElementById("seatDescription").textContent=c?`${c.name} · ${c.rep}`:p.desc;document.getElementById("seatMeta").innerHTML=`<div class="meta-line"><span class="muted">${tr("party")}</span><b>${p.short}</b></div><div class="meta-line"><span class="muted">${tr("seats")}</span><b>${pSeats(id)} / ${total}</b></div><div class="meta-line"><span class="muted">${tr("govStatus")}</span><b>${govIds.includes(id)?tr("government"):tr("opposition")}</b></div>`}
+function showSeat(c){let p=pby(c.party);showPartyInfo(c.party,c);document.getElementById("seatTitle").textContent=c.name;document.getElementById("seatDescription").textContent=c.rep}
+function renderPartyDirectory(){let q=document.getElementById("partySearch").value.toLowerCase(),filter=document.getElementById("partyType").value,el=document.getElementById("partyDirectory");el.innerHTML="";
+parties.filter(p=>(filter==="all"||p.status===filter)&&(`${p.name} ${p.short} ${p.desc}`).toLowerCase().includes(q)).forEach(p=>{let card=document.createElement("div");card.className="party-card";card.innerHTML=`<div class="party-name"><span class="dot" style="background:${p.color}"></span><span>${p.short}</span><span class="badge ${p.status==="historical"?"":"green"}">${tr(p.status==="historical"?"historicalLabel":"active")}</span></div><h3>${p.name}</h3><p>${p.desc}</p><div class="party-card-foot"><b>${pSeats(p.id)} ${tr("seats")}</b><button class="btn small" data-party="${p.id}">${tr("edit")||"Edit"}</button></div>`;card.querySelector("button").onclick=()=>editParty(p.id);el.appendChild(card)});
+if(!el.children.length)el.innerHTML=`<div class="empty">${tr("noResults")}</div>`}
+function renderCoalitions(){let el=document.getElementById("coalitionList");let gps=parties.filter(p=>p.coalition==="gps"),ph=parties.filter(p=>p.coalition==="ph");el.innerHTML=`<div class="meta-line"><b>Gabungan Parti Sarawak (GPS)</b><span>${gps.map(p=>p.short).join(" · ")}</span></div><div class="meta-line"><b>Pakatan Harapan (PH)</b><span>${ph.map(p=>p.short).join(" · ")}</span></div><div class="meta-line"><b>${tr("government")}</b><span>${govIds.map(id=>pby(id).short).join(" · ")}</span></div><div class="meta-line"><b>${tr("coalitionSeats")}</b><span>${govSeats()} / ${total}</span></div>`}
+function renderConstituencies(){let q=document.getElementById("constSearch").value.toLowerCase(),f=document.getElementById("constFilter").value,el=document.getElementById("constituencyGrid");el.innerHTML="";constituencies.filter(c=>(!f||c.party===f)&&(`${c.name} ${c.rep} ${c.area}`).toLowerCase().includes(q)).forEach(c=>{let p=pby(c.party),x=document.createElement("div");x.className="const-card";x.innerHTML=`<div class="top"><h3>${c.name}</h3><span class="badge">${c.area}</span></div><p>${c.rep}</p><div class="party-name"><span class="dot" style="background:${p.color}"></span>${p.short} · ${p.name}</div>`;el.appendChild(x)});if(!el.children.length)el.innerHTML=`<div class="empty">${tr("noResults")}</div>`}
+function renderPolicies(){let el=document.getElementById("policyList");el.innerHTML="";policies.forEach(p=>{let x=document.createElement("div");x.className="policy-item";x.innerHTML=`<div><b>${p.title}</b><p>${p.category} · ${money(p.cost)} · ${p.desc}</p><span class="badge">${tr(p.status.toLowerCase())}</span></div><div class="policy-actions"></div>`;let a=x.querySelector(".policy-actions");if(p.status==="Draft")a.append(btn(tr("submit"),()=>{p.status="Submitted";log("▤",tr("policySubmitted")+": "+p.title);render();toast(tr("policySubmitted"))}));if(p.status==="Submitted")a.append(btn(tr("vote"),()=>{let pass=Math.random()<.7&&budget>=p.cost;p.status=pass?"Passed":"Rejected";if(pass){budget-=p.cost;approval=Math.min(95,approval+2)}else approval=Math.max(10,approval-2);log(pass?"✓":"✕",tr(pass?"policyPassed":"policyRejected")+": "+p.title);render();toast(tr(pass?"votePass":"voteFail"))}));if(p.status==="Draft")a.append(btn(tr("delete"),()=>{policies=policies.filter(y=>y.id!==p.id);render()}));el.appendChild(x)})}
+function btn(text,fn){let b=document.createElement("button");b.className="btn small";b.textContent=text;b.onclick=fn;return b}
+function renderCabinet(){let el=document.getElementById("cabinetGrid");el.innerHTML="";cabinet.forEach(m=>{let p=pby(m.party),x=document.createElement("div");x.className="minister";x.innerHTML=`<span class="badge">${m.portfolio}</span><h3>${m.name}</h3><small><span class="dot" style="display:inline-block;background:${p.color}"></span> ${p.short}</small>`;el.appendChild(x)})}
+function renderActivity(){let el=document.getElementById("activityList");el.innerHTML="";logs.slice(0,5).forEach(a=>{let x=document.createElement("div");x.className="activity-item";x.innerHTML=`<div class="activity-icon">${a.icon}</div><div><b>${a.text}</b><small>${a.detail}</small></div>`;el.appendChild(x)})}
+function renderRecords(){let el=document.getElementById("recordsList");el.innerHTML="";logs.forEach(a=>{let x=document.createElement("div");x.className="activity-item";x.innerHTML=`<div class="activity-icon">${a.icon}</div><div><b>${a.text}</b><small>${a.detail}</small></div>`;el.appendChild(x)})}
+function modal(title,html,save){document.getElementById("modalTitle").textContent=title;document.getElementById("modalBody").innerHTML=html;document.getElementById("backdrop").classList.add("open");document.getElementById("modalBody").querySelector("form").onsubmit=e=>{e.preventDefault();save(new FormData(e.target)}}}
+function closeModal(){document.getElementById("backdrop").classList.remove("open")}document.getElementById("closeModal").onclick=closeModal;document.getElementById("backdrop").onclick=e=>{if(e.target.id==="backdrop")closeModal()};
+function newPolicy(){modal(tr("newPolicy"),`<form><div class="form-grid"><div class="field full"><label>${tr("policyTitle")}</label><input name="title" required></div><div class="field"><label>${tr("category")}</label><select name="category"><option>Infrastructure</option><option>Education</option><option>Healthcare</option><option>Economy</option><option>Environment</option></select></div><div class="field"><label>${tr("cost")}</label><input name="cost" type="number" min="0" step=".1" value=".2"></div><div class="field full"><label>${tr("description")}</label><textarea name="desc"></textarea></div></div><div class="form-footer"><button type="button" class="btn" onclick="closeModal()">${tr("cancel")}</button><button class="btn primary">${tr("saveDraft")}</button></div></form>`,f=>{policies.unshift({id:Date.now(),title:f.get("title"),category:f.get("category"),cost:Number(f.get("cost"))||0,desc:f.get("desc")||"",status:"Draft"});closeModal();log("＋",tr("policyCreated"));render();toast(tr("policyCreated"))})}
+function budgetModal(){modal(tr("invest"),`<form><div class="field"><label>${tr("area")}</label><select name="area"><option>Infrastructure</option><option>Education</option><option>Healthcare</option><option>Rural Development</option></select></div><div class="field" style="margin-top:12px"><label>${tr("investAmount")}</label><input name="amount" type="number" min=".1" step=".1" value=".2" required></div><p class="muted">${money(budget)}</p><div class="form-footer"><button type="button" class="btn" onclick="closeModal()">${tr("cancel")}</button><button class="btn primary">${tr("invest")}</button></div></form>`,f=>{let n=Number(f.get("amount"));if(n>budget){toast(tr("noFunds"));return}budget-=n;approval=Math.min(95,approval+1);log("▣",tr("budget")+" "+f.get("area")+" −"+money(n));closeModal();render();toast(tr("budget"))})}
+function cabinetModal(){modal(tr("assignMinister"),`<form><div class="field"><label>${tr("portfolio")}</label><select name="portfolio">${["Premier","Finance","Infrastructure","Education","Health","Rural Development","Tourism","Housing","Utilities","Transport"].map(x=>`<option>${x}</option>`).join("")}</select></div><div class="field" style="margin-top:12px"><label>${tr("ministerName")}</label><input name="name" required></div><div class="field" style="margin-top:12px"><label>${tr("partyLabel")}</label><select name="party">${parties.filter(p=>p.status==="active").map(p=>`<option value="${p.id}">${p.short}</option>`).join("")}</select></div><div class="form-footer"><button type="button" class="btn" onclick="closeModal()">${tr("cancel")}</button><button class="btn primary">${tr("appoint")}</button></div></form>`,f=>{let m={portfolio:f.get("portfolio"),name:f.get("name"),party:f.get("party")},old=cabinet.find(x=>x.portfolio===m.portfolio);if(old)Object.assign(old,m);else cabinet.push(m);closeModal();log("♙",m.name+" "+tr("appointed")+" "+m.portfolio);render()})}
+function editParty(id=null){let p=parties.find(x=>x.id===id)||{id:"party"+Date.now(),name:"",short:"",color:"#8b9bb4",seats:0,status:"active",type:"opposition",coalition:"",desc:""};modal(id?tr("parties"):tr("createParty"),`<form><div class="form-grid"><div class="field full"><label>${tr("partyName")}</label><input name="name" value="${p.name}" required></div><div class="field"><label>${tr("abbreviation")}</label><input name="short" value="${p.short}" required></div><div class="field"><label>${tr("color")}</label><input name="color" type="color" value="${p.color}"></div><div class="field"><label>${tr("statusLabel")}</label><select name="status"><option value="active" ${p.status==="active"?"selected":""}>${tr("active")}</option><option value="historical" ${p.status==="historical"?"selected":""}>${tr("historicalLabel")}</option></select></div><div class="field"><label>Coalition</label><select name="coalition"><option value="">None</option><option value="gps" ${p.coalition==="gps"?"selected":""}>GPS</option><option value="ph" ${p.coalition==="ph"?"selected":""}>PH</option></select></div><div class="field full"><label>${tr("description")}</label><textarea name="desc">${p.desc}</textarea></div></div><div class="form-footer"><button type="button" class="btn" onclick="closeModal()">${tr("cancel")}</button><button class="btn primary">${tr("save")}</button></div></form>`,f=>{let data={name:f.get("name"),short:f.get("short"),color:f.get("color"),status:f.get("status"),coalition:f.get("coalition"),desc:f.get("desc")};if(id)Object.assign(p,data);else parties.push({...p,...data});closeModal();render();toast(tr("partySaved"))})}
+function governmentModal(){modal(tr("createCoalition"),`<form><p class="muted">${tr("coalitionMembers")}</p>${parties.filter(p=>p.status==="active"&&p.seats>=0).map(p=>`<label style="display:flex;gap:9px;padding:7px 0"><input type="checkbox" name="gov" value="${p.id}" ${govIds.includes(p.id)?"checked":""}>${p.short} — ${p.name}</label>`).join("")}<div class="form-footer"><button type="button" class="btn" onclick="closeModal()">${tr("cancel")}</button><button class="btn primary">${tr("submitGov")}</button></div></form>`,f=>{govIds=f.getAll("gov");closeModal();log("♟",tr("govUpdated"));render();toast(tr("govUpdated"))})}
+document.getElementById("newPolicy").onclick=newPolicy;document.getElementById("newParty").onclick=()=>editParty();document.getElementById("manageCoalition").onclick=governmentModal;document.getElementById("editCabinet").onclick=cabinetModal;
+document.querySelectorAll("[data-action]").forEach(b=>b.onclick=()=>{let a=b.dataset.action;if(a==="policy"){go("policies");newPolicy()}if(a==="cabinet"){go("cabinet");cabinetModal()}if(a==="budget")budgetModal();if(a==="election")go("election")});
+document.getElementById("partySearch").oninput=renderPartyDirectory;document.getElementById("partyType").onchange=renderPartyDirectory;document.getElementById("constSearch").oninput=renderConstituencies;document.getElementById("constFilter").onchange=renderConstituencies;
+parties.forEach(p=>{let o=document.createElement("option");o.value=p.id;o.textContent=p.short;document.getElementById("constFilter").appendChild(o)});
+document.getElementById("nextTurn").onclick=()=>{turn++;if(turn%4===0)year++;approval=Math.max(10,Math.min(95,approval+(Math.random()<.5?-1:1)));budget+=.25;log("◷",tr("turnStarted"),`Turn ${turn} · ${year}`);render();toast(tr("turnStarted"))};
+document.getElementById("runElection").onclick=()=>{if(!confirm(tr("confirmElection")))return;let active=parties.filter(p=>p.status==="active"),weights=active.map(p=>Math.max(.1,pSeats(p.id)+(govIds.includes(p.id)?approval/20:0)+Math.random()*4)),sum=weights.reduce((a,b)=>a+b,0),counts=weights.map(w=>Math.floor(w/sum*total));let rem=total-counts.reduce((a,b)=>a+b,0);for(let i=0;i<rem;i++)counts[i%counts.length]++;
+const seatPool=[];active.forEach((p,i)=>{p.seats=counts[i];for(let j=0;j<counts[i];j++)seatPool.push(p.id)});const shuffled=seatPool.sort(()=>Math.random()-.5);constituencies.forEach((c,i)=>c.party=shuffled[i]);let winner=[...active].sort((a,b)=>b.seats-a.seats)[0];govIds=[winner.id];document.getElementById("electionResults").innerHTML=active.filter(p=>p.seats>0).sort((a,b)=>b.seats-a.seats).map(p=>`<div class="party-row" style="margin:10px 0"><div class="party-name"><span class="dot" style="background:${p.color}"></span>${p.short}</div><div class="bar"><span style="width:${p.seats/total*100}%;background:${p.color}"></span></div><b>${p.seats}</b></div>`).join("");log("⚑",tr("electionDone")+": "+winner.short);render();toast(tr("electionDone"))};
+constituencies=buildSeats();render();applyLanguage();
 </script>
 </body>
 </html>
