@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +23,9 @@ textarea{min-height:90px;resize:vertical}.choice{display:block;width:100%;text-a
 .tag{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:12px;color:var(--muted);margin-right:5px}
 .good{color:var(--green)}.bad{color:var(--red)}.record{border-bottom:1px solid var(--line);padding:12px 0}.record:last-child{border:0}
 .columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hidden{display:none!important}
+.modal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(3,8,16,.82);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}.modal{width:min(720px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid #53677f;border-radius:16px;padding:24px;box-shadow:0 24px 80px #0009}.modal h2{margin-top:12px}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.map-placeholder{min-height:330px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(145deg,#172c3c,#10202e);display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--muted)}
+.map-placeholder strong{display:block;color:var(--text);font-size:20px;margin-bottom:8px}
 footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 @media(max-width:760px){.layout,.columns{grid-template-columns:1fr}}
 </style>
@@ -39,15 +41,25 @@ footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
   <button data-page="records" onclick="showPage('records')">Turn Records</button>
   <button data-page="policies" onclick="showPage('policies')">Policy Centre</button>
  </nav>
+
+ <div id="situationModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="eventTitle">
+  <section class="modal">
+   <div class="modal-head"><span class="tag" id="eventTag">Domestic affairs</span><span class="tag">Week <span id="modalWeek">1</span></span></div>
+   <h2>Situation of the Week</h2><h3 id="eventTitle"></h3><p id="eventDescription"></p>
+   <div id="choices"></div>
+   <p class="small">Choose your response. Its effects will be recorded in Turn Records.</p>
+  </section>
+ </div>
+
  <section id="dashboardPage">
   <section class="grid" id="stats"></section>
   <div class="layout">
    <div>
-    <section class="card" id="situationCard">
-     <div><span class="tag" id="eventTag">Domestic affairs</span><span class="tag" id="eventStatus">Awaiting decision</span></div>
-     <h2 style="margin-top:12px">Situation of the Week</h2><h3 id="eventTitle"></h3><p id="eventDescription"></p>
-     <div id="choices"></div>
-     <p class="small" id="situationNote">Choose a response before advancing the week. This situation remains here until resolved.</p>
+    <section class="card">
+     <h2>🗺 Sarawak Political Map</h2>
+     <div class="map-placeholder">
+      <div><strong>Sarawak Map</strong>Interactive constituency map — coming in the next phase.<br><span class="small">DUN boundaries and party holders will be displayed here.</span></div>
+     </div>
     </section>
     <section class="card">
      <h2>Government & Political Actions</h2><p class="small">Actions are available during the planning phase. Most have weekly limits.</p>
@@ -65,9 +77,11 @@ footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
   </div>
   <section class="card"><footer><div><h2 style="margin:0">End of Week</h2><div class="small">Resolve the situation, review your actions, then advance.</div></div><button onclick="nextTurn()">NEXT TURN →</button></footer></section>
  </section>
+
  <section id="recordsPage" class="hidden">
   <section class="card"><h2>Turn Records</h2><p class="small">A chronological archive of situations, decisions, action outcomes and weekly financial changes. The dashboard stays uncluttered.</p><div id="records"></div></section>
  </section>
+
  <section id="policiesPage" class="hidden">
   <section class="card"><h2>Policy Centre</h2><p class="small">Build a detailed policy proposal. The generated draft is editable; review it before saving or approving.</p>
    <form id="policyForm" onsubmit="generatePolicy(event)">
@@ -116,11 +130,10 @@ function render(){
  document.getElementById("weekTag").textContent="Week "+game.week;document.getElementById("phaseTag").textContent=game.eventResolved?"Situation resolved":"Planning phase";
  const stats=[["Treasury","RM"+game.money.toFixed(1)+"M"],["Party Loyalty",game.loyalty],["Integrity",game.integrity],["Public Approval",game.approval],["Economy",game.economy],["Political Stability",game.stability],["Federal Relations",game.federal]];
  document.getElementById("stats").innerHTML=stats.map(([l,v])=>`<div class="card"><div class="stat-label">${l}</div><div class="stat-value">${v}</div></div>`).join("");
- const ev=currentEvent();document.getElementById("eventTag").textContent=ev.category;document.getElementById("eventTitle").textContent=ev.title;document.getElementById("eventDescription").textContent=ev.description;
- document.getElementById("eventStatus").textContent=game.eventResolved?"Decision recorded":"Awaiting decision";
+ const ev=currentEvent();document.getElementById("eventTag").textContent=ev.category;document.getElementById("eventTitle").textContent=ev.title;document.getElementById("eventDescription").textContent=ev.description;document.getElementById("modalWeek").textContent=game.week;
  const choices=document.getElementById("choices");choices.innerHTML="";
- ev.choices.forEach((c,i)=>{const b=document.createElement("button");b.className="choice";b.textContent=c.text;b.disabled=game.eventResolved;b.onclick=()=>chooseEvent(i);choices.appendChild(b)});
- document.getElementById("situationNote").textContent=game.eventResolved?"Your response is recorded. The situation remains visible in the dashboard until Next Turn.":"Choose a response before advancing. The situation stays on the dashboard throughout this turn.";
+ ev.choices.forEach((c,i)=>{const b=document.createElement("button");b.className="choice";b.textContent=c.text;b.onclick=()=>chooseEvent(i);choices.appendChild(b)});
+ document.getElementById("situationModal").classList.toggle("hidden",game.eventResolved);
  document.getElementById("budget").innerHTML=`<p>Available treasury: <strong>RM${game.money.toFixed(1)}M</strong></p><p>Weekly income: +RM${game.income}M</p><p>Operating expenditure: −RM${game.expenses}M</p><p>Projected weekly balance: <strong>RM${(game.income-game.expenses).toFixed(1)}M</strong></p>`;
  document.getElementById("queue").innerHTML=game.queue.length?game.queue.map(x=>`<p>${escapeHtml(x.label)} — ${x.weeks} week(s) remaining</p>`).join(""):"No pending actions.";
  document.getElementById("policySummary").innerHTML=game.policies.length?game.policies.slice(0,3).map(p=>`<p><strong>${escapeHtml(p.name)}</strong> <span class="tag">${p.status}</span></p>`).join(""):"No policies drafted yet.";
