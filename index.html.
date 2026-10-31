@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sarawak Political Simulator</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101820;
+  color: #f1f5f9;
+}
+header {
+  padding: 24px;
+  background: #1b2935;
+  border-bottom: 2px solid #d4a84f;
+}
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.card {
+  background: #1b2935;
+  border: 1px solid #344654;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.stat {
+  font-size: 24px;
+  color: #e8bd62;
+  margin-top: 8px;
+}
+button {
+  background: #d4a84f;
+  color: #101820;
+  border: 0;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+button:hover { background: #f0cc7d; }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #526575;
+  background: #101820;
+  color: white;
+  width: min(90%, 350px);
+}
+#log p {
+  border-bottom: 1px solid #344654;
+  padding-bottom: 8px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sarawak Political Simulator</h1>
+  <p id="week">Week 1</p>
+</header>
+
+<main>
+  <section class="stats">
+    <div class="card">Treasury<div class="stat" id="money">RM500M</div></div>
+    <div class="card">Party Loyalty<div class="stat" id="loyalty">70</div></div>
+    <div class="card">Integrity<div class="stat" id="integrity">70</div></div>
+    <div class="card">Public Approval<div class="stat" id="approval">60</div></div>
+    <div class="card">Economy<div class="stat" id="economy">50</div></div>
+  </section>
+
+  <section class="card">
+    <h2>Situation of the Week</h2>
+    <h3 id="situation">Rural water infrastructure crisis</h3>
+    <p id="description">
+      Residents demand faster action on delayed water projects.
+    </p>
+    <div id="choices"></div>
+  </section>
+
+  <section class="card">
+    <h2>Free Actions</h2>
+    <button onclick="acceptBribe()">Accept Bribe</button>
+    <button onclick="seekInvestor()">Seek Investor</button>
+    <button onclick="holdCabinetMeeting()">Cabinet Meeting</button>
+  </section>
+
+  <section class="card">
+    <h2>Create Policy</h2>
+    <input id="policyName" placeholder="Enter policy name">
+    <button onclick="createPolicy()">Draft Policy</button>
+    <p id="policyDescription"></p>
+  </section>
+
+  <section class="card">
+    <h2>Weekly Report</h2>
+    <div id="log">Your political journey begins.</div>
+  </section>
+
+  <button onclick="nextTurn()">NEXT TURN →</button>
+</main>
+
+<script>
+const game = {
+  week: 1,
+  money: 500,
+  loyalty: 70,
+  integrity: 70,
+  approval: 60,
+  economy: 50,
+  actions: [],
+  eventResolved: false
+};
+
+const situations = [
+  {
+    title: "Rural Water Infrastructure Crisis",
+    description: "Residents demand faster action on delayed water projects.",
+    choices: [
+      {
+        text: "Fund emergency repairs (RM10M)",
+        effects: { money: -10, approval: 5, integrity: 2 }
+      },
+      {
+        text: "Blame the previous administration",
+        effects: { loyalty: 4, integrity: -5, approval: -3 }
+      },
+      {
+        text: "Negotiate with contractors",
+        effects: { approval: 2, loyalty: -1, integrity: 3 }
+      }
+    ]
+  },
+  {
+    title: "Federal Education Funding",
+    description: "The federal government invites Sarawak to discuss education funding.",
+    choices: [
+      {
+        text: "Request greater state authority",
+        effects: { loyalty: 3, approval: 3 }
+      },
+      {
+        text: "Negotiate a joint funding agreement",
+        effects: { money: 10, approval: 2, integrity: 2 }
+      },
+      {
+        text: "Delay negotiations",
+        effects: { loyalty: -2, approval: -2 }
+      }
+    ]
+  }
+];
+
+function currentSituation() {
+  return situations[(game.week - 1) % situations.length];
+}
+
+function render() {
+  document.getElementById("week").textContent = "Week " + game.week;
+  document.getElementById("money").textContent = "RM" + game.money + "M";
+  document.getElementById("loyalty").textContent = game.loyalty;
+  document.getElementById("integrity").textContent = game.integrity;
+  document.getElementById("approval").textContent = game.approval;
+  document.getElementById("economy").textContent = game.economy;
+
+  const event = currentSituation();
+  document.getElementById("situation").textContent = event.title;
+  document.getElementById("description").textContent = event.description;
+
+  const choices = document.getElementById("choices");
+  choices.innerHTML = "";
+
+  event.choices.forEach((choice, index) => {
+    const button = document.createElement("button");
+    button.textContent = choice.text;
+    button.disabled = game.eventResolved;
+    button.onclick = () => choose(index);
+    choices.appendChild(button);
+  });
+}
+
+function clampStats() {
+  ["loyalty", "integrity", "approval", "economy"].forEach(key => {
+    game[key] = Math.max(0, Math.min(100, game[key]));
+  });
+}
+
+function applyEffects(effects) {
+  for (const [key, value] of Object.entries(effects)) {
+    game[key] += value;
+  }
+  clampStats();
+  render();
+}
+
+function log(message) {
+  document.getElementById("log").innerHTML +=
+    "<p>Week " + game.week + ": " + message + "</p>";
+}
+
+function choose(index) {
+  if (game.eventResolved) return;
+  const choice = currentSituation().choices[index];
+  applyEffects(choice.effects);
+  game.eventResolved = true;
+  log("Decision: " + choice.text);
+  render();
+}
+
+function acceptBribe() {
+  if (game.actions.includes("bribe")) {
+    alert("You have already accepted a bribe this week.");
+    return;
+  }
+
+  game.actions.push("bribe");
+  game.money += 25;
+  game.integrity -= 15;
+  game.approval -= 5;
+  clampStats();
+  log("Accepted a bribe: +RM25M, integrity and approval decreased.");
+  render();
+}
+
+function seekInvestor() {
+  if (game.actions.includes("investor")) {
+    alert("You have already approached an investor this week.");
+    return;
+  }
+
+  game.actions.push("investor");
+  log("Investor negotiations started. Resolution next week.");
+}
+
+function holdCabinetMeeting() {
+  if (game.actions.includes("cabinet")) {
+    alert("Cabinet meeting already held this week.");
+    return;
+  }
+
+  game.actions.push("cabinet");
+  game.loyalty += 3;
+  game.integrity += 1;
+  clampStats();
+  log("Cabinet meeting improved party cohesion.");
+  render();
+}
+
+function createPolicy() {
+  const name = document.getElementById("policyName").value.trim();
+  if (!name) return;
+
+  document.getElementById("policyDescription").textContent =
+    name + ": Draft policy created. AI-generated descriptions will be added in a later development phase.";
+
+  log("Policy drafted: " + name);
+}
+
+function nextTurn() {
+  if (!game.eventResolved) {
+    if (!confirm("You have not resolved this week's situation. Continue anyway?")) {
+      return;
+    }
+  }
+
+  // Resolve recurring finances.
+  game.money += 10;
+
+  // Resolve investor negotiations.
+  if (game.actions.includes("investor")) {
+    game.money += 15;
+    game.economy += 3;
+    game.approval += 2;
+    log("Investor secured: +RM15M and economic growth.");
+  }
+
+  game.week++;
+  game.actions = [];
+  game.eventResolved = false;
+
+  clampStats();
+  log("New week begins.");
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
