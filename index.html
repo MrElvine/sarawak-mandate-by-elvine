@@ -66,7 +66,10 @@
       transition: background 160ms ease, color 160ms ease;
     }
 
-    .nav button:hover { background: var(--panel-light); color: var(--text); }
+    .nav button:hover {
+      background: var(--panel-light);
+      color: var(--text);
+    }
 
     .nav button.active {
       color: var(--accent);
@@ -99,12 +102,21 @@
       cursor: pointer;
     }
 
-    .language-toggle:hover { border-color: var(--accent); background: var(--panel-light); }
+    .language-toggle:hover {
+      border-color: var(--accent);
+      background: var(--panel-light);
+    }
+
     .content { padding-top: 28px; }
 
     .dashboard-intro { margin-bottom: 22px; }
     .dashboard-intro h3 { margin: 0 0 8px; font-size: 19px; }
-    .dashboard-intro p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 14px; }
+    .dashboard-intro p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
 
     .stats-grid {
       display: grid;
@@ -120,7 +132,12 @@
 
     .stat-card { min-width: 0; padding: 20px; }
     .stat-label { color: var(--muted); font-size: 13px; line-height: 1.5; }
-    .stat-value { margin-top: 12px; font-size: 28px; font-weight: 700; letter-spacing: -0.03em; }
+    .stat-value {
+      margin-top: 12px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
     .stat-note { margin-top: 8px; color: var(--muted); font-size: 12px; }
 
     .treasury-card {
@@ -130,11 +147,12 @@
     }
 
     .treasury-card .stat-value { font-size: 30px; }
+
     .placeholder { min-height: 220px; padding: 28px; }
     .placeholder h3 { margin: 0 0 10px; font-size: 18px; }
     .placeholder p { margin: 0; color: var(--muted); line-height: 1.7; }
 
-    /* DUN layout */
+    /* DUN */
     .dun-panel { padding: 22px; }
 
     .dun-heading {
@@ -159,26 +177,24 @@
 
     .seat-map-wrap {
       width: 100%;
-      overflow: hidden;
       margin: 0 auto;
+      overflow: hidden;
     }
 
     .seat-map {
       display: block;
       width: 100%;
       height: auto;
-      overflow: visible;
     }
 
     .seat {
       cursor: pointer;
-      stroke: rgba(255,255,255,0.18);
-      stroke-width: 2;
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 1.5;
       transition: opacity 120ms ease, stroke 120ms ease, stroke-width 120ms ease;
     }
 
-    .seat:hover,
-    .seat:focus {
+    .seat:hover, .seat:focus {
       stroke: #ffffff;
       stroke-width: 4;
       outline: none;
@@ -186,10 +202,31 @@
 
     .seat.selected {
       stroke: #ffffff;
-      stroke-width: 5;
+      stroke-width: 4;
     }
 
-    .seat.dimmed { opacity: 0.22; }
+    .seat.dimmed { opacity: 0.2; }
+
+    .majority-line {
+      stroke: rgba(255, 255, 255, 0.55);
+      stroke-width: 2;
+      stroke-dasharray: 7 7;
+      pointer-events: none;
+    }
+
+    .majority-label {
+      fill: #cbd5e1;
+      font-size: 13px;
+      text-anchor: middle;
+    }
+
+    .side-label {
+      fill: #94a3b8;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-anchor: middle;
+    }
 
     .dun-bottom {
       display: grid;
@@ -218,7 +255,6 @@
     }
 
     .legend-item.active { color: var(--text); }
-
     .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
     .seat-info p { margin: 6px 0; color: var(--muted); font-size: 13px; }
     .seat-info strong { color: var(--text); }
@@ -300,40 +336,68 @@
       en: {
         brand: "Sarawak Political Simulator",
         subtitle: "Political strategy game",
-        dashboard: "Dashboard", dun: "DUN", parties: "Parties",
-        election: "Election", cabinet: "Cabinet", policies: "Policies",
+        dashboard: "Dashboard",
+        dun: "DUN",
+        parties: "Parties",
+        election: "Election",
+        cabinet: "Cabinet",
+        policies: "Policies",
         pageSubtitle: "Welcome to the Sarawak Political Simulator.",
         dashboardIntro: "Political and economic overview",
         dashboardDescription: "Your administration's current status.",
-        publicApproval: "Public Approval", economy: "Economy",
-        partyLoyalty: "Party Loyalty", integrity: "Integrity",
-        stability: "Political Stability", federalRelations: "Federal Relations",
-        treasury: "Treasury", initialStatus: "Starting value",
+        publicApproval: "Public Approval",
+        economy: "Economy",
+        partyLoyalty: "Party Loyalty",
+        integrity: "Integrity",
+        stability: "Political Stability",
+        federalRelations: "Federal Relations",
+        treasury: "Treasury",
+        initialStatus: "Starting value",
         treasuryNote: "Available government funds",
         dunIntro: "Legislative Assembly seat map",
-        dunDescription: "Hover over a party to highlight its seats. Select a seat for details.",
-        seats: "82 seats", legend: "Demo party distribution",
-        seat: "Seat", party: "Party", representative: "Representative",
+        dunDescription: "Government seats are on the left; opposition seats are on the right. Select a seat for details.",
+        government: "GOVERNMENT",
+        opposition: "OPPOSITION",
+        majority: "Simple majority: 42 seats",
+        seats: "82 seats",
+        legend: "Demo party distribution",
+        seat: "Seat",
+        party: "Party",
+        representative: "Representative",
         demoNote: "Demo data — party names and representatives are temporary.",
         placeholder: "This section is ready for the next development step."
       },
       bm: {
         brand: "Simulator Politik Sarawak",
         subtitle: "Permainan strategi politik",
-        dashboard: "Dashboard", dun: "DUN", parties: "Parti",
-        election: "Pilihan Raya", cabinet: "Kabinet", policies: "Dasar",
+        dashboard: "Dashboard",
+        dun: "DUN",
+        parties: "Parti",
+        election: "Pilihan Raya",
+        cabinet: "Kabinet",
+        policies: "Dasar",
         pageSubtitle: "Selamat datang ke Simulator Politik Sarawak.",
         dashboardIntro: "Gambaran politik dan ekonomi",
         dashboardDescription: "Status semasa pentadbiran anda.",
-        publicApproval: "Sokongan Awam", economy: "Ekonomi",
-        partyLoyalty: "Kesetiaan Parti", integrity: "Integriti",
-        stability: "Kestabilan Politik", federalRelations: "Hubungan Persekutuan",
-        treasury: "Perbendaharaan", initialStatus: "Nilai permulaan",
+        publicApproval: "Sokongan Awam",
+        economy: "Ekonomi",
+        partyLoyalty: "Kesetiaan Parti",
+        integrity: "Integriti",
+        stability: "Kestabilan Politik",
+        federalRelations: "Hubungan Persekutuan",
+        treasury: "Perbendaharaan",
+        initialStatus: "Nilai permulaan",
         treasuryNote: "Dana kerajaan yang tersedia",
         dunIntro: "Peta kerusi Dewan Undangan Negeri",
-        dunDescription: "Halakan tetikus pada parti untuk sorot kerusinya. Klik kerusi untuk maklumat.",
-        seats: "82 kerusi", legend: "Agihan parti demo",
-        seat: "Kerusi", party: "Parti", representative: "Wakil rakyat",
+        dunDescription: "Kerajaan di sebelah kiri; pembangkang di sebelah kanan. Pilih kerusi untuk maklumat.",
+        government: "KERAJAAN",
+        opposition: "PEMBANGKANG",
+        majority: "Majoriti mudah: 42 kerusi",
+        seats: "82 kerusi",
+        legend: "Agihan parti demo",
+        seat: "Kerusi",
+        party: "Parti",
+        representative: "Wakil rakyat",
         demoNote: "Data demo — nama parti dan wakil adalah sementara.",
         placeholder: "Bahagian ini sedia untuk langkah pembangunan seterusnya."
       }
@@ -348,14 +412,22 @@
     ];
 
     const stats = [
-      ["publicApproval", "55%"], ["economy", "50/100"],
-      ["partyLoyalty", "60%"], ["integrity", "70/100"],
-      ["stability", "65/100"], ["federalRelations", "50/100"]
+      ["publicApproval", "55%"],
+      ["economy", "50/100"],
+      ["partyLoyalty", "60%"],
+      ["integrity", "70/100"],
+      ["stability", "65/100"],
+      ["federalRelations", "50/100"]
     ];
 
-    // Row counts from the innermost arc to the outermost arc: total = 82.
-    const seatRows = [10, 14, 18, 20, 20];
-    const seatRadii = [105, 155, 205, 255, 305];
+    // Temporary demo configuration: 48 government seats and 34 opposition seats.
+    const governmentSeatCount = 48;
+    const oppositionSeatCount = 34;
+
+    // 48 government seats on the left, 34 opposition seats on the right.
+    const governmentRows = [12, 12, 12, 12];
+    const oppositionRows = [9, 9, 8, 8];
+    const seatRadii = [110, 165, 220, 275];
 
     let currentLanguage = "en";
     let currentPage = "dashboard";
@@ -383,7 +455,8 @@
           <div class="stat-label">${t[key]}</div>
           <div class="stat-value">${value}</div>
           <div class="stat-note">${t.initialStatus}</div>
-        </article>`).join("");
+        </article>
+      `).join("");
 
       pageContent.innerHTML = `
         <div class="dashboard-intro">
@@ -395,7 +468,8 @@
           <div class="stat-label">${t.treasury}</div>
           <div class="stat-value">RM 100,000,000</div>
           <div class="stat-note">${t.treasuryNote}</div>
-        </article>`;
+        </article>
+      `;
     }
 
     function renderDun(t) {
@@ -412,9 +486,13 @@
           <div class="seat-map-wrap">
             <svg class="seat-map" id="seatMap" viewBox="0 0 1000 390"
                  role="group" aria-label="${t.dunIntro}">
-              <line x1="155" y1="350" x2="845" y2="350"
-                    stroke="#26344d" stroke-width="2" />
-          </svg>
+              <text class="side-label" x="250" y="35">${t.government}</text>
+              <text class="side-label" x="750" y="35">${t.opposition}</text>
+              <text class="majority-label" x="500" y="18">${t.majority}</text>
+              <line class="majority-line" x1="500" y1="45" x2="500" y2="365"></line>
+              <line x1="100" y1="350" x2="900" y2="350"
+                    stroke="#26344d" stroke-width="2"></line>
+            </svg>
           </div>
 
           <div class="dun-bottom">
@@ -425,59 +503,77 @@
             <div class="seat-info" id="seatInfo"></div>
           </div>
           <p class="stat-note">${t.demoNote}</p>
-        </div>`;
+        </div>
+      `;
 
       const svg = document.getElementById("seatMap");
       const ns = "http://www.w3.org/2000/svg";
       let seatNumber = 1;
 
-      seatRows.forEach((rowCount, rowIndex) => {
+      function addSeat(x, y, number, side) {
+        const party = getPartyForSeat(number);
+
+        const circle = document.createElementNS(ns, "circle");
+        circle.setAttribute("cx", x);
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", 12);
+        circle.setAttribute("fill", party.color);
+        circle.setAttribute("class", "seat");
+        circle.setAttribute("tabindex", "0");
+        circle.setAttribute("role", "button");
+        circle.setAttribute("aria-label", `${t.seat} ${number}, ${party.name}`);
+        circle.dataset.seat = number;
+        circle.dataset.party = party.name;
+        circle.dataset.side = side;
+
+        const title = document.createElementNS(ns, "title");
+        title.textContent = `${t.seat} ${number} — ${party.name}`;
+        circle.appendChild(title);
+
+        circle.addEventListener("mouseenter", () => {
+          hoveredParty = party.name;
+          updatePartyHighlight();
+        });
+
+        circle.addEventListener("mouseleave", () => {
+          hoveredParty = null;
+          updatePartyHighlight();
+        });
+
+        circle.addEventListener("click", () => selectSeat(number));
+
+        circle.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectSeat(number);
+          }
+        });
+
+        svg.appendChild(circle);
+        seatNumber++;
+      }
+
+      // Government side: left half of the chamber.
+      governmentRows.forEach((count, rowIndex) => {
         const radius = seatRadii[rowIndex];
 
-        for (let i = 0; i < rowCount; i++) {
-          // Spread seats evenly along the upper semicircle, from left to right.
-          const angle = Math.PI - (Math.PI * i / (rowCount - 1));
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI / 2) * (i / (count - 1));
+          const x = 500 - radius * Math.cos(angle);
+          const y = 350 - radius * Math.sin(angle);
+          addSeat(x, y, seatNumber, "government");
+        }
+      });
+
+      // Opposition side: right half of the chamber.
+      oppositionRows.forEach((count, rowIndex) => {
+        const radius = seatRadii[rowIndex];
+
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI / 2) * (i / (count - 1));
           const x = 500 + radius * Math.cos(angle);
           const y = 350 - radius * Math.sin(angle);
-          const party = getPartyForSeat(seatNumber);
-
-          const circle = document.createElementNS(ns, "circle");
-          circle.setAttribute("cx", x);
-          circle.setAttribute("cy", y);
-          circle.setAttribute("r", 12);
-          circle.setAttribute("fill", party.color);
-          circle.setAttribute("class", "seat");
-          circle.setAttribute("tabindex", "0");
-          circle.setAttribute("role", "button");
-          circle.setAttribute("aria-label", `${t.seat} ${seatNumber}, ${party.name}`);
-          circle.dataset.seat = seatNumber;
-          circle.dataset.party = party.name;
-
-          const title = document.createElementNS(ns, "title");
-          title.textContent = `${t.seat} ${seatNumber} — ${party.name}`;
-          circle.appendChild(title);
-
-          circle.addEventListener("mouseenter", () => {
-            hoveredParty = party.name;
-            updatePartyHighlight();
-          });
-
-          circle.addEventListener("mouseleave", () => {
-            hoveredParty = null;
-            updatePartyHighlight();
-          });
-
-          circle.addEventListener("click", () => selectSeat(seatNumber));
-
-          circle.addEventListener("keydown", event => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              selectSeat(seatNumber);
-            }
-          });
-
-          svg.appendChild(circle);
-          seatNumber++;
+          addSeat(x, y, seatNumber, "opposition");
         }
       });
 
@@ -547,10 +643,16 @@
       const info = document.getElementById("seatInfo");
       if (!info) return;
 
+      const side = number <= governmentSeatCount
+        ? (currentLanguage === "en" ? "Government" : "Kerajaan")
+        : (currentLanguage === "en" ? "Opposition" : "Pembangkang");
+
       info.innerHTML = `
         <h4>${translations[currentLanguage].seat} ${number}</h4>
         <p><strong>${translations[currentLanguage].party}:</strong> ${party.name}</p>
-        <p><strong>${translations[currentLanguage].representative}:</strong> Demo Representative ${number}</p>`;
+        <p><strong>${currentLanguage === "en" ? "Side" : "Blok"}:</strong> ${side}</p>
+        <p><strong>${translations[currentLanguage].representative}:</strong> Demo Representative ${number}</p>
+      `;
     }
 
     function renderPlaceholder(t, title) {
@@ -558,7 +660,8 @@
         <article class="placeholder">
           <h3>${title}</h3>
           <p>${t.placeholder}</p>
-        </article>`;
+        </article>
+      `;
     }
 
     function updatePage() {
