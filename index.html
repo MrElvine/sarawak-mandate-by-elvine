@@ -63,7 +63,7 @@
       color: var(--muted);
       text-align: left;
       cursor: pointer;
-      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+      transition: background 160ms ease, color 160ms ease;
     }
 
     .nav button:hover { background: var(--panel-light); color: var(--text); }
@@ -130,20 +130,20 @@
     }
 
     .treasury-card .stat-value { font-size: 30px; }
-
     .placeholder { min-height: 220px; padding: 28px; }
     .placeholder h3 { margin: 0 0 10px; font-size: 18px; }
     .placeholder p { margin: 0; color: var(--muted); line-height: 1.7; }
 
-    /* DUN */
+    /* DUN layout */
     .dun-panel { padding: 22px; }
+
     .dun-heading {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
     }
 
     .dun-heading h3 { margin: 0 0 7px; }
@@ -157,44 +157,45 @@
       white-space: nowrap;
     }
 
-    .seat-chart {
-      position: relative;
+    .seat-map-wrap {
       width: 100%;
-      max-width: 850px;
-      height: 390px;
-      margin: 0 auto;
       overflow: hidden;
+      margin: 0 auto;
+    }
+
+    .seat-map {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
     }
 
     .seat {
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      padding: 0;
-      border: 2px solid rgba(255,255,255,.12);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
       cursor: pointer;
-      transition: transform 120ms ease, box-shadow 120ms ease;
+      stroke: rgba(255,255,255,0.18);
+      stroke-width: 2;
+      transition: opacity 120ms ease, stroke 120ms ease, stroke-width 120ms ease;
     }
 
-    .seat:hover, .seat:focus-visible {
-      z-index: 3;
-      transform: translate(-50%, -50%) scale(1.35);
-      box-shadow: 0 0 0 3px rgba(255,255,255,.2);
+    .seat:hover,
+    .seat:focus {
+      stroke: #ffffff;
+      stroke-width: 4;
       outline: none;
     }
 
     .seat.selected {
-      z-index: 2;
-      box-shadow: 0 0 0 3px #fff;
+      stroke: #ffffff;
+      stroke-width: 5;
     }
+
+    .seat.dimmed { opacity: 0.22; }
 
     .dun-bottom {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
       gap: 18px;
-      margin-top: 18px;
+      margin-top: 12px;
     }
 
     .legend, .seat-info {
@@ -205,7 +206,6 @@
     }
 
     .legend h4, .seat-info h4 { margin: 0 0 12px; }
-
     .legend-items { display: flex; flex-wrap: wrap; gap: 12px 18px; }
 
     .legend-item {
@@ -214,22 +214,27 @@
       gap: 8px;
       color: var(--muted);
       font-size: 13px;
+      cursor: pointer;
     }
 
-    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .legend-item.active { color: var(--text); }
+
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
     .seat-info p { margin: 6px 0; color: var(--muted); font-size: 13px; }
     .seat-info strong { color: var(--text); }
 
-    button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
 
     @media (max-width: 1000px) {
       .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .seat-chart { height: 340px; }
-      .seat { width: 19px; height: 19px; }
     }
 
     @media (max-width: 760px) {
       .app { grid-template-columns: 1fr; }
+
       .sidebar {
         position: static;
         height: auto;
@@ -238,22 +243,19 @@
         border-right: 0;
         border-bottom: 1px solid var(--border);
       }
+
       .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .main { padding: 22px 18px; }
       .topbar { align-items: flex-start; }
       .page-heading h2 { font-size: 21px; }
       .dun-bottom { grid-template-columns: 1fr; }
-      .seat-chart { height: 300px; }
-      .seat { width: 16px; height: 16px; }
+      .dun-panel { padding: 14px; }
     }
 
     @media (max-width: 480px) {
       .topbar { flex-direction: column; }
       .language-toggle { align-self: flex-start; }
       .nav, .stats-grid { grid-template-columns: 1fr; }
-      .dun-panel { padding: 12px; }
-      .seat-chart { height: 240px; }
-      .seat { width: 13px; height: 13px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -288,6 +290,7 @@
         </div>
         <button class="language-toggle" id="languageToggle" type="button">BM</button>
       </header>
+
       <section class="content" id="pageContent"></section>
     </main>
   </div>
@@ -308,7 +311,7 @@
         treasury: "Treasury", initialStatus: "Starting value",
         treasuryNote: "Available government funds",
         dunIntro: "Legislative Assembly seat map",
-        dunDescription: "Select a seat to view its demo details.",
+        dunDescription: "Hover over a party to highlight its seats. Select a seat for details.",
         seats: "82 seats", legend: "Demo party distribution",
         seat: "Seat", party: "Party", representative: "Representative",
         demoNote: "Demo data — party names and representatives are temporary.",
@@ -328,7 +331,7 @@
         treasury: "Perbendaharaan", initialStatus: "Nilai permulaan",
         treasuryNote: "Dana kerajaan yang tersedia",
         dunIntro: "Peta kerusi Dewan Undangan Negeri",
-        dunDescription: "Pilih kerusi untuk melihat maklumat demo.",
+        dunDescription: "Halakan tetikus pada parti untuk sorot kerusinya. Klik kerusi untuk maklumat.",
         seats: "82 kerusi", legend: "Agihan parti demo",
         seat: "Kerusi", party: "Parti", representative: "Wakil rakyat",
         demoNote: "Data demo — nama parti dan wakil adalah sementara.",
@@ -350,9 +353,14 @@
       ["stability", "65/100"], ["federalRelations", "50/100"]
     ];
 
+    // Row counts from the innermost arc to the outermost arc: total = 82.
+    const seatRows = [10, 14, 18, 20, 20];
+    const seatRadii = [105, 155, 205, 255, 305];
+
     let currentLanguage = "en";
     let currentPage = "dashboard";
     let selectedSeat = 1;
+    let hoveredParty = null;
 
     const pageTitle = document.getElementById("pageTitle");
     const pageSubtitle = document.getElementById("pageSubtitle");
@@ -360,11 +368,11 @@
     const languageToggle = document.getElementById("languageToggle");
     const navButtons = document.querySelectorAll(".nav button");
 
-    function getPartyForSeat(number) {
-      let offset = number;
+    function getPartyForSeat(seatNumber) {
+      let remaining = seatNumber;
       for (const party of parties) {
-        if (offset <= party.count) return party;
-        offset -= party.count;
+        if (remaining <= party.count) return party;
+        remaining -= party.count;
       }
       return parties[0];
     }
@@ -379,7 +387,8 @@
 
       pageContent.innerHTML = `
         <div class="dashboard-intro">
-          <h3>${t.dashboardIntro}</h3><p>${t.dashboardDescription}</p>
+          <h3>${t.dashboardIntro}</h3>
+          <p>${t.dashboardDescription}</p>
         </div>
         <div class="stats-grid">${cards}</div>
         <article class="treasury-card">
@@ -393,75 +402,168 @@
       pageContent.innerHTML = `
         <div class="dun-panel">
           <div class="dun-heading">
-            <div><h3>${t.dunIntro}</h3><p>${t.dunDescription}</p></div>
+            <div>
+              <h3>${t.dunIntro}</h3>
+              <p>${t.dunDescription}</p>
+            </div>
             <div class="dun-total">${t.seats}</div>
           </div>
-          <div class="seat-chart" id="seatChart"></div>
+
+          <div class="seat-map-wrap">
+            <svg class="seat-map" id="seatMap" viewBox="0 0 1000 390"
+                 role="group" aria-label="${t.dunIntro}">
+              <line x1="155" y1="350" x2="845" y2="350"
+                    stroke="#26344d" stroke-width="2" />
+          </svg>
+          </div>
+
           <div class="dun-bottom">
             <div class="legend">
               <h4>${t.legend}</h4>
-              <div class="legend-items">
-                ${parties.map(p => `<div class="legend-item"><span class="legend-dot" style="background:${p.color}"></span>${p.name} (${p.count})</div>`).join("")}
-              </div>
+              <div class="legend-items" id="partyLegend"></div>
             </div>
             <div class="seat-info" id="seatInfo"></div>
           </div>
           <p class="stat-note">${t.demoNote}</p>
         </div>`;
 
-      const chart = document.getElementById("seatChart");
-      const rowCounts = [12, 15, 17, 19, 19];
-      const maxRadius = 44;
+      const svg = document.getElementById("seatMap");
+      const ns = "http://www.w3.org/2000/svg";
       let seatNumber = 1;
 
-      rowCounts.forEach((count, row) => {
-        const radius = maxRadius - row * 8;
-        for (let i = 0; i < count; i++) {
-          const angle = Math.PI * (0.04 + 0.92 * (i / (count - 1)));
-          const x = 50 + radius * Math.cos(angle);
-          const y = 98 - radius * Math.sin(angle);
+      seatRows.forEach((rowCount, rowIndex) => {
+        const radius = seatRadii[rowIndex];
+
+        for (let i = 0; i < rowCount; i++) {
+          // Spread seats evenly along the upper semicircle, from left to right.
+          const angle = Math.PI - (Math.PI * i / (rowCount - 1));
+          const x = 500 + radius * Math.cos(angle);
+          const y = 350 - radius * Math.sin(angle);
           const party = getPartyForSeat(seatNumber);
 
-          const seat = document.createElement("button");
-          seat.className = "seat";
-          seat.type = "button";
-          seat.style.left = x + "%";
-          seat.style.top = y + "%";
-          seat.style.background = party.color;
-          seat.title = `${t.seat} ${seatNumber} — ${party.name}`;
-          seat.setAttribute("aria-label", seat.title);
-          seat.dataset.seat = seatNumber;
-          seat.addEventListener("click", () => {
-            selectedSeat = seatNumber;
-            chart.querySelectorAll(".seat").forEach(s => s.classList.remove("selected"));
-            seat.classList.add("selected");
-            showSeatInfo(t, seatNumber, party);
+          const circle = document.createElementNS(ns, "circle");
+          circle.setAttribute("cx", x);
+          circle.setAttribute("cy", y);
+          circle.setAttribute("r", 12);
+          circle.setAttribute("fill", party.color);
+          circle.setAttribute("class", "seat");
+          circle.setAttribute("tabindex", "0");
+          circle.setAttribute("role", "button");
+          circle.setAttribute("aria-label", `${t.seat} ${seatNumber}, ${party.name}`);
+          circle.dataset.seat = seatNumber;
+          circle.dataset.party = party.name;
+
+          const title = document.createElementNS(ns, "title");
+          title.textContent = `${t.seat} ${seatNumber} — ${party.name}`;
+          circle.appendChild(title);
+
+          circle.addEventListener("mouseenter", () => {
+            hoveredParty = party.name;
+            updatePartyHighlight();
           });
-          chart.appendChild(seat);
+
+          circle.addEventListener("mouseleave", () => {
+            hoveredParty = null;
+            updatePartyHighlight();
+          });
+
+          circle.addEventListener("click", () => selectSeat(seatNumber));
+
+          circle.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              selectSeat(seatNumber);
+            }
+          });
+
+          svg.appendChild(circle);
           seatNumber++;
         }
       });
 
-      const firstSeat = chart.querySelector(".seat");
-      if (firstSeat) firstSeat.classList.add("selected");
-      showSeatInfo(t, selectedSeat, getPartyForSeat(selectedSeat));
+      renderLegend(t);
+      selectSeat(selectedSeat);
     }
 
-    function showSeatInfo(t, number, party) {
+    function renderLegend(t) {
+      const legend = document.getElementById("partyLegend");
+
+      legend.innerHTML = parties.map(party => `
+        <div class="legend-item" data-party="${party.name}" tabindex="0" role="button">
+          <span class="legend-dot" style="background:${party.color}"></span>
+          <span>${party.name} (${party.count})</span>
+        </div>
+      `).join("");
+
+      legend.querySelectorAll(".legend-item").forEach(item => {
+        const partyName = item.dataset.party;
+
+        item.addEventListener("mouseenter", () => {
+          hoveredParty = partyName;
+          updatePartyHighlight();
+        });
+
+        item.addEventListener("mouseleave", () => {
+          hoveredParty = null;
+          updatePartyHighlight();
+        });
+
+        item.addEventListener("click", () => {
+          hoveredParty = hoveredParty === partyName ? null : partyName;
+          updatePartyHighlight();
+        });
+
+        item.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            hoveredParty = hoveredParty === partyName ? null : partyName;
+            updatePartyHighlight();
+          }
+        });
+      });
+    }
+
+    function updatePartyHighlight() {
+      document.querySelectorAll(".seat").forEach(seat => {
+        seat.classList.toggle(
+          "dimmed",
+          hoveredParty !== null && seat.dataset.party !== hoveredParty
+        );
+      });
+
+      document.querySelectorAll(".legend-item").forEach(item => {
+        item.classList.toggle("active", item.dataset.party === hoveredParty);
+      });
+    }
+
+    function selectSeat(number) {
+      selectedSeat = number;
+      const party = getPartyForSeat(number);
+
+      document.querySelectorAll(".seat").forEach(seat => {
+        seat.classList.toggle("selected", Number(seat.dataset.seat) === number);
+      });
+
       const info = document.getElementById("seatInfo");
       if (!info) return;
+
       info.innerHTML = `
-        <h4>${t.seat} ${number}</h4>
-        <p><strong>${t.party}:</strong> ${party.name}</p>
-        <p><strong>${t.representative}:</strong> Demo Representative ${number}</p>`;
+        <h4>${translations[currentLanguage].seat} ${number}</h4>
+        <p><strong>${translations[currentLanguage].party}:</strong> ${party.name}</p>
+        <p><strong>${translations[currentLanguage].representative}:</strong> Demo Representative ${number}</p>`;
     }
 
     function renderPlaceholder(t, title) {
-      pageContent.innerHTML = `<article class="placeholder"><h3>${title}</h3><p>${t.placeholder}</p></article>`;
+      pageContent.innerHTML = `
+        <article class="placeholder">
+          <h3>${title}</h3>
+          <p>${t.placeholder}</p>
+        </article>`;
     }
 
     function updatePage() {
       const t = translations[currentLanguage];
+
       pageTitle.textContent = t[currentPage];
       pageSubtitle.textContent = t.pageSubtitle;
 
