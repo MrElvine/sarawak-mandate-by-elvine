@@ -1,889 +1,173 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sarawak Political Simulator</title>
-
 <style>
-:root {
-  --bg: #0b1020;
-  --panel: #131b2e;
-  --panel2: #19243a;
-  --border: #2b3852;
-  --text: #edf2ff;
-  --muted: #9aa9c4;
-  --accent: #f0b429;
-  --green: #36c995;
-  --red: #f16c7a;
-  --blue: #5c9dff;
-  --radius: 16px;
+:root{--bg:#f3f5f9;--card:#fff;--tx:#1b2433;--mu:#667085;--bd:#e0e5ee;--ac:#1f4fb2;--rd:12px}
+*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+.app{display:flex;min-height:100vh}nav{width:210px;background:#13203b;color:#fff;padding:16px 10px;position:sticky;top:0;height:100vh;flex-shrink:0}
+nav h1{font-size:15px;margin:4px 8px 14px;line-height:1.25}nav button{display:block;width:100%;text-align:left;background:none;border:0;color:#cdd6ea;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:14px;margin-bottom:2px}
+nav button.on,nav button:hover{background:#24396b;color:#fff}nav .lang{margin-top:14px;border:1px solid #3b5086;text-align:center}
+main{flex:1;padding:20px;min-width:0;max-width:1100px}h2{margin:0 0 14px}h3{margin:0 0 8px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--rd);padding:14px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}.stat b{display:block;font-size:26px}.stat span,.mu{color:var(--mu);font-size:13px}
+.btn{border:1px solid var(--bd);background:#fff;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:14px}.btn:hover{background:#eef2fa}.btn.p{background:var(--ac);color:#fff;border-color:var(--ac)}.btn.d{color:#b42318;border-color:#f0b9b3}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}.sp{margin-bottom:12px}
+.bar{height:10px;background:#e8ecf4;border-radius:6px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;transition:width .25s}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.lg{display:flex;gap:6px;align-items:center;border:1px solid var(--bd);border-radius:20px;padding:3px 10px;background:#fff;cursor:pointer;font-size:13px}.lg.on{outline:2px solid var(--ac)}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex-shrink:0}
+svg.ch{width:100%;max-width:760px;display:block;margin:auto}.seat{cursor:pointer;transition:opacity .15s}.seat:hover,.seat:focus{stroke:#000;stroke-width:2;outline:none}
+.badge{font-size:12px;border-radius:10px;padding:2px 8px;background:#e8eefc;color:var(--ac)}.badge.opp{background:#fdeceb;color:#b42318}
+.banner{padding:10px 14px;border-radius:10px;margin:10px 0;background:#eef6ee;border:1px solid #bfdcbf}.banner.warn{background:#fff6e0;border-color:#ecd08a}
+table{width:100%;border-collapse:collapse}td,th{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;font-size:14px}
+.ov{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:14px;z-index:20}.ov[hidden]{display:none}
+.dlg{background:#fff;border-radius:14px;padding:18px;width:100%;max-width:440px;max-height:92vh;overflow:auto}
+label{display:block;font-size:13px;color:var(--mu);margin-top:10px}input,select,textarea{width:100%;padding:8px;border:1px solid var(--bd);border-radius:8px;font:inherit;margin-top:3px}input[type=color]{height:38px;padding:2px}input[type=range]{padding:0}
+.err{color:#b42318;font-size:13px;min-height:16px;margin:8px 0 0}#toast{position:fixed;bottom:16px;right:16px;z-index:30}#toast div{background:#13203b;color:#fff;padding:9px 14px;border-radius:8px;margin-top:6px}
+.cols{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}.cols .card{background:#f8f9fc}.item{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:10px;margin-top:8px}
+@media(max-width:760px){.app{flex-direction:column}nav{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;gap:4px;padding:8px}nav h1{width:100%;margin:2px 6px}nav button{width:auto;padding:7px 10px}nav .lang{margin:0}.cols{grid-template-columns:1fr}main{padding:12px}}
+</style></head><body>
+<div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
+<div class="ov" id="modal" hidden></div><div id="toast" aria-live="polite"></div>
+<script>
+"use strict";
+const TOTAL=82;
+/* ---------- i18n ---------- */
+const D={en:{title:"Sarawak Political Simulator",dash:"Dashboard",dun:"DUN",parties:"Parties",election:"Election",cabinet:"Cabinet",policies:"Policies",total:"Total DUN seats",maj:"Seats for majority",govS:"Government seats",act:"Active parties",dist:"Party seat distribution",chart:"DUN seating chart",all:"Show all",save:"Save",cancel:"Cancel",del:"Delete",edit:"Edit",add:"Add",close:"Close",yes:"Yes, delete",name:"Name",abbr:"Abbreviation",leader:"Leader",color:"Colour",coal:"Coalition",ideo:"Ideology / platform",gov:"Government",opp:"Opposition",rep:"Representative",cons:"Constituency",party:"Party",minister:"Minister",port:"Portfolio",ptitle:"Title",cat:"Category",desc:"Description",status:"Status",st0:"Proposed",st1:"In Progress",st2:"Completed",req:"Required field missing",saved:"Saved",deleted:"Deleted",confirm:"Delete this item? This cannot be undone.",base:"Baseline data: 82 DUN seats as at the Oct 2026 dissolution (GPS-aligned 80, DAP 2). Representative names are left blank/unverified. Edit anything freely.",sim:"Simulated / edited data differs from baseline (dashed outline = changed seat).",swing:"Swing (%)",simBtn:"Run election",reset:"Restore baseline",restored:"Baseline restored",hung:"Hung DUN: no side has a majority",govMaj:"Government majority",oppMaj:"Opposition majority",seats:"Seats",chg:"Change",addParty:"Add party",addMin:"Add minister",addPol:"Add policy",toGov:"Move to government",toOpp:"Move to opposition",ph:"No items yet.",inuse:"Seats of this party move to Independent.",quick:"Quick navigation",lang:"Bahasa Melayu",unv:"(unverified)",simDone:"Election simulated",noP:"No party selected",ptl:"registered",edSeat:"Edit seat",levels:"Government standing",approval:"Public Approval",loyalty:"Party Loyalty",economy:"Economy",stability:"Stability",autonomy:"Sarawak Autonomy",gameNote:"Game values (fictional), not real-world data.",loyNote:"Auto: seat-weighted average of government parties.",ploy:"Loyalty (0-100)",loyL:"Loyalty"},
+ms:{title:"Simulator Politik Sarawak",dash:"Papan Pemuka",dun:"DUN",parties:"Parti",election:"Pilihan Raya",cabinet:"Kabinet",policies:"Dasar",total:"Jumlah kerusi DUN",maj:"Kerusi majoriti",govS:"Kerusi kerajaan",act:"Parti aktif",dist:"Agihan kerusi parti",chart:"Carta tempat duduk DUN",all:"Papar semua",save:"Simpan",cancel:"Batal",del:"Padam",edit:"Sunting",add:"Tambah",close:"Tutup",yes:"Ya, padam",name:"Nama",abbr:"Singkatan",leader:"Pemimpin",color:"Warna",coal:"Gabungan",ideo:"Ideologi / platform",gov:"Kerajaan",opp:"Pembangkang",rep:"Wakil rakyat",cons:"Kawasan",party:"Parti",minister:"Menteri",port:"Portfolio",ptitle:"Tajuk",cat:"Kategori",desc:"Penerangan",status:"Status",st0:"Dicadangkan",st1:"Sedang Dilaksana",st2:"Selesai",req:"Ruangan wajib belum diisi",saved:"Disimpan",deleted:"Dipadam",confirm:"Padam item ini? Tindakan ini tidak boleh dibatalkan.",base:"Data asas: 82 kerusi DUN ketika pembubaran Okt 2026 (GPS dan sekutu 80, DAP 2). Nama wakil rakyat dikosongkan/belum disahkan. Sunting bebas.",sim:"Data simulasi / suntingan berbeza daripada data asas (garis putus-putus = kerusi berubah).",swing:"Ayunan (%)",simBtn:"Jalankan pilihan raya",reset:"Pulihkan data asas",restored:"Data asas dipulihkan",hung:"DUN tergantung: tiada majoriti",govMaj:"Majoriti kerajaan",oppMaj:"Majoriti pembangkang",seats:"Kerusi",chg:"Perubahan",addParty:"Tambah parti",addMin:"Tambah menteri",addPol:"Tambah dasar",toGov:"Pindah ke kerajaan",toOpp:"Pindah ke pembangkang",ph:"Tiada item lagi.",inuse:"Kerusi parti ini dipindahkan kepada Bebas.",quick:"Pautan pantas",lang:"English",unv:"(belum disahkan)",simDone:"Pilihan raya disimulasi",noP:"Tiada parti dipilih",ptl:"berdaftar",edSeat:"Sunting kerusi",levels:"Kedudukan kerajaan",approval:"Sokongan Rakyat",loyalty:"Kesetiaan Parti",economy:"Ekonomi",stability:"Kestabilan",autonomy:"Autonomi Sarawak",gameNote:"Nilai permainan (fiksyen), bukan data sebenar.",loyNote:"Auto: purata berwajaran kerusi parti kerajaan.",ploy:"Kesetiaan (0-100)",loyL:"Kesetiaan"}};
+let lang="en",cur="dash",flt=null;
+const t=k=>(D[lang][k]||D.en[k]||k);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=s=>document.querySelector(s);const uid=()=>Math.random().toString(36).slice(2,8);
+const clamp=x=>Math.max(0,Math.min(100,Math.round(x)));
+/* ---------- data (editable) ---------- */
+const NAMES="Opar,Tasik Biru,Tanjong Datu,Pantai Damai,Demak Laut,Tupong,Samariang,Satok,Padungan,Pending,Batu Lintang,Kota Sentosa,Batu Kitang,Batu Kawah,Asajaya,Muara Tuang,Stakan,Serembu,Mambong,Tarat,Tebedu,Kedup,Bukit Semuja,Sadong Jaya,Simunjan,Gedong,Sebuyau,Lingga,Beting Maro,Balai Ringin,Bukit Begunan,Simanggang,Engkilili,Batang Ai,Saribas,Layar,Bukit Saban,Kalaka,Krian,Kabong,Kuala Rajang,Semop,Daro,Jemoreng,Repok,Meradong,Pakan,Meluan,Ngemah,Machan,Bukit Assek,Dudong,Bawang Assan,Pelawan,Nangka,Dalat,Tellian,Balingian,Tamin,Kakus,Pelagus,Katibas,Baleh,Belaga,Murum,Jepak,Tanjong Batu,Kemena,Samalaju,Bekenu,Lambir,Piasau,Pujut,Senadin,Marudi,Telang Usan,Mulu,Bukit Kota,Batu Danau,Ba'kelalan,Bukit Sari,Kidurong".split(",");
+while(NAMES.length<TOTAL)NAMES.push("N."+(NAMES.length+1));NAMES.length=TOTAL;
+function mk(){
+ const parties=[
+  {id:"gps",name:"Gabungan Parti Sarawak",abbr:"GPS",leader:"Abang Johari Openg",color:"#1f4fb2",coal:"gov",ideo:"Sarawak regionalism, state autonomy, development",loy:85},
+  {id:"dap",name:"Democratic Action Party (Sarawak)",abbr:"DAP",leader:"",color:"#d62839",coal:"opp",ideo:"Social democracy, multiracial politics",loy:60},
+  {id:"ind",name:"Independent (govt-aligned)",abbr:"IND",leader:"",color:"#8a8f98",coal:"gov",ideo:"Independent",loy:60},
+  {id:"psb",name:"Parti Sarawak Bersatu",abbr:"PSB",leader:"",color:"#e8a317",coal:"opp",ideo:"Sarawak-based opposition",loy:55},
+  {id:"pkr",name:"Parti Keadilan Rakyat (Sarawak)",abbr:"PKR",leader:"",color:"#2aa7c9",coal:"opp",ideo:"Reformasi, social justice",loy:55}];
+ const seats=NAMES.map((n,i)=>({id:i+1,name:n,rep:"",party:i==8||i==9?"dap":i==10?"ind":"gps"}));
+ return {parties,seats,cabinet:[],policies:[],lv:{approval:70,economy:65,stability:75,autonomy:60}};
 }
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+let BASE=mk(),S=mk();
+const P=id=>S.parties.find(p=>p.id===id);
+const cnt=()=>{const c={};S.parties.forEach(p=>c[p.id]=0);S.seats.forEach(s=>{if(c[s.party]!=null)c[s.party]++});return c};
+const maj=()=>Math.floor(S.seats.length/2)+1;
+const side=k=>S.seats.filter(s=>P(s.party)&&P(s.party).coal===k).length;
+const dirty=()=>S.seats.some((s,i)=>s.party!==BASE.seats[i].party||s.name!==BASE.seats[i].name||s.rep!==BASE.seats[i].rep);
+function loyalty(){const c=cnt();let w=0,n=0;S.parties.forEach(p=>{if(p.coal==="gov"){w+=(p.loy||0)*c[p.id];n+=c[p.id]}});return n?clamp(w/n):0}
+/* ---------- UI helpers ---------- */
+function toast(m){const d=document.createElement("div");d.textContent=m;$("#toast").appendChild(d);setTimeout(()=>d.remove(),2200)}
+function closeM(){$("#modal").hidden=true;$("#modal").innerHTML=""}
+function modal(title,fields,save){
+ const o=$("#modal");o.hidden=false;
+ const fh=f=>{const v=esc(f.v==null?"":f.v),id="f_"+f.k,l=`<label for="${id}">${esc(t(f.l))}${f.r?" *":""}</label>`;
+  if(f.o)return l+`<select id="${id}">${f.o.map(x=>`<option value="${esc(x[0])}"${x[0]===f.v?" selected":""}>${esc(x[1])}</option>`).join("")}</select>`;
+  if(f.ta)return l+`<textarea id="${id}" rows="3">${v}</textarea>`;
+  return l+`<input id="${id}" type="${f.c?"color":f.n?"number":"text"}" ${f.n?'min="0" max="100"':""} value="${v}">`};
+ o.innerHTML=`<div class="dlg" role="dialog" aria-modal="true" aria-labelledby="mt"><h3 id="mt">${esc(title)}</h3><form id="mf" novalidate>${fields.map(fh).join("")}<p class="err" id="me" role="alert"></p><div class="row"><button class="btn p" type="submit">${t("save")}</button><button class="btn" type="button" id="mc">${t("cancel")}</button></div></form></div>`;
+ $("#mc").onclick=closeM;
+ $("#mf").onsubmit=e=>{e.preventDefault();const v={};
+  for(const f of fields){v[f.k]=$("#f_"+f.k).value.trim();if(f.r&&!v[f.k]){$("#me").textContent=t("req")+": "+t(f.l);$("#f_"+f.k).focus();return}}
+  save(v);closeM();toast(t("saved"));render()};
+ const i=o.querySelector("input,select,textarea");if(i)i.focus();
 }
-
-button, input, select, textarea { font: inherit; }
-
-button {
-  cursor: pointer;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: var(--text);
-  background: var(--panel2);
-  transition: .15s ease;
+function ask(msg,fn){const o=$("#modal");o.hidden=false;
+ o.innerHTML=`<div class="dlg" role="alertdialog" aria-modal="true"><p>${esc(msg)}</p><div class="row"><button class="btn d" id="cy">${t("yes")}</button><button class="btn" id="cn">${t("cancel")}</button></div></div>`;
+ $("#cn").onclick=closeM;$("#cy").onclick=()=>{closeM();fn();toast(t("deleted"));render()};$("#cn").focus()}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeM()});
+$("#modal").addEventListener("mousedown",e=>{if(e.target.id==="modal")closeM()});
+const popts=()=>S.parties.map(p=>[p.id,p.abbr+" – "+p.name]);
+/* ---------- chart ---------- */
+function chart(){
+ const radii=[130,166,202,238,274],sum=radii.reduce((a,b)=>a+b,0),n=S.seats.length;
+ const c=radii.map(r=>Math.round(n*r/sum));c[4]+=n-c.reduce((a,b)=>a+b,0);
+ const pos=[];radii.forEach((r,i)=>{for(let j=0;j<c[i];j++){const a=Math.PI-Math.PI*j/(c[i]-1);pos.push({a,x:300+r*Math.cos(a),y:300-r*Math.sin(a)})}});
+ pos.sort((p,q)=>q.a-p.a);
+ const pi={};S.parties.forEach((p,i)=>pi[p.id]=i);
+ const ord=S.seats.map((s,i)=>({s,i})).sort((a,b)=>(pi[a.s.party]??99)-(pi[b.s.party]??99)||a.i-b.i);
+ const cs=ord.map((o,k)=>{const s=o.s,p=P(s.party),ch=s.party!==BASE.seats[o.i].party;
+  return `<circle class="seat" data-i="${o.i}" cx="${pos[k].x.toFixed(1)}" cy="${pos[k].y.toFixed(1)}" r="13" fill="${p?p.color:"#ccc"}" opacity="${flt&&s.party!==flt?.15:1}" ${ch?'stroke="#000" stroke-dasharray="3 2" stroke-width="2"':""} tabindex="0" role="button" aria-label="${esc(s.name)} ${p?esc(p.abbr):""}"><title>${esc(s.name)} – ${p?esc(p.abbr):""}</title></circle>`}).join("");
+ return `<svg class="ch" viewBox="0 0 600 320" role="group" aria-label="${t("chart")}">${cs}<text x="300" y="285" text-anchor="middle" font-size="40" font-weight="700" fill="#1b2433">${n}</text><text x="300" y="305" text-anchor="middle" font-size="13" fill="#667085">${t("seats")}</text></svg>`;
 }
-
-button:hover {
-  border-color: var(--accent);
-  transform: translateY(-1px);
-}
-
-button:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.primary {
-  background: var(--accent);
-  color: #17130a;
-  border-color: var(--accent);
-  font-weight: 800;
-}
-
-.danger {
-  color: #fff;
-  background: #8c2f42;
-  border-color: #a84457;
-}
-
-.small { padding: 6px 9px; font-size: 12px; }
-
-input, select, textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text);
-  background: #0d1527;
-}
-
-textarea { min-height: 90px; resize: vertical; }
-
-label {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 22px;
-  background: rgba(11,16,32,.94);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 900;
-}
-
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: var(--accent);
-  color: #17130a;
-}
-
-.header-actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.app {
-  display: grid;
-  grid-template-columns: 230px minmax(0, 1fr);
-  min-height: calc(100vh - 67px);
-}
-
-aside {
-  padding: 18px 12px;
-  border-right: 1px solid var(--border);
-  background: #0e1628;
-}
-
-.nav-label {
-  margin: 14px 10px 8px;
-  color: var(--muted);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1.4px;
-}
-
-.nav-btn {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 5px;
-  text-align: left;
-  background: transparent;
-  border-color: transparent;
-}
-
-.nav-btn.active {
-  background: var(--panel2);
-  border-color: var(--border);
-  color: var(--accent);
-}
-
-main {
-  min-width: 0;
-  padding: 24px;
-}
-
-.page-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-h1 { margin: 0 0 6px; font-size: clamp(24px, 3vw, 34px); }
-h2 { margin: 0 0 14px; font-size: 20px; }
-h3 { margin: 0 0 10px; font-size: 16px; }
-
-.muted { color: var(--muted); }
-.small-text { font-size: 12px; }
-.grid { display: grid; gap: 16px; }
-.stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-.card {
-  min-width: 0;
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--panel);
-}
-
-.stat-label { color: var(--muted); font-size: 13px; }
-.stat-value { margin-top: 8px; font-size: 30px; font-weight: 900; }
-.stat-foot { margin-top: 5px; color: var(--muted); font-size: 12px; }
-
-.section-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.section-title h2 { margin: 0; }
-
-.party-list, .event-list, .policy-list {
-  display: grid;
-  gap: 10px;
-}
-
-.party-row {
-  display: grid;
-  grid-template-columns: 12px minmax(0, 1fr) auto auto;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: #10192b;
-}
-
-.party-dot {
-  width: 11px;
-  height: 30px;
-  border-radius: 6px;
-}
-
-.party-name { font-weight: 800; }
-.party-meta { color: var(--muted); font-size: 12px; }
-.party-seats { font-weight: 900; font-size: 18px; }
-
-.bar {
-  height: 8px;
-  overflow: hidden;
-  border-radius: 20px;
-  background: #26334b;
-}
-
-.bar > span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-}
-
-.dun-wrap { overflow: hidden; }
-
-.dun-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.dun-chart {
-  position: relative;
-  width: 100%;
-  padding: 8px 0 0;
-}
-
-#dunSvg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-.seat {
-  stroke: #0b1020;
-  stroke-width: 1.4;
-  cursor: pointer;
-  transition: opacity .12s ease, stroke-width .12s ease;
-}
-
-.seat:hover, .seat:focus {
-  stroke: #fff;
-  stroke-width: 3;
-  outline: none;
-}
-
-.seat.dimmed { opacity: .14; }
-.seat.highlighted { stroke: #fff; stroke-width: 3; }
-
-.dun-divider {
-  stroke: #9aa9c4;
-  stroke-width: 2;
-  stroke-dasharray: 8 8;
-  opacity: .75;
-  pointer-events: none;
-}
-
-.dun-side-label {
-  fill: #9aa9c4;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-anchor: middle;
-  pointer-events: none;
-}
-
-.dun-majority-label {
-  fill: #edf2ff;
-  font-size: 14px;
-  text-anchor: middle;
-  pointer-events: none;
-}
-
-.dun-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 9px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  color: var(--muted);
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.legend-item:hover { border-color: var(--accent); }
-.legend-color { width: 9px; height: 9px; border-radius: 3px; }
-
-.seat-info {
-  min-height: 54px;
-  margin-top: 12px;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  color: var(--muted);
-  background: #0e1628;
-}
-
-.table-wrap { overflow-x: auto; }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 600px;
-}
-
-th, td {
-  padding: 12px 10px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  font-size: 13px;
-}
-
-th { color: var(--muted); font-weight: 700; }
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: 99px;
-  background: #26334b;
-  font-size: 11px;
-}
-
-.badge.green { background: #174b3b; color: #9af0ce; }
-.badge.red { background: #542735; color: #ffb4c0; }
-.badge.yellow { background: #59451a; color: #ffe19a; }
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.form-field.full { grid-column: 1 / -1; }
-
-.modal-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background: rgba(0,0,0,.7);
-}
-
-.modal-backdrop.open { display: flex; }
-
-.modal {
-  width: min(620px, 100%);
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: var(--panel);
-  box-shadow: 0 25px 80px #0008;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.modal-header h2 { margin: 0; }
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 18px;
-}
-
-.toast {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  z-index: 80;
-  max-width: min(360px, calc(100vw - 40px));
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--panel2);
-  box-shadow: 0 12px 40px #0007;
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  transition: .2s;
-}
-
-.toast.show { opacity: 1; transform: translateY(0); }
-
-.policy-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.policy-card p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
-
-.empty {
-  padding: 25px;
-  text-align: center;
-  color: var(--muted);
-}
-
-@media (max-width: 950px) {
-  .app { grid-template-columns: 1fr; }
-  aside {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding: 10px;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-label { display: none; }
-  .nav-btn { width: auto; flex: 0 0 auto; margin: 0; }
-  main { padding: 16px; }
-  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-@media (max-width: 600px) {
-  header { padding: 12px; }
-  .brand-text { font-size: 13px; }
-  .header-actions button { padding: 8px; }
-  .two-col, .form-grid { grid-template-columns: 1fr; }
-  .form-field.full { grid-column: auto; }
-  .page-heading { flex-direction: column; }
-  .stats { gap: 10px; }
-  .card { padding: 14px; }
-}
-</style>
-</head>
-    swing:"Perubahan sokongan (%)", simulate:"Simulasikan pilihan raya", restore:"Pulihkan data asal",
-    cabinetTitle:"Pembina kabinet", cabinetSub:"Agihkan portfolio kepada ahli parti.",
-    addMinister:"Tambah menteri", portfolio:"Portfolio", minister:"Menteri",
-    policiesTitle:"Penjejak dasar", policiesSub:"Cipta dan pantau cadangan dasar politik.",
-    addPolicy:"Tambah dasar", status:"Status", proposed:"Dicadangkan", inProgress:"Dalam pelaksanaan",
-    completed:"Selesai", edit:"Edit", delete:"Padam", save:"Simpan", cancel:"Batal",
-    close:"Tutup", name:"Nama", shortName:"Nama pendek", color:"Warna",
-    partyName:"Nama parti", partyShort:"Singkatan parti", partyLeader:"Pemimpin parti",
-    partySeats:"Jumlah kerusi", partyCoalition:"Gabungan / penjajaran",
-    partyIdeology:"Ideologi atau platform", policyTitle:"Tajuk dasar",
-    category:"Kategori", description:"Penerangan", submit:"Hantar",
-    seatDetails:"Maklumat kerusi", constituency:"Kawasan DUN",
-    representative:"Wakil rakyat", noRep:"Maklumat wakil belum dibekalkan",
-    partyAffiliation:"Parti", updateSeat:"Kemaskini kerusi",
-    majorityWon:"Majoriti dicapai", hung:"DUN tergantung",
-    resetConfirm:"Reset simulator kepada data asal?",
-    partyAdded:"Parti ditambah.", partyUpdated:"Parti dikemaskini.", partyDeleted:"Parti dipadam.",
-    policyAdded:"Dasar ditambah.", policyUpdated:"Dasar dikemaskini.", policyDeleted:"Dasar dipadam.",
-    electionDone:"Simulasi pilihan raya selesai.", baselineRestored:"Data asal dipulihkan.",
-    languageChanged:"Bahasa ditukar.", seatUpdated:"Kerusi dikemaskini.",
-    noParty:"Tiada parti", noPolicies:"Belum ada dasar.",
-    placeholderRep:"Masukkan nama wakil", placeholderName:"Masukkan nama",
-    baselineNote:"Jumlah kerusi asal ialah titik mula simulasi. Sahkan nama wakil setiap kawasan melalui sumber rasmi."
-  }
+function legend(){const c=cnt();return `<div class="legend">${S.parties.map(p=>`<span class="lg${flt===p.id?" on":""}" data-f="${p.id}" tabindex="0" role="button"><i class="dot" style="background:${esc(p.color)}"></i>${esc(p.abbr)} <b>${c[p.id]}</b></span>`).join("")}<span class="lg" data-f="">${t("all")}</span></div>`}
+function meters(){const L=S.lv,m=[["approval",L.approval,1],["loyalty",loyalty(),0],["economy",L.economy,1],["stability",L.stability,1],["autonomy",L.autonomy,1]];
+ return `<div class="card sp"><h3>${t("levels")}</h3><div class="grid">${m.map(([k,v,e])=>`<div><div class="row" style="margin:0;justify-content:space-between"><b>${t(k)}</b><span>${v}/100</span></div><div class="bar" role="progressbar" aria-label="${t(k)}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="100"><i style="width:${v}%;background:${v>=66?"#1a9d57":v>=40?"#e8a317":"#d62839"}"></i></div>${e?`<div class="row" style="margin-top:6px"><button class="btn" data-lv="${k}" data-d="-5">−5</button><button class="btn" data-lv="${k}" data-d="5">+5</button></div>`:`<span class="mu">${t("loyNote")}</span>`}</div>`).join("")}</div><p class="mu" style="margin-bottom:0">${t("gameNote")}</p></div>`}
+function seatModal(i){const s=S.seats[i];
+ modal(t("edSeat")+" #"+s.id,[{k:"name",l:"cons",v:s.name,r:1},{k:"rep",l:"rep",v:s.rep},{k:"party",l:"party",v:s.party,o:popts()}],v=>{s.name=v.name;s.rep=v.rep;s.party=v.party});
+ if(!s.rep){const m=document.createElement("p");m.className="mu";m.textContent=t("rep")+": "+t("unv");$("#mf").prepend(m)}}
+/* ---------- views ---------- */
+function banner(){return `<div class="banner${dirty()?" warn":""}">${dirty()?t("sim"):t("base")}</div>`}
+const V={
+ dash(){const c=cnt(),act=S.parties.filter(p=>c[p.id]>0).length;
+  return `<h2>${t("dash")}</h2>${banner()}<div class="grid sp">
+  <div class="card stat"><b>${S.seats.length}</b><span>${t("total")}</span></div>
+  <div class="card stat"><b>${maj()}</b><span>${t("maj")}</span></div>
+  <div class="card stat"><b>${side("gov")}</b><span>${t("govS")}</span></div>
+  <div class="card stat"><b>${act}</b><span>${t("act")} (${S.parties.length} ${t("ptl")})</span></div></div>
+  ${meters()}
+  <div class="card sp"><h3>${t("dist")}</h3>${legend()}${chart()}</div>
+  <div class="card"><h3>${t("quick")}</h3><div class="row">${["dun","parties","election","cabinet","policies"].map(k=>`<button class="btn" data-go="${k}">${t(k)}</button>`).join("")}</div></div>`},
+ dun(){return `<h2>${t("dun")}</h2>${banner()}<div class="card">${legend()}${chart()}</div>`},
+ parties(){const c=cnt();
+  return `<h2>${t("parties")}</h2><div class="row sp"><button class="btn p" id="addP">${t("addParty")}</button></div><div class="grid">${S.parties.map(p=>`<div class="card"><div class="row" style="margin:0"><i class="dot" style="background:${esc(p.color)}"></i><b>${esc(p.abbr)}</b><span class="badge ${p.coal==="opp"?"opp":""}">${t(p.coal)}</span></div><p style="margin:6px 0"><b>${esc(p.name)}</b><br><span class="mu">${t("leader")}: ${esc(p.leader)||"—"}</span><br><span class="mu">${esc(p.ideo)}</span></p><b>${c[p.id]}</b> ${t("seats")} · ${t("loyL")}: <b>${p.loy||0}</b><div class="bar"><i style="width:${p.loy||0}%;background:${esc(p.color)}"></i></div><div class="row"><button class="btn" data-pe="${p.id}">${t("edit")}</button><button class="btn" data-pc="${p.id}">${p.coal==="gov"?t("toOpp"):t("toGov")}</button><button class="btn d" data-pd="${p.id}">${t("del")}</button></div></div>`).join("")}</div>`},
+ election(){const c=cnt(),b={};BASE.parties.forEach(p=>b[p.id]=0);BASE.seats.forEach(s=>b[s.party]=(b[s.party]||0)+1);
+  const g=side("gov"),o=side("opp"),m=maj(),res=g>=m?t("govMaj"):o>=m?t("oppMaj"):t("hung");
+  return `<h2>${t("election")}</h2>${banner()}<div class="card sp"><label for="ep">${t("party")}</label><select id="ep">${popts().map(x=>`<option value="${x[0]}">${esc(x[1])}</option>`).join("")}</select><label for="es">${t("swing")}: <b id="ev">0</b></label><input type="range" id="es" min="-20" max="20" value="0"><div class="row"><button class="btn p" id="sim">${t("simBtn")}</button><button class="btn" id="rst">${t("reset")}</button></div></div>
+  <div class="card"><div class="banner ${g>=m||o>=m?"":"warn"}"><b>${res}</b> — ${t("gov")} ${g} / ${t("opp")} ${o} (${t("maj")}: ${m})</div><table><tr><th>${t("party")}</th><th>${t("seats")}</th><th>${t("chg")}</th></tr>${S.parties.map(p=>{const d=c[p.id]-(b[p.id]||0);return `<tr><td><i class="dot" style="background:${esc(p.color)}"></i> ${esc(p.abbr)}</td><td>${c[p.id]}</td><td>${d>0?"+":""}${d}</td></tr>`}).join("")}</table></div>`},
+ cabinet(){return `<h2>${t("cabinet")}</h2><div class="row sp"><button class="btn p" id="addM">${t("addMin")}</button></div><div class="grid">${S.cabinet.map(m=>{const p=P(m.party);return `<div class="card"><b>${esc(m.name)}</b><br><span class="mu">${esc(m.port)}</span><br>${p?`<span class="badge"><i class="dot" style="background:${esc(p.color)};width:8px;height:8px"></i> ${esc(p.abbr)}</span>`:""}<div class="row"><button class="btn" data-me="${m.id}">${t("edit")}</button><button class="btn d" data-md="${m.id}">${t("del")}</button></div></div>`}).join("")||`<p class="mu">${t("ph")}</p>`}</div>`},
+ policies(){return `<h2>${t("policies")}</h2><div class="row sp"><button class="btn p" id="addL">${t("addPol")}</button></div><div class="cols">${[0,1,2].map(k=>`<div class="card"><h3>${t("st"+k)}</h3>${S.policies.filter(p=>p.status==k).map(p=>`<div class="item"><b>${esc(p.title)}</b><br><span class="badge">${esc(p.cat)}</span><p style="margin:6px 0">${esc(p.desc)}</p><div class="row" style="margin:0"><button class="btn" data-le="${p.id}">${t("edit")}</button><button class="btn d" data-ld="${p.id}">${t("del")}</button></div></div>`).join("")||`<p class="mu">${t("ph")}</p>`}</div>`).join("")}</div>`}
 };
-
-/* =========================
-   STATE
-========================= */
-
-let state = {
-  language: "en",
-  page: "dashboard",
-  parties: [],
-  seats: [],
-  policies: [],
-  ministers: [],
-  highlightedParty: null
-};
-
-function clone(value) {
-  return JSON.parse(JSON.stringify(value));
+function render(){
+ document.documentElement.lang=lang==="ms"?"ms":"en";document.title=t("title");
+ $("#nav").innerHTML=`<h1>${t("title")}</h1>`+["dash","dun","parties","election","cabinet","policies"].map(k=>`<button data-go="${k}" class="${cur===k?"on":""}" ${cur===k?'aria-current="page"':""}>${t(k)}</button>`).join("")+`<button class="lang" id="lg">🌐 ${t("lang")}</button>`;
+ $("#main").innerHTML=V[cur]();
+ const s=$("#es");if(s)s.oninput=()=>{$("#ev").textContent=(s.value>0?"+":"")+s.value};
 }
-
-function t(key) {
-  return (TRANSLATIONS[state.language] && TRANSLATIONS[state.language][key]) ||
-         TRANSLATIONS.en[key] || key;
-}
-
-function activeParties() {
-  return state.parties.filter(p => p.status === "active");
-}
-
-function partyById(id) {
-  return state.parties.find(p => p.id === id);
-}
-
-function totalSeats() {
-  return state.seats.length;
-}
-
-function majorityThreshold() {
-  return Math.floor(totalSeats() / 2) + 1;
-}
-
-function countPartySeats(partyId) {
-  return state.seats.filter(s => s.partyId === partyId).length;
-}
-
-function governmentSeats() {
-  return state.seats.filter(s => {
-    const p = partyById(s.partyId);
-    return p && (p.coalition === "GPS" || p.coalition === "GPS-aligned");
-  }).length;
-}
-
-function createBaselineSeats() {
-  const seatAssignments = [
-    ...Array(47).fill("pbb"),
-    ...Array(13).fill("supp"),
-    ...Array(11).fill("prs"),
-    ...Array(8).fill("pdp"),
-    ...Array(2).fill("dap"),
-    "ind"
-  ];
-
-  return seatAssignments.map((partyId, index) => ({
-    id: index + 1,
-    constituency: "DUN " + String(index + 1).padStart(2, "0"),
-    representative: "",
-    partyId
-  }));
-}
-
-function resetState() {
-  state.parties = clone(INITIAL_PARTIES);
-  state.seats = createBaselineSeats();
-  state.policies = clone(POLICY_SEEDS).map(p => ({ ...p, status:"Proposed" }));
-  state.ministers = [
-    { id:1, name:"Abang Johari Openg", portfolio:"Premier", partyId:"pbb" },
-    { id:2, name:"Douglas Uggah Embas", portfolio:"Deputy Premier", partyId:"pbb" },
-    { id:3, name:"Awang Tengah Ali Hasan", portfolio:"Deputy Premier", partyId:"pbb" }
-  ];
-  state.highlightedParty = null;
-}
-
-/* =========================
-   HELPERS
-========================= */
-
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-  })[char]);
-}
-
-function partyColor(id) {
-  const party = partyById(id);
-  return party ? party.color : "#59657b";
-}
-
-function partyShort(id) {
-  const party = partyById(id);
-  return party ? party.short : "—";
-}
-
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-  window.clearTimeout(showToast.timer);
-  showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
-}
-
-function openModal(title, html, onSubmit) {
-  document.getElementById("modalTitle").textContent = title;
-  document.getElementById("modalBody").innerHTML = html;
-  document.getElementById("modalBackdrop").classList.add("open");
-
-  const form = document.getElementById("modalBody").querySelector("form");
-  if (form && typeof onSubmit === "function") {
-    form.onsubmit = function(event) {
-      event.preventDefault();
-      onSubmit(new FormData(form));
-    };
-  }
-}
-
-function closeModal() {
-  document.getElementById("modalBackdrop").classList.remove("open");
-  document.getElementById("modalBody").innerHTML = "";
-}
-
-function partyOptions(selectedId = "") {
-  return state.parties
-    .filter(p => p.status === "active")
-    .map(p => `<option value="${escapeHtml(p.id)}" ${p.id === selectedId ? "selected" : ""}>${escapeHtml(p.short)} — ${escapeHtml(p.name)}</option>`)
-    .join("");
-}
-
-function setPage(page) {
-  state.page = page;
-  document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.page === page);
-  });
-  render();
-}
-
-/* =========================
-   LANGUAGE
-========================= */
-
-function applyLanguage() {
-  document.documentElement.lang = state.language === "ms" ? "ms" : "en";
-  document.getElementById("languageBtn").textContent =
-    state.language === "en" ? "🇲🇾 BM" : "🇬🇧 EN";
-
-  document.querySelectorAll("[data-i18n]").forEach(element => {
-    const key = element.dataset.i18n;
-    element.textContent = t(key);
-  });
-
-  render();
-}
-
-/* =========================
-   RENDER ROUTER
-========================= */
-
-function render() {
-  const main = document.getElementById("mainContent");
-
-  if (state.page === "dashboard") main.innerHTML = renderDashboard();
-  else if (state.page === "dun") main.innerHTML = renderDun();
-  else if (state.page === "parties") main.innerHTML = renderParties();
-  else if (state.page === "election") main.innerHTML = renderElection();
-  else if (state.page === "cabinet") main.innerHTML = renderCabinet();
-  else if (state.page === "policies") main.innerHTML = renderPolicies();
-  else main.innerHTML = renderDashboard();
-
-  if (state.page === "dun") drawDunSeats();
-}
-
-/* =========================
-   DASHBOARD
-========================= */
-
-function renderDashboard() {
-  const gps = governmentSeats();
-  const total = totalSeats();
-  const parties = activeParties().slice().sort((a,b) => countPartySeats(b.id) - countPartySeats(a.id));
-
-  return `
-    <div class="page-heading">
-      <div>
-        <h1>${t("overview")}</h1>
-        <div class="muted">${t("overviewSub")}</div>
-      </div>
-      <button class="primary" data-action="go-election">${t("simulate")}</button>
-    </div>
-
-    <div class="grid stats">
-      <div class="card">
-        <div class="stat-label">${t("seats")}</div>
-        <div class="stat-value">${total}</div>
-        <div class="stat-foot">Dewan Undangan Negeri</div>
-      </div>
-      <div class="card">
-        <div class="stat-label">${t("majority")}</div>
-        <div class="stat-value">${majorityThreshold()}</div>
-        <div class="stat-foot">50% + 1</div>
-      </div>
-      <div class="card">
-        <div class="stat-label">${t("government")}</div>
-        <div class="stat-value">${gps}</div>
-        <div class="stat-foot">${Math.round(gps / Math.max(total,1) * 100)}% ${state.language === "ms" ? "daripada kerusi" : "of seats"}</div>
-      </div>
-      <div class="card">
-        <div class="stat-label">${t("partiesCount")}</div>
-        <div class="stat-value">${activeParties().length}</div>
-        <div class="stat-foot">${state.language === "ms" ? "Parti aktif dalam simulator" : "Active simulator parties"}</div>
-      </div>
-    </div>
-
-    <div class="grid two-col" style="margin-top:16px">
-      <section class="card">
-        <div class="section-title">
-          <h2>${t("partyDirectory")}</h2>
-          <button class="small" data-action="go-parties">${t("parties")} →</button>
-        </div>
-        function drawDunSeats() {
-  const svg = document.getElementById("dunSvg");
-  if (!svg) return;
-
-  const NS = "http://www.w3.org/2000/svg";
-  svg.innerHTML = "";
-
-  const rows = 8;
-  const seatsPerRow = [8, 10, 12, 14, 16, 18, 20, 22];
-  const cx = 350;
-  const cy = 310;
-  const radiusX = 300;
-  const radiusY = 270;
-
-  let seatIndex = 0;
-
-  seatsPerRow.forEach((count, rowIndex) => {
-    const rowRadiusX = radiusX - rowIndex * 25;
-    const rowRadiusY = radiusY - rowIndex * 23;
-
-    for (let i = 0; i < count && seatIndex < state.seats.length; i++) {
-      const angle = Math.PI + (Math.PI * i) / Math.max(count - 1, 1);
-      const x = cx + rowRadiusX * Math.cos(angle);
-      const y = cy + rowRadiusY * Math.sin(angle);
-      const seat = state.seats[seatIndex++];
-      const circle = document.createElementNS(NS, "circle");
-
-      circle.setAttribute("cx", x);
-      circle.setAttribute("cy", y);
-      circle.setAttribute("r", 8);
-      circle.setAttribute("fill", partyColor(seat.partyId));
-      circle.setAttribute("class", "seat");
-      circle.setAttribute("tabindex", "0");
-      circle.setAttribute("role", "button");
-      circle.setAttribute("aria-label", `${seat.constituency}: ${partyShort(seat.partyId)}`);
-      circle.dataset.seatId = seat.id;
-
-      if (state.highlightedParty && seat.partyId !== state.highlightedParty) {
-        circle.classList.add("dimmed");
-      }
-
-      circle.addEventListener("click", () => openSeatModal(seat.id));
-      circle.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openSeatModal(seat.id);
-        }
-      });
-
-      svg.appendChild(circle);
-    }
-  });
-}
-
-function renderDun() {
-  const parties = activeParties().slice().sort((a,b) => countPartySeats(b.id) - countPartySeats(a.id));
-
-  return `
-    <div class="page-heading">
-      <div>
-        <h1>${t("chamber")}</h1>
-        <div class="muted">${t("chamberSub")}</div>
-      </div>
-      <button data-action="clear-highlight">${t("clearFilter")}</button>
-    </div>
-
-    <section class="card">
-      <div class="dun-toolbar">
-        <label for="partyFilter">${t("filterParty")}</label>
-        <select id="partyFilter">
-          <option value="">${t("allParties")}</option>
-          ${parties.map(p => `<option value="${p.id}" ${state.highlightedParty === p.id ? "selected" : ""}>${escapeHtml(p.short)}</option>`).join("")}
-        </select>
-      </div>
-      <div id="seatInfo" class="muted">${t("chamberSub")}</div>
-      <div class="dun-chart">
-        <svg id="dunSvg" viewBox="0 0 700 340" role="img" aria-label="Interactive DUN seats"></svg>
-      </div>
-      <div class="dun-legend">
-        ${parties.map(p => `
-          <div class="legend-item">
-            <span class="legend-color" style="background:${p.color}"></span>
-            ${escapeHtml(p.short)} (${countPartySeats(p.id)})
-          </div>`).join("")}
-        </div>
-    </section>
-  `;
-}
-
-function drawDashboardDun() {
-  const svg = document.getElementById("dashboardDunSvg");
-  if (!svg) return;
-
-  const NS = "http://www.w3.org/2000/svg";
-  svg.innerHTML = "";
-
-  const parties = activeParties();
-  const counts = parties.map(p => ({ id:p.id, count:countPartySeats(p.id), color:p.color }));
-  let seatIndex = 0;
-  const total = state.seats.length;
-  const cx = 350, cy = 310, rx = 300, ry = 270;
-
-  counts.forEach(party => {
-    for (let i = 0; i < party.count; i++) {
-      const angle = Math.PI + Math.PI * seatIndex / Math.max(total - 1, 1);
-      const circle = document.createElementNS(NS, "circle");
-      circle.setAttribute("cx", cx + rx * Math.cos(angle));
-      circle.setAttribute("cy", cy + ry * Math.sin(angle));
-      circle.setAttribute("r", 5);
-      circle.setAttribute("fill", party.color);
-      svg.appendChild(circle);
-      seatIndex++;
-    }
-  });
-}
-
-const originalRenderDashboard = renderDashboard;
-renderDashboard = function() {
-  const html = originalRenderDashboard();
-  setTimeout(drawDashboardDun, 0);
-  return html;
-};
-
-function renderDun() {
-  const parties = activeParties().slice().sort((a,b) => countPartySeats(b.id) - countPartySeats(a.id));
-
-  return `
-    <div class="page-heading">
-      <div>
-        <h1>${t("chamber")}</h1>
-        <div class="muted">${t("chamberSub")}</div>
-      </div>
-      <button data-action="clear-highlight">${t("clearFilter")}</button>
-    </div>
-
-    <section class="card">
-      <div class="dun-toolbar">
-        <label for="partyFilter">${t("filterParty")}</label>
-        <select id="partyFilter">
-          <option value="">${t("allParties")}</option>
-          ${parties.map(p => `<option value="${p.id}" ${state.highlightedParty === p.id ? "selected" : ""}>${escapeHtml(p.short)}</option>`).join("")}
-        </select>
-      </div>
-      <div id="seatInfo" class="muted">${t("chamberSub")}</div>
-      <div class="dun-chart">
-        <svg id="dunSvg" viewBox="0 0 700 340" role="img" aria-label="Interactive DUN seats"></svg>
-      </div>
-      <div class="dun-legend">
-        ${parties.map(p => `
-          <div class="legend-item">
-            <span class="legend-color" style="background:${p.color}"></span>
-            ${escapeHtml(p.short)} (${countPartySeats(p.id)})
-          </div>`).join("")}
-      </div>
-    </section>
-  `;
-}
+/* ---------- actions ---------- */
+function partyForm(p){const n=!p;p=p||{name:"",abbr:"",leader:"",color:"#7a4fd1",coal:"opp",ideo:"",loy:50};
+ modal(t(n?"addParty":"edit"),[{k:"name",l:"name",v:p.name,r:1},{k:"abbr",l:"abbr",v:p.abbr,r:1},{k:"leader",l:"leader",v:p.leader},{k:"color",l:"color",v:p.color,c:1},{k:"coal",l:"coal",v:p.coal,o:[["gov",t("gov")],["opp",t("opp")]]},{k:"loy",l:"ploy",v:p.loy,n:1},{k:"ideo",l:"ideo",v:p.ideo,ta:1}],v=>{v.loy=clamp(parseInt(v.loy)||0);if(n)S.parties.push({id:uid(),...v});else Object.assign(p,v)})}
+function delParty(id){const has=S.seats.some(s=>s.party===id);
+ ask(t("confirm")+(has?" "+t("inuse"):""),()=>{
+  if(has){let fb=S.parties.find(x=>x.id==="ind"&&x.id!==id);
+   if(!fb&&id!=="ind"){fb={id:"ind",name:"Independent",abbr:"IND",leader:"",color:"#8a8f98",coal:"opp",ideo:"Independent",loy:50};S.parties.push(fb)}
+   if(!fb)fb=S.parties.find(x=>x.id!==id);
+   if(!fb)return;
+   S.seats.forEach(s=>{if(s.party===id)s.party=fb.id})}
+  S.parties=S.parties.filter(x=>x.id!==id);S.cabinet.forEach(m=>{if(m.party===id)m.party=""});if(flt===id)flt=null})}
+function simulate(pid,sw){
+ const others=S.parties.filter(p=>p.id!==pid);if(!others.length)return;
+ S.seats.forEach(s=>{
+  if(sw<0&&s.party===pid&&Math.random()<Math.min(.95,-sw/20*.9)){
+   const pool=others.filter(p=>S.seats.some(x=>x.party===p.id));const l=pool.length?pool:others;s.party=l[Math.floor(Math.random()*l.length)].id}
+  else if(sw>0&&s.party!==pid&&Math.random()<Math.min(.9,sw/20*.6))s.party=pid});
+ const g=P(pid).coal==="gov";
+ S.lv.approval=clamp(S.lv.approval+(g?sw*.8:-sw*.4));
+ S.lv.stability=clamp(S.lv.stability+(g?sw*.3:-sw*.2))}
+function cabForm(m){const n=!m;m=m||{name:"",port:"",party:S.parties[0]?S.parties[0].id:""};
+ modal(t(n?"addMin":"edit"),[{k:"name",l:"minister",v:m.name,r:1},{k:"port",l:"port",v:m.port,r:1},{k:"party",l:"party",v:m.party,o:popts()}],v=>{if(n)S.cabinet.push({id:uid(),...v});else Object.assign(m,v)})}
+function polForm(p){const n=!p;p=p||{title:"",cat:"",desc:"",status:"0"};const was=String(p.status);
+ modal(t(n?"addPol":"edit"),[{k:"title",l:"ptitle",v:p.title,r:1},{k:"cat",l:"cat",v:p.cat,r:1},{k:"desc",l:"desc",v:p.desc,ta:1},{k:"status",l:"status",v:was,o:[["0",t("st0")],["1",t("st1")],["2",t("st2")]]}],v=>{
+  if(v.status==="2"&&(n||was!=="2"))S.lv.approval=clamp(S.lv.approval+3);
+  if(n)S.policies.push({id:uid(),...v});else Object.assign(p,v)})}
+const byId=(a,id)=>a.find(x=>x.id===id);
+document.addEventListener("click",e=>{
+ const el=e.target.closest("[data-go],[data-f],[data-lv],[data-pe],[data-pc],[data-pd],[data-me],[data-md],[data-le],[data-ld],.seat,button[id]");if(!el)return;const d=el.dataset;
+ if(d.go){cur=d.go;render();return}
+ if(el.id==="lg"){lang=lang==="en"?"ms":"en";render();return}
+ if(d.lv){S.lv[d.lv]=clamp(S.lv[d.lv]+Number(d.d));render();return}
+ if(el.classList.contains("seat")){seatModal(+d.i);return}
+ if(d.f!==undefined&&el.classList.contains("lg")){flt=d.f&&flt!==d.f?d.f:null;render();return}
+ if(d.pe)partyForm(P(d.pe));else if(d.pc){const p=P(d.pc);p.coal=p.coal==="gov"?"opp":"gov";toast(t("saved"));render()}else if(d.pd)delParty(d.pd);
+ else if(d.me)cabForm(byId(S.cabinet,d.me));else if(d.md)ask(t("confirm"),()=>{S.cabinet=S.cabinet.filter(x=>x.id!==d.md)});
+ else if(d.le)polForm(byId(S.policies,d.le));else if(d.ld)ask(t("confirm"),()=>{S.policies=S.policies.filter(x=>x.id!==d.ld)});
+ else if(el.id==="addP")partyForm();else if(el.id==="addM")cabForm();else if(el.id==="addL")polForm();
+ else if(el.id==="sim"){const pid=$("#ep").value;if(!pid){toast(t("noP"));return}simulate(pid,+$("#es").value);toast(t("simDone"));render()}
+ else if(el.id==="rst"){S=JSON.parse(JSON.stringify({...BASE,cabinet:S.cabinet,policies:S.policies}));flt=null;toast(t("restored"));render()}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){const el=e.target.closest(".seat,.lg");if(el){e.preventDefault();el.dispatchEvent(new MouseEvent("click",{bubbles:true}))}}});
+render();
+</script></body></html>
