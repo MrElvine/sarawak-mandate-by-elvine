@@ -49,19 +49,8 @@
     }
 
     .brand { padding: 0 10px; }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 17px;
-      line-height: 1.4;
-      letter-spacing: 0.02em;
-    }
-
-    .brand p {
-      margin: 7px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-    }
+    .brand h1 { margin: 0; font-size: 17px; line-height: 1.4; }
+    .brand p { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
 
     .nav { display: grid; gap: 7px; }
 
@@ -77,10 +66,7 @@
       transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
     }
 
-    .nav button:hover {
-      background: var(--panel-light);
-      color: var(--text);
-    }
+    .nav button:hover { background: var(--panel-light); color: var(--text); }
 
     .nav button.active {
       color: var(--accent);
@@ -88,10 +74,7 @@
       border-color: rgba(56, 189, 248, 0.22);
     }
 
-    .main {
-      min-width: 0;
-      padding: 28px 32px;
-    }
+    .main { min-width: 0; padding: 28px 32px; }
 
     .topbar {
       min-height: 72px;
@@ -99,21 +82,12 @@
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      padding: 0 0 22px;
+      padding-bottom: 22px;
       border-bottom: 1px solid var(--border);
     }
 
-    .page-heading h2 {
-      margin: 0;
-      font-size: 25px;
-      font-weight: 700;
-    }
-
-    .page-heading p {
-      margin: 7px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .page-heading h2 { margin: 0; font-size: 25px; }
+    .page-heading p { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
 
     .language-toggle {
       flex-shrink: 0;
@@ -123,31 +97,14 @@
       background: var(--panel);
       color: var(--text);
       cursor: pointer;
-      transition: border-color 160ms ease, background 160ms ease;
     }
 
-    .language-toggle:hover {
-      border-color: var(--accent);
-      background: var(--panel-light);
-    }
-
+    .language-toggle:hover { border-color: var(--accent); background: var(--panel-light); }
     .content { padding-top: 28px; }
 
-    .dashboard-intro {
-      margin-bottom: 22px;
-    }
-
-    .dashboard-intro h3 {
-      margin: 0 0 8px;
-      font-size: 19px;
-    }
-
-    .dashboard-intro p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 14px;
-    }
+    .dashboard-intro { margin-bottom: 22px; }
+    .dashboard-intro h3 { margin: 0 0 8px; font-size: 19px; }
+    .dashboard-intro p { margin: 0; color: var(--muted); line-height: 1.6; font-size: 14px; }
 
     .stats-grid {
       display: grid;
@@ -155,76 +112,124 @@
       gap: 16px;
     }
 
-    .stat-card {
-      min-width: 0;
-      padding: 20px;
+    .stat-card, .treasury-card, .placeholder, .dun-panel {
       border: 1px solid var(--border);
       border-radius: 13px;
       background: var(--panel);
     }
 
-    .stat-label {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .stat-value {
-      margin-top: 12px;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-    }
-
-    .stat-note {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 12px;
-    }
+    .stat-card { min-width: 0; padding: 20px; }
+    .stat-label { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .stat-value { margin-top: 12px; font-size: 28px; font-weight: 700; letter-spacing: -0.03em; }
+    .stat-note { margin-top: 8px; color: var(--muted); font-size: 12px; }
 
     .treasury-card {
       margin-top: 16px;
       padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: 13px;
       background: linear-gradient(135deg, var(--panel), var(--panel-light));
     }
 
-    .treasury-card .stat-value {
-      font-size: 30px;
+    .treasury-card .stat-value { font-size: 30px; }
+
+    .placeholder { min-height: 220px; padding: 28px; }
+    .placeholder h3 { margin: 0 0 10px; font-size: 18px; }
+    .placeholder p { margin: 0; color: var(--muted); line-height: 1.7; }
+
+    /* DUN */
+    .dun-panel { padding: 22px; }
+    .dun-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
     }
 
-    .placeholder {
-      min-height: 220px;
-      padding: 28px;
+    .dun-heading h3 { margin: 0 0 7px; }
+    .dun-heading p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .dun-total {
+      padding: 8px 12px;
       border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--panel);
-    }
-
-    .placeholder h3 {
-      margin: 0 0 10px;
-      font-size: 18px;
-    }
-
-    .placeholder p {
-      margin: 0;
+      border-radius: 9px;
       color: var(--muted);
-      line-height: 1.7;
+      white-space: nowrap;
     }
 
-    button:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
+    .seat-chart {
+      position: relative;
+      width: 100%;
+      max-width: 850px;
+      height: 390px;
+      margin: 0 auto;
+      overflow: hidden;
     }
+
+    .seat {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 2px solid rgba(255,255,255,.12);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .seat:hover, .seat:focus-visible {
+      z-index: 3;
+      transform: translate(-50%, -50%) scale(1.35);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.2);
+      outline: none;
+    }
+
+    .seat.selected {
+      z-index: 2;
+      box-shadow: 0 0 0 3px #fff;
+    }
+
+    .dun-bottom {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .legend, .seat-info {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--panel-light);
+    }
+
+    .legend h4, .seat-info h4 { margin: 0 0 12px; }
+
+    .legend-items { display: flex; flex-wrap: wrap; gap: 12px 18px; }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .seat-info p { margin: 6px 0; color: var(--muted); font-size: 13px; }
+    .seat-info strong { color: var(--text); }
+
+    button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     @media (max-width: 1000px) {
       .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .seat-chart { height: 340px; }
+      .seat { width: 19px; height: 19px; }
     }
 
     @media (max-width: 760px) {
       .app { grid-template-columns: 1fr; }
-
       .sidebar {
         position: static;
         height: auto;
@@ -233,24 +238,26 @@
         border-right: 0;
         border-bottom: 1px solid var(--border);
       }
-
       .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .main { padding: 22px 18px; }
       .topbar { align-items: flex-start; }
       .page-heading h2 { font-size: 21px; }
+      .dun-bottom { grid-template-columns: 1fr; }
+      .seat-chart { height: 300px; }
+      .seat { width: 16px; height: 16px; }
     }
 
     @media (max-width: 480px) {
       .topbar { flex-direction: column; }
       .language-toggle { align-self: flex-start; }
       .nav, .stats-grid { grid-template-columns: 1fr; }
+      .dun-panel { padding: 12px; }
+      .seat-chart { height: 240px; }
+      .seat { width: 13px; height: 13px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        transition-duration: 0.01ms !important;
-      }
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
     }
   </style>
 </head>
@@ -279,12 +286,8 @@
           <h2 id="pageTitle">Dashboard</h2>
           <p id="pageSubtitle">Welcome to the Sarawak Political Simulator.</p>
         </div>
-
-        <button class="language-toggle" id="languageToggle" type="button">
-          BM
-        </button>
+        <button class="language-toggle" id="languageToggle" type="button">BM</button>
       </header>
-
       <section class="content" id="pageContent"></section>
     </main>
   </div>
@@ -294,62 +297,62 @@
       en: {
         brand: "Sarawak Political Simulator",
         subtitle: "Political strategy game",
-        dashboard: "Dashboard",
-        dun: "DUN",
-        parties: "Parties",
-        election: "Election",
-        cabinet: "Cabinet",
-        policies: "Policies",
+        dashboard: "Dashboard", dun: "DUN", parties: "Parties",
+        election: "Election", cabinet: "Cabinet", policies: "Policies",
         pageSubtitle: "Welcome to the Sarawak Political Simulator.",
         dashboardIntro: "Political and economic overview",
         dashboardDescription: "Your administration's current status.",
-        publicApproval: "Public Approval",
-        economy: "Economy",
-        partyLoyalty: "Party Loyalty",
-        integrity: "Integrity",
-        stability: "Political Stability",
-        federalRelations: "Federal Relations",
-        treasury: "Treasury",
-        initialStatus: "Starting value",
+        publicApproval: "Public Approval", economy: "Economy",
+        partyLoyalty: "Party Loyalty", integrity: "Integrity",
+        stability: "Political Stability", federalRelations: "Federal Relations",
+        treasury: "Treasury", initialStatus: "Starting value",
         treasuryNote: "Available government funds",
-        placeholderDescription: "This section is ready for the next development step."
+        dunIntro: "Legislative Assembly seat map",
+        dunDescription: "Select a seat to view its demo details.",
+        seats: "82 seats", legend: "Demo party distribution",
+        seat: "Seat", party: "Party", representative: "Representative",
+        demoNote: "Demo data — party names and representatives are temporary.",
+        placeholder: "This section is ready for the next development step."
       },
       bm: {
         brand: "Simulator Politik Sarawak",
         subtitle: "Permainan strategi politik",
-        dashboard: "Dashboard",
-        dun: "DUN",
-        parties: "Parti",
-        election: "Pilihan Raya",
-        cabinet: "Kabinet",
-        policies: "Dasar",
+        dashboard: "Dashboard", dun: "DUN", parties: "Parti",
+        election: "Pilihan Raya", cabinet: "Kabinet", policies: "Dasar",
         pageSubtitle: "Selamat datang ke Simulator Politik Sarawak.",
         dashboardIntro: "Gambaran politik dan ekonomi",
         dashboardDescription: "Status semasa pentadbiran anda.",
-        publicApproval: "Sokongan Awam",
-        economy: "Ekonomi",
-        partyLoyalty: "Kesetiaan Parti",
-        integrity: "Integriti",
-        stability: "Kestabilan Politik",
-        federalRelations: "Hubungan Persekutuan",
-        treasury: "Perbendaharaan",
-        initialStatus: "Nilai permulaan",
+        publicApproval: "Sokongan Awam", economy: "Ekonomi",
+        partyLoyalty: "Kesetiaan Parti", integrity: "Integriti",
+        stability: "Kestabilan Politik", federalRelations: "Hubungan Persekutuan",
+        treasury: "Perbendaharaan", initialStatus: "Nilai permulaan",
         treasuryNote: "Dana kerajaan yang tersedia",
-        placeholderDescription: "Bahagian ini sedia untuk langkah pembangunan seterusnya."
+        dunIntro: "Peta kerusi Dewan Undangan Negeri",
+        dunDescription: "Pilih kerusi untuk melihat maklumat demo.",
+        seats: "82 kerusi", legend: "Agihan parti demo",
+        seat: "Kerusi", party: "Parti", representative: "Wakil rakyat",
+        demoNote: "Data demo — nama parti dan wakil adalah sementara.",
+        placeholder: "Bahagian ini sedia untuk langkah pembangunan seterusnya."
       }
     };
 
+    const parties = [
+      { name: "Party A", color: "#38bdf8", count: 30 },
+      { name: "Party B", color: "#f59e0b", count: 22 },
+      { name: "Party C", color: "#22c55e", count: 15 },
+      { name: "Party D", color: "#a78bfa", count: 10 },
+      { name: "Party E", color: "#f87171", count: 5 }
+    ];
+
     const stats = [
-      { key: "publicApproval", value: "55%" },
-      { key: "economy", value: "50/100" },
-      { key: "partyLoyalty", value: "60%" },
-      { key: "integrity", value: "70/100" },
-      { key: "stability", value: "65/100" },
-      { key: "federalRelations", value: "50/100" }
+      ["publicApproval", "55%"], ["economy", "50/100"],
+      ["partyLoyalty", "60%"], ["integrity", "70/100"],
+      ["stability", "65/100"], ["federalRelations", "50/100"]
     ];
 
     let currentLanguage = "en";
     let currentPage = "dashboard";
+    let selectedSeat = 1;
 
     const pageTitle = document.getElementById("pageTitle");
     const pageSubtitle = document.getElementById("pageSubtitle");
@@ -357,77 +360,136 @@
     const languageToggle = document.getElementById("languageToggle");
     const navButtons = document.querySelectorAll(".nav button");
 
-    function renderDashboard(language) {
-      const cards = stats.map((stat) => `
+    function getPartyForSeat(number) {
+      let offset = number;
+      for (const party of parties) {
+        if (offset <= party.count) return party;
+        offset -= party.count;
+      }
+      return parties[0];
+    }
+
+    function renderDashboard(t) {
+      const cards = stats.map(([key, value]) => `
         <article class="stat-card">
-          <div class="stat-label">${language[stat.key]}</div>
-          <div class="stat-value">${stat.value}</div>
-          <div class="stat-note">${language.initialStatus}</div>
-        </article>
-      `).join("");
+          <div class="stat-label">${t[key]}</div>
+          <div class="stat-value">${value}</div>
+          <div class="stat-note">${t.initialStatus}</div>
+        </article>`).join("");
 
       pageContent.innerHTML = `
         <div class="dashboard-intro">
-          <h3>${language.dashboardIntro}</h3>
-          <p>${language.dashboardDescription}</p>
+          <h3>${t.dashboardIntro}</h3><p>${t.dashboardDescription}</p>
         </div>
-
-        <div class="stats-grid">
-          ${cards}
-        </div>
-
+        <div class="stats-grid">${cards}</div>
         <article class="treasury-card">
-          <div class="stat-label">${language.treasury}</div>
+          <div class="stat-label">${t.treasury}</div>
           <div class="stat-value">RM 100,000,000</div>
-          <div class="stat-note">${language.treasuryNote}</div>
-        </article>
-      `;
+          <div class="stat-note">${t.treasuryNote}</div>
+        </article>`;
     }
 
-    function renderPlaceholder(language, title) {
+    function renderDun(t) {
       pageContent.innerHTML = `
-        <article class="placeholder">
-          <h3>${title}</h3>
-          <p>${language.placeholderDescription}</p>
-        </article>
-      `;
+        <div class="dun-panel">
+          <div class="dun-heading">
+            <div><h3>${t.dunIntro}</h3><p>${t.dunDescription}</p></div>
+            <div class="dun-total">${t.seats}</div>
+          </div>
+          <div class="seat-chart" id="seatChart"></div>
+          <div class="dun-bottom">
+            <div class="legend">
+              <h4>${t.legend}</h4>
+              <div class="legend-items">
+                ${parties.map(p => `<div class="legend-item"><span class="legend-dot" style="background:${p.color}"></span>${p.name} (${p.count})</div>`).join("")}
+              </div>
+            </div>
+            <div class="seat-info" id="seatInfo"></div>
+          </div>
+          <p class="stat-note">${t.demoNote}</p>
+        </div>`;
+
+      const chart = document.getElementById("seatChart");
+      const rowCounts = [12, 15, 17, 19, 19];
+      const maxRadius = 44;
+      let seatNumber = 1;
+
+      rowCounts.forEach((count, row) => {
+        const radius = maxRadius - row * 8;
+        for (let i = 0; i < count; i++) {
+          const angle = Math.PI * (0.04 + 0.92 * (i / (count - 1)));
+          const x = 50 + radius * Math.cos(angle);
+          const y = 98 - radius * Math.sin(angle);
+          const party = getPartyForSeat(seatNumber);
+
+          const seat = document.createElement("button");
+          seat.className = "seat";
+          seat.type = "button";
+          seat.style.left = x + "%";
+          seat.style.top = y + "%";
+          seat.style.background = party.color;
+          seat.title = `${t.seat} ${seatNumber} — ${party.name}`;
+          seat.setAttribute("aria-label", seat.title);
+          seat.dataset.seat = seatNumber;
+          seat.addEventListener("click", () => {
+            selectedSeat = seatNumber;
+            chart.querySelectorAll(".seat").forEach(s => s.classList.remove("selected"));
+            seat.classList.add("selected");
+            showSeatInfo(t, seatNumber, party);
+          });
+          chart.appendChild(seat);
+          seatNumber++;
+        }
+      });
+
+      const firstSeat = chart.querySelector(".seat");
+      if (firstSeat) firstSeat.classList.add("selected");
+      showSeatInfo(t, selectedSeat, getPartyForSeat(selectedSeat));
+    }
+
+    function showSeatInfo(t, number, party) {
+      const info = document.getElementById("seatInfo");
+      if (!info) return;
+      info.innerHTML = `
+        <h4>${t.seat} ${number}</h4>
+        <p><strong>${t.party}:</strong> ${party.name}</p>
+        <p><strong>${t.representative}:</strong> Demo Representative ${number}</p>`;
+    }
+
+    function renderPlaceholder(t, title) {
+      pageContent.innerHTML = `<article class="placeholder"><h3>${title}</h3><p>${t.placeholder}</p></article>`;
     }
 
     function updatePage() {
-      const language = translations[currentLanguage];
-      const title = language[currentPage];
+      const t = translations[currentLanguage];
+      pageTitle.textContent = t[currentPage];
+      pageSubtitle.textContent = t.pageSubtitle;
 
-      pageTitle.textContent = title;
-      pageSubtitle.textContent = language.pageSubtitle;
-
-      navButtons.forEach((button) => {
-        const isActive = button.dataset.page === currentPage;
-        button.classList.toggle("active", isActive);
-        button.setAttribute("aria-current", isActive ? "page" : "false");
+      navButtons.forEach(button => {
+        const active = button.dataset.page === currentPage;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-current", active ? "page" : "false");
       });
 
-      if (currentPage === "dashboard") {
-        renderDashboard(language);
-      } else {
-        renderPlaceholder(language, title);
-      }
+      if (currentPage === "dashboard") renderDashboard(t);
+      else if (currentPage === "dun") renderDun(t);
+      else renderPlaceholder(t, t[currentPage]);
     }
 
     function updateLanguage() {
-      const language = translations[currentLanguage];
-
+      const t = translations[currentLanguage];
       document.documentElement.lang = currentLanguage;
 
-      document.querySelectorAll("[data-i18n]").forEach((element) => {
+      document.querySelectorAll("[data-i18n]").forEach(element => {
         const key = element.dataset.i18n;
-        if (language[key]) element.textContent = language[key];
+        if (t[key]) element.textContent = t[key];
       });
 
       languageToggle.textContent = currentLanguage === "en" ? "BM" : "EN";
       updatePage();
     }
 
-    navButtons.forEach((button) => {
+    navButtons.forEach(button => {
       button.addEventListener("click", () => {
         currentPage = button.dataset.page;
         updatePage();
