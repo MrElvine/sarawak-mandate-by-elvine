@@ -1,712 +1,889 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sarawak Political Simulator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sarawak Political Simulator</title>
 
-  <style>
-    :root {
-      --bg: #0b1120;
-      --panel: #111a2d;
-      --panel-light: #17233a;
-      --border: #26344d;
-      --text: #e8eef8;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.12);
-      --sidebar-width: 230px;
-    }
+<style>
+:root {
+  --bg: #0b1020;
+  --panel: #131b2e;
+  --panel2: #19243a;
+  --border: #2b3852;
+  --text: #edf2ff;
+  --muted: #9aa9c4;
+  --accent: #f0b429;
+  --green: #36c995;
+  --red: #f16c7a;
+  --blue: #5c9dff;
+  --radius: 16px;
+}
 
-    * { box-sizing: border-box; }
+* { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 
-    button { font: inherit; }
+button, input, select, textarea { font: inherit; }
 
-    .app {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-    }
+button {
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text);
+  background: var(--panel2);
+  transition: .15s ease;
+}
 
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      padding: 24px 16px;
-      background: var(--panel);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
+button:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
 
-    .brand { padding: 0 10px; }
-    .brand h1 { margin: 0; font-size: 17px; line-height: 1.4; }
-    .brand p { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+}
 
-    .nav { display: grid; gap: 7px; }
+.primary {
+  background: var(--accent);
+  color: #17130a;
+  border-color: var(--accent);
+  font-weight: 800;
+}
 
-    .nav button {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid transparent;
-      border-radius: 9px;
-      background: transparent;
-      color: var(--muted);
-      text-align: left;
-      cursor: pointer;
-      transition: background 160ms ease, color 160ms ease;
-    }
+.danger {
+  color: #fff;
+  background: #8c2f42;
+  border-color: #a84457;
+}
 
-    .nav button:hover {
-      background: var(--panel-light);
-      color: var(--text);
-    }
+.small { padding: 6px 9px; font-size: 12px; }
 
-    .nav button.active {
-      color: var(--accent);
-      background: var(--accent-soft);
-      border-color: rgba(56, 189, 248, 0.22);
-    }
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  background: #0d1527;
+}
 
-    .main { min-width: 0; padding: 28px 32px; }
+textarea { min-height: 90px; resize: vertical; }
 
-    .topbar {
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding-bottom: 22px;
-      border-bottom: 1px solid var(--border);
-    }
+label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
 
-    .page-heading h2 { margin: 0; font-size: 25px; }
-    .page-heading p { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 22px;
+  background: rgba(11,16,32,.94);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+}
 
-    .language-toggle {
-      flex-shrink: 0;
-      padding: 9px 14px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      background: var(--panel);
-      color: var(--text);
-      cursor: pointer;
-    }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 900;
+}
 
-    .language-toggle:hover {
-      border-color: var(--accent);
-      background: var(--panel-light);
-    }
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #17130a;
+}
 
-    .content { padding-top: 28px; }
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 
-    .dashboard-intro { margin-bottom: 22px; }
-    .dashboard-intro h3 { margin: 0 0 8px; font-size: 19px; }
-    .dashboard-intro p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 14px;
-    }
+.app {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  min-height: calc(100vh - 67px);
+}
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
+aside {
+  padding: 18px 12px;
+  border-right: 1px solid var(--border);
+  background: #0e1628;
+}
 
-    .stat-card, .treasury-card, .placeholder, .dun-panel {
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      background: var(--panel);
-    }
+.nav-label {
+  margin: 14px 10px 8px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+}
 
-    .stat-card { min-width: 0; padding: 20px; }
-    .stat-label { color: var(--muted); font-size: 13px; line-height: 1.5; }
-    .stat-value {
-      margin-top: 12px;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-    }
-    .stat-note { margin-top: 8px; color: var(--muted); font-size: 12px; }
+.nav-btn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+  text-align: left;
+  background: transparent;
+  border-color: transparent;
+}
 
-    .treasury-card {
-      margin-top: 16px;
-      padding: 22px;
-      background: linear-gradient(135deg, var(--panel), var(--panel-light));
-    }
+.nav-btn.active {
+  background: var(--panel2);
+  border-color: var(--border);
+  color: var(--accent);
+}
 
-    .treasury-card .stat-value { font-size: 30px; }
+main {
+  min-width: 0;
+  padding: 24px;
+}
 
-    .placeholder { min-height: 220px; padding: 28px; }
-    .placeholder h3 { margin: 0 0 10px; font-size: 18px; }
-    .placeholder p { margin: 0; color: var(--muted); line-height: 1.7; }
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
 
-    /* DUN */
-    .dun-panel { padding: 22px; }
+h1 { margin: 0 0 6px; font-size: clamp(24px, 3vw, 34px); }
+h2 { margin: 0 0 14px; font-size: 20px; }
+h3 { margin: 0 0 10px; font-size: 16px; }
 
-    .dun-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
+.muted { color: var(--muted); }
+.small-text { font-size: 12px; }
+.grid { display: grid; gap: 16px; }
+.stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-    .dun-heading h3 { margin: 0 0 7px; }
-    .dun-heading p { margin: 0; color: var(--muted); font-size: 13px; }
+.card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
 
-    .dun-total {
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      color: var(--muted);
-      white-space: nowrap;
-    }
+.stat-label { color: var(--muted); font-size: 13px; }
+.stat-value { margin-top: 8px; font-size: 30px; font-weight: 900; }
+.stat-foot { margin-top: 5px; color: var(--muted); font-size: 12px; }
 
-    .seat-map-wrap {
-      width: 100%;
-      margin: 0 auto;
-      overflow: hidden;
-    }
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
 
-    .seat-map {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
+.section-title h2 { margin: 0; }
 
-    .seat {
-      cursor: pointer;
-      stroke: rgba(255, 255, 255, 0.2);
-      stroke-width: 1.5;
-      transition: opacity 120ms ease, stroke 120ms ease, stroke-width 120ms ease;
-    }
+.party-list, .event-list, .policy-list {
+  display: grid;
+  gap: 10px;
+}
 
-    .seat:hover, .seat:focus {
-      stroke: #ffffff;
-      stroke-width: 4;
-      outline: none;
-    }
+.party-row {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #10192b;
+}
 
-    .seat.selected {
-      stroke: #ffffff;
-      stroke-width: 4;
-    }
+.party-dot {
+  width: 11px;
+  height: 30px;
+  border-radius: 6px;
+}
 
-    .seat.dimmed { opacity: 0.2; }
+.party-name { font-weight: 800; }
+.party-meta { color: var(--muted); font-size: 12px; }
+.party-seats { font-weight: 900; font-size: 18px; }
 
-    .majority-line {
-      stroke: rgba(255, 255, 255, 0.55);
-      stroke-width: 2;
-      stroke-dasharray: 7 7;
-      pointer-events: none;
-    }
+.bar {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #26334b;
+}
 
-    .majority-label {
-      fill: #cbd5e1;
-      font-size: 13px;
-      text-anchor: middle;
-    }
+.bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
 
-    .side-label {
-      fill: #94a3b8;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-anchor: middle;
-    }
+.dun-wrap { overflow: hidden; }
 
-    .dun-bottom {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
-      gap: 18px;
-      margin-top: 12px;
-    }
+.dun-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
 
-    .legend, .seat-info {
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: var(--panel-light);
-    }
+.dun-chart {
+  position: relative;
+  width: 100%;
+  padding: 8px 0 0;
+}
 
-    .legend h4, .seat-info h4 { margin: 0 0 12px; }
-    .legend-items { display: flex; flex-wrap: wrap; gap: 12px 18px; }
+#dunSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 13px;
-      cursor: pointer;
-    }
+.seat {
+  stroke: #0b1020;
+  stroke-width: 1.4;
+  cursor: pointer;
+  transition: opacity .12s ease, stroke-width .12s ease;
+}
 
-    .legend-item.active { color: var(--text); }
-    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-    .seat-info p { margin: 6px 0; color: var(--muted); font-size: 13px; }
-    .seat-info strong { color: var(--text); }
+.seat:hover, .seat:focus {
+  stroke: #fff;
+  stroke-width: 3;
+  outline: none;
+}
 
-    button:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
-    }
+.seat.dimmed { opacity: .14; }
+.seat.highlighted { stroke: #fff; stroke-width: 3; }
 
-    @media (max-width: 1000px) {
-      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
+.dun-divider {
+  stroke: #9aa9c4;
+  stroke-width: 2;
+  stroke-dasharray: 8 8;
+  opacity: .75;
+  pointer-events: none;
+}
 
-    @media (max-width: 760px) {
-      .app { grid-template-columns: 1fr; }
+.dun-side-label {
+  fill: #9aa9c4;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-anchor: middle;
+  pointer-events: none;
+}
 
-      .sidebar {
-        position: static;
-        height: auto;
-        padding: 18px;
-        gap: 18px;
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
-      }
+.dun-majority-label {
+  fill: #edf2ff;
+  font-size: 14px;
+  text-anchor: middle;
+  pointer-events: none;
+}
 
-      .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .main { padding: 22px 18px; }
-      .topbar { align-items: flex-start; }
-      .page-heading h2 { font-size: 21px; }
-      .dun-bottom { grid-template-columns: 1fr; }
-      .dun-panel { padding: 14px; }
-    }
+.dun-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
 
-    @media (max-width: 480px) {
-      .topbar { flex-direction: column; }
-      .language-toggle { align-self: flex-start; }
-      .nav, .stats-grid { grid-template-columns: 1fr; }
-    }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition-duration: 0.01ms !important; }
-    }
-  </style>
+.legend-item:hover { border-color: var(--accent); }
+.legend-color { width: 9px; height: 9px; border-radius: 3px; }
+
+.seat-info {
+  min-height: 54px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--muted);
+  background: #0e1628;
+}
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+th, td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 13px;
+}
+
+th { color: var(--muted); font-weight: 700; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 99px;
+  background: #26334b;
+  font-size: 11px;
+}
+
+.badge.green { background: #174b3b; color: #9af0ce; }
+.badge.red { background: #542735; color: #ffb4c0; }
+.badge.yellow { background: #59451a; color: #ffe19a; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-field.full { grid-column: 1 / -1; }
+
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0,0,0,.7);
+}
+
+.modal-backdrop.open { display: flex; }
+
+.modal {
+  width: min(620px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: 0 25px 80px #0008;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.modal-header h2 { margin: 0; }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 80;
+  max-width: min(360px, calc(100vw - 40px));
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel2);
+  box-shadow: 0 12px 40px #0007;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: .2s;
+}
+
+.toast.show { opacity: 1; transform: translateY(0); }
+
+.policy-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.policy-card p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+
+.empty {
+  padding: 25px;
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (max-width: 950px) {
+  .app { grid-template-columns: 1fr; }
+  aside {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 10px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-label { display: none; }
+  .nav-btn { width: auto; flex: 0 0 auto; margin: 0; }
+  main { padding: 16px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  header { padding: 12px; }
+  .brand-text { font-size: 13px; }
+  .header-actions button { padding: 8px; }
+  .two-col, .form-grid { grid-template-columns: 1fr; }
+  .form-field.full { grid-column: auto; }
+  .page-heading { flex-direction: column; }
+  .stats { gap: 10px; }
+  .card { padding: 14px; }
+}
+</style>
 </head>
+    swing:"Perubahan sokongan (%)", simulate:"Simulasikan pilihan raya", restore:"Pulihkan data asal",
+    cabinetTitle:"Pembina kabinet", cabinetSub:"Agihkan portfolio kepada ahli parti.",
+    addMinister:"Tambah menteri", portfolio:"Portfolio", minister:"Menteri",
+    policiesTitle:"Penjejak dasar", policiesSub:"Cipta dan pantau cadangan dasar politik.",
+    addPolicy:"Tambah dasar", status:"Status", proposed:"Dicadangkan", inProgress:"Dalam pelaksanaan",
+    completed:"Selesai", edit:"Edit", delete:"Padam", save:"Simpan", cancel:"Batal",
+    close:"Tutup", name:"Nama", shortName:"Nama pendek", color:"Warna",
+    partyName:"Nama parti", partyShort:"Singkatan parti", partyLeader:"Pemimpin parti",
+    partySeats:"Jumlah kerusi", partyCoalition:"Gabungan / penjajaran",
+    partyIdeology:"Ideologi atau platform", policyTitle:"Tajuk dasar",
+    category:"Kategori", description:"Penerangan", submit:"Hantar",
+    seatDetails:"Maklumat kerusi", constituency:"Kawasan DUN",
+    representative:"Wakil rakyat", noRep:"Maklumat wakil belum dibekalkan",
+    partyAffiliation:"Parti", updateSeat:"Kemaskini kerusi",
+    majorityWon:"Majoriti dicapai", hung:"DUN tergantung",
+    resetConfirm:"Reset simulator kepada data asal?",
+    partyAdded:"Parti ditambah.", partyUpdated:"Parti dikemaskini.", partyDeleted:"Parti dipadam.",
+    policyAdded:"Dasar ditambah.", policyUpdated:"Dasar dikemaskini.", policyDeleted:"Dasar dipadam.",
+    electionDone:"Simulasi pilihan raya selesai.", baselineRestored:"Data asal dipulihkan.",
+    languageChanged:"Bahasa ditukar.", seatUpdated:"Kerusi dikemaskini.",
+    noParty:"Tiada parti", noPolicies:"Belum ada dasar.",
+    placeholderRep:"Masukkan nama wakil", placeholderName:"Masukkan nama",
+    baselineNote:"Jumlah kerusi asal ialah titik mula simulasi. Sahkan nama wakil setiap kawasan melalui sumber rasmi."
+  }
+};
 
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <h1 data-i18n="brand">Sarawak Political Simulator</h1>
-        <p data-i18n="subtitle">Political strategy game</p>
-      </div>
+/* =========================
+   STATE
+========================= */
 
-      <nav class="nav" aria-label="Main navigation">
-        <button class="active" data-page="dashboard" data-i18n="dashboard">Dashboard</button>
-        <button data-page="dun" data-i18n="dun">DUN</button>
-        <button data-page="parties" data-i18n="parties">Parties</button>
-        <button data-page="election" data-i18n="election">Election</button>
-        <button data-page="cabinet" data-i18n="cabinet">Cabinet</button>
-        <button data-page="policies" data-i18n="policies">Policies</button>
-      </nav>
-    </aside>
+let state = {
+  language: "en",
+  page: "dashboard",
+  parties: [],
+  seats: [],
+  policies: [],
+  ministers: [],
+  highlightedParty: null
+};
 
-    <main class="main">
-      <header class="topbar">
-        <div class="page-heading">
-          <h2 id="pageTitle">Dashboard</h2>
-          <p id="pageSubtitle">Welcome to the Sarawak Political Simulator.</p>
-        </div>
-        <button class="language-toggle" id="languageToggle" type="button">BM</button>
-      </header>
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
 
-      <section class="content" id="pageContent"></section>
-    </main>
-  </div>
+function t(key) {
+  return (TRANSLATIONS[state.language] && TRANSLATIONS[state.language][key]) ||
+         TRANSLATIONS.en[key] || key;
+}
 
-  <script>
-    const translations = {
-      en: {
-        brand: "Sarawak Political Simulator",
-        subtitle: "Political strategy game",
-        dashboard: "Dashboard",
-        dun: "DUN",
-        parties: "Parties",
-        election: "Election",
-        cabinet: "Cabinet",
-        policies: "Policies",
-        pageSubtitle: "Welcome to the Sarawak Political Simulator.",
-        dashboardIntro: "Political and economic overview",
-        dashboardDescription: "Your administration's current status.",
-        publicApproval: "Public Approval",
-        economy: "Economy",
-        partyLoyalty: "Party Loyalty",
-        integrity: "Integrity",
-        stability: "Political Stability",
-        federalRelations: "Federal Relations",
-        treasury: "Treasury",
-        initialStatus: "Starting value",
-        treasuryNote: "Available government funds",
-        dunIntro: "Legislative Assembly seat map",
-        dunDescription: "Government seats are on the left; opposition seats are on the right. Select a seat for details.",
-        government: "GOVERNMENT",
-        opposition: "OPPOSITION",
-        majority: "Simple majority: 42 seats",
-        seats: "82 seats",
-        legend: "Demo party distribution",
-        seat: "Seat",
-        party: "Party",
-        representative: "Representative",
-        demoNote: "Demo data — party names and representatives are temporary.",
-        placeholder: "This section is ready for the next development step."
-      },
-      bm: {
-        brand: "Simulator Politik Sarawak",
-        subtitle: "Permainan strategi politik",
-        dashboard: "Dashboard",
-        dun: "DUN",
-        parties: "Parti",
-        election: "Pilihan Raya",
-        cabinet: "Kabinet",
-        policies: "Dasar",
-        pageSubtitle: "Selamat datang ke Simulator Politik Sarawak.",
-        dashboardIntro: "Gambaran politik dan ekonomi",
-        dashboardDescription: "Status semasa pentadbiran anda.",
-        publicApproval: "Sokongan Awam",
-        economy: "Ekonomi",
-        partyLoyalty: "Kesetiaan Parti",
-        integrity: "Integriti",
-        stability: "Kestabilan Politik",
-        federalRelations: "Hubungan Persekutuan",
-        treasury: "Perbendaharaan",
-        initialStatus: "Nilai permulaan",
-        treasuryNote: "Dana kerajaan yang tersedia",
-        dunIntro: "Peta kerusi Dewan Undangan Negeri",
-        dunDescription: "Kerajaan di sebelah kiri; pembangkang di sebelah kanan. Pilih kerusi untuk maklumat.",
-        government: "KERAJAAN",
-        opposition: "PEMBANGKANG",
-        majority: "Majoriti mudah: 42 kerusi",
-        seats: "82 kerusi",
-        legend: "Agihan parti demo",
-        seat: "Kerusi",
-        party: "Parti",
-        representative: "Wakil rakyat",
-        demoNote: "Data demo — nama parti dan wakil adalah sementara.",
-        placeholder: "Bahagian ini sedia untuk langkah pembangunan seterusnya."
-      }
+function activeParties() {
+  return state.parties.filter(p => p.status === "active");
+}
+
+function partyById(id) {
+  return state.parties.find(p => p.id === id);
+}
+
+function totalSeats() {
+  return state.seats.length;
+}
+
+function majorityThreshold() {
+  return Math.floor(totalSeats() / 2) + 1;
+}
+
+function countPartySeats(partyId) {
+  return state.seats.filter(s => s.partyId === partyId).length;
+}
+
+function governmentSeats() {
+  return state.seats.filter(s => {
+    const p = partyById(s.partyId);
+    return p && (p.coalition === "GPS" || p.coalition === "GPS-aligned");
+  }).length;
+}
+
+function createBaselineSeats() {
+  const seatAssignments = [
+    ...Array(47).fill("pbb"),
+    ...Array(13).fill("supp"),
+    ...Array(11).fill("prs"),
+    ...Array(8).fill("pdp"),
+    ...Array(2).fill("dap"),
+    "ind"
+  ];
+
+  return seatAssignments.map((partyId, index) => ({
+    id: index + 1,
+    constituency: "DUN " + String(index + 1).padStart(2, "0"),
+    representative: "",
+    partyId
+  }));
+}
+
+function resetState() {
+  state.parties = clone(INITIAL_PARTIES);
+  state.seats = createBaselineSeats();
+  state.policies = clone(POLICY_SEEDS).map(p => ({ ...p, status:"Proposed" }));
+  state.ministers = [
+    { id:1, name:"Abang Johari Openg", portfolio:"Premier", partyId:"pbb" },
+    { id:2, name:"Douglas Uggah Embas", portfolio:"Deputy Premier", partyId:"pbb" },
+    { id:3, name:"Awang Tengah Ali Hasan", portfolio:"Deputy Premier", partyId:"pbb" }
+  ];
+  state.highlightedParty = null;
+}
+
+/* =========================
+   HELPERS
+========================= */
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[char]);
+}
+
+function partyColor(id) {
+  const party = partyById(id);
+  return party ? party.color : "#59657b";
+}
+
+function partyShort(id) {
+  const party = partyById(id);
+  return party ? party.short : "—";
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+function openModal(title, html, onSubmit) {
+  document.getElementById("modalTitle").textContent = title;
+  document.getElementById("modalBody").innerHTML = html;
+  document.getElementById("modalBackdrop").classList.add("open");
+
+  const form = document.getElementById("modalBody").querySelector("form");
+  if (form && typeof onSubmit === "function") {
+    form.onsubmit = function(event) {
+      event.preventDefault();
+      onSubmit(new FormData(form));
     };
+  }
+}
 
-    const parties = [
-      { name: "Party A", color: "#38bdf8", count: 30 },
-      { name: "Party B", color: "#f59e0b", count: 22 },
-      { name: "Party C", color: "#22c55e", count: 15 },
-      { name: "Party D", color: "#a78bfa", count: 10 },
-      { name: "Party E", color: "#f87171", count: 5 }
-    ];
+function closeModal() {
+  document.getElementById("modalBackdrop").classList.remove("open");
+  document.getElementById("modalBody").innerHTML = "";
+}
 
-    const stats = [
-      ["publicApproval", "55%"],
-      ["economy", "50/100"],
-      ["partyLoyalty", "60%"],
-      ["integrity", "70/100"],
-      ["stability", "65/100"],
-      ["federalRelations", "50/100"]
-    ];
+function partyOptions(selectedId = "") {
+  return state.parties
+    .filter(p => p.status === "active")
+    .map(p => `<option value="${escapeHtml(p.id)}" ${p.id === selectedId ? "selected" : ""}>${escapeHtml(p.short)} — ${escapeHtml(p.name)}</option>`)
+    .join("");
+}
 
-    // Temporary demo configuration: 48 government seats and 34 opposition seats.
-    const governmentSeatCount = 48;
-    const oppositionSeatCount = 34;
+function setPage(page) {
+  state.page = page;
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.page === page);
+  });
+  render();
+}
 
-    // 48 government seats on the left, 34 opposition seats on the right.
-    const governmentRows = [12, 12, 12, 12];
-    const oppositionRows = [9, 9, 8, 8];
-    const seatRadii = [110, 165, 220, 275];
+/* =========================
+   LANGUAGE
+========================= */
 
-    let currentLanguage = "en";
-    let currentPage = "dashboard";
-    let selectedSeat = 1;
-    let hoveredParty = null;
+function applyLanguage() {
+  document.documentElement.lang = state.language === "ms" ? "ms" : "en";
+  document.getElementById("languageBtn").textContent =
+    state.language === "en" ? "🇲🇾 BM" : "🇬🇧 EN";
 
-    const pageTitle = document.getElementById("pageTitle");
-    const pageSubtitle = document.getElementById("pageSubtitle");
-    const pageContent = document.getElementById("pageContent");
-    const languageToggle = document.getElementById("languageToggle");
-    const navButtons = document.querySelectorAll(".nav button");
+  document.querySelectorAll("[data-i18n]").forEach(element => {
+    const key = element.dataset.i18n;
+    element.textContent = t(key);
+  });
 
-    function getPartyForSeat(seatNumber) {
-      let remaining = seatNumber;
-      for (const party of parties) {
-        if (remaining <= party.count) return party;
-        remaining -= party.count;
-      }
-      return parties[0];
-    }
+  render();
+}
 
-    function renderDashboard(t) {
-      const cards = stats.map(([key, value]) => `
-        <article class="stat-card">
-          <div class="stat-label">${t[key]}</div>
-          <div class="stat-value">${value}</div>
-          <div class="stat-note">${t.initialStatus}</div>
-        </article>
-      `).join("");
+/* =========================
+   RENDER ROUTER
+========================= */
 
-      pageContent.innerHTML = `
-        <div class="dashboard-intro">
-          <h3>${t.dashboardIntro}</h3>
-          <p>${t.dashboardDescription}</p>
+function render() {
+  const main = document.getElementById("mainContent");
+
+  if (state.page === "dashboard") main.innerHTML = renderDashboard();
+  else if (state.page === "dun") main.innerHTML = renderDun();
+  else if (state.page === "parties") main.innerHTML = renderParties();
+  else if (state.page === "election") main.innerHTML = renderElection();
+  else if (state.page === "cabinet") main.innerHTML = renderCabinet();
+  else if (state.page === "policies") main.innerHTML = renderPolicies();
+  else main.innerHTML = renderDashboard();
+
+  if (state.page === "dun") drawDunSeats();
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function renderDashboard() {
+  const gps = governmentSeats();
+  const total = totalSeats();
+  const parties = activeParties().slice().sort((a,b) => countPartySeats(b.id) - countPartySeats(a.id));
+
+  return `
+    <div class="page-heading">
+      <div>
+        <h1>${t("overview")}</h1>
+        <div class="muted">${t("overviewSub")}</div>
+      </div>
+      <button class="primary" data-action="go-election">${t("simulate")}</button>
+    </div>
+
+    <div class="grid stats">
+      <div class="card">
+        <div class="stat-label">${t("seats")}</div>
+        <div class="stat-value">${total}</div>
+        <div class="stat-foot">Dewan Undangan Negeri</div>
+      </div>
+      <div class="card">
+        <div class="stat-label">${t("majority")}</div>
+        <div class="stat-value">${majorityThreshold()}</div>
+        <div class="stat-foot">50% + 1</div>
+      </div>
+      <div class="card">
+        <div class="stat-label">${t("government")}</div>
+        <div class="stat-value">${gps}</div>
+        <div class="stat-foot">${Math.round(gps / Math.max(total,1) * 100)}% ${state.language === "ms" ? "daripada kerusi" : "of seats"}</div>
+      </div>
+      <div class="card">
+        <div class="stat-label">${t("partiesCount")}</div>
+        <div class="stat-value">${activeParties().length}</div>
+        <div class="stat-foot">${state.language === "ms" ? "Parti aktif dalam simulator" : "Active simulator parties"}</div>
+      </div>
+    </div>
+
+    <div class="grid two-col" style="margin-top:16px">
+      <section class="card">
+        <div class="section-title">
+          <h2>${t("partyDirectory")}</h2>
+          <button class="small" data-action="go-parties">${t("parties")} →</button>
         </div>
-        <div class="stats-grid">${cards}</div>
-        <article class="treasury-card">
-          <div class="stat-label">${t.treasury}</div>
-          <div class="stat-value">RM 100,000,000</div>
-          <div class="stat-note">${t.treasuryNote}</div>
-        </article>
-      `;
-    }
+        function drawDunSeats() {
+  const svg = document.getElementById("dunSvg");
+  if (!svg) return;
 
-    function renderDun(t) {
-      pageContent.innerHTML = `
-        <div class="dun-panel">
-          <div class="dun-heading">
-            <div>
-              <h3>${t.dunIntro}</h3>
-              <p>${t.dunDescription}</p>
-            </div>
-            <div class="dun-total">${t.seats}</div>
-          </div>
+  const NS = "http://www.w3.org/2000/svg";
+  svg.innerHTML = "";
 
-          <div class="seat-map-wrap">
-            <svg class="seat-map" id="seatMap" viewBox="0 0 1000 390"
-                 role="group" aria-label="${t.dunIntro}">
-              <text class="side-label" x="250" y="35">${t.government}</text>
-              <text class="side-label" x="750" y="35">${t.opposition}</text>
-              <text class="majority-label" x="500" y="18">${t.majority}</text>
-              <line class="majority-line" x1="500" y1="45" x2="500" y2="365"></line>
-              <line x1="100" y1="350" x2="900" y2="350"
-                    stroke="#26344d" stroke-width="2"></line>
-            </svg>
-          </div>
+  const rows = 8;
+  const seatsPerRow = [8, 10, 12, 14, 16, 18, 20, 22];
+  const cx = 350;
+  const cy = 310;
+  const radiusX = 300;
+  const radiusY = 270;
 
-          <div class="dun-bottom">
-            <div class="legend">
-              <h4>${t.legend}</h4>
-              <div class="legend-items" id="partyLegend"></div>
-            </div>
-            <div class="seat-info" id="seatInfo"></div>
-          </div>
-          <p class="stat-note">${t.demoNote}</p>
-        </div>
-      `;
+  let seatIndex = 0;
 
-      const svg = document.getElementById("seatMap");
-      const ns = "http://www.w3.org/2000/svg";
-      let seatNumber = 1;
+  seatsPerRow.forEach((count, rowIndex) => {
+    const rowRadiusX = radiusX - rowIndex * 25;
+    const rowRadiusY = radiusY - rowIndex * 23;
 
-      function addSeat(x, y, number, side) {
-        const party = getPartyForSeat(number);
+    for (let i = 0; i < count && seatIndex < state.seats.length; i++) {
+      const angle = Math.PI + (Math.PI * i) / Math.max(count - 1, 1);
+      const x = cx + rowRadiusX * Math.cos(angle);
+      const y = cy + rowRadiusY * Math.sin(angle);
+      const seat = state.seats[seatIndex++];
+      const circle = document.createElementNS(NS, "circle");
 
-        const circle = document.createElementNS(ns, "circle");
-        circle.setAttribute("cx", x);
-        circle.setAttribute("cy", y);
-        circle.setAttribute("r", 12);
-        circle.setAttribute("fill", party.color);
-        circle.setAttribute("class", "seat");
-        circle.setAttribute("tabindex", "0");
-        circle.setAttribute("role", "button");
-        circle.setAttribute("aria-label", `${t.seat} ${number}, ${party.name}`);
-        circle.dataset.seat = number;
-        circle.dataset.party = party.name;
-        circle.dataset.side = side;
+      circle.setAttribute("cx", x);
+      circle.setAttribute("cy", y);
+      circle.setAttribute("r", 8);
+      circle.setAttribute("fill", partyColor(seat.partyId));
+      circle.setAttribute("class", "seat");
+      circle.setAttribute("tabindex", "0");
+      circle.setAttribute("role", "button");
+      circle.setAttribute("aria-label", `${seat.constituency}: ${partyShort(seat.partyId)}`);
+      circle.dataset.seatId = seat.id;
 
-        const title = document.createElementNS(ns, "title");
-        title.textContent = `${t.seat} ${number} — ${party.name}`;
-        circle.appendChild(title);
-
-        circle.addEventListener("mouseenter", () => {
-          hoveredParty = party.name;
-          updatePartyHighlight();
-        });
-
-        circle.addEventListener("mouseleave", () => {
-          hoveredParty = null;
-          updatePartyHighlight();
-        });
-
-        circle.addEventListener("click", () => selectSeat(number));
-
-        circle.addEventListener("keydown", event => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            selectSeat(number);
-          }
-        });
-
-        svg.appendChild(circle);
-        seatNumber++;
+      if (state.highlightedParty && seat.partyId !== state.highlightedParty) {
+        circle.classList.add("dimmed");
       }
 
-      // Government side: left half of the chamber.
-      governmentRows.forEach((count, rowIndex) => {
-        const radius = seatRadii[rowIndex];
-
-        for (let i = 0; i < count; i++) {
-          const angle = (Math.PI / 2) * (i / (count - 1));
-          const x = 500 - radius * Math.cos(angle);
-          const y = 350 - radius * Math.sin(angle);
-          addSeat(x, y, seatNumber, "government");
+      circle.addEventListener("click", () => openSeatModal(seat.id));
+      circle.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openSeatModal(seat.id);
         }
       });
 
-      // Opposition side: right half of the chamber.
-      oppositionRows.forEach((count, rowIndex) => {
-        const radius = seatRadii[rowIndex];
-
-        for (let i = 0; i < count; i++) {
-          const angle = (Math.PI / 2) * (i / (count - 1));
-          const x = 500 + radius * Math.cos(angle);
-          const y = 350 - radius * Math.sin(angle);
-          addSeat(x, y, seatNumber, "opposition");
-        }
-      });
-
-      renderLegend(t);
-      selectSeat(selectedSeat);
+      svg.appendChild(circle);
     }
+  });
+}
 
-    function renderLegend(t) {
-      const legend = document.getElementById("partyLegend");
+function renderDun() {
+  const parties = activeParties().slice().sort((a,b) => countPartySeats(b.id) - countPartySeats(a.id));
 
-      legend.innerHTML = parties.map(party => `
-        <div class="legend-item" data-party="${party.name}" tabindex="0" role="button">
-          <span class="legend-dot" style="background:${party.color}"></span>
-          <span>${party.name} (${party.count})</span>
+  return `
+    <div class="page-heading">
+      <div>
+        <h1>${t("chamber")}</h1>
+        <div class="muted">${t("chamberSub")}</div>
+      </div>
+      <button data-action="clear-highlight">${t("clearFilter")}</button>
+    </div>
+
+    <section class="card">
+      <div class="dun-toolbar">
+        <label for="partyFilter">${t("filterParty")}</label>
+        <select id="partyFilter">
+          <option value="">${t("allParties")}</option>
+          ${parties.map(p => `<option value="${p.id}" ${state.highlightedParty === p.id ? "selected" : ""}>${escapeHtml(p.short)}</option>`).join("")}
+        </select>
+      </div>
+      <div id="seatInfo" class="muted">${t("chamberSub")}</div>
+      <div class="dun-chart">
+        <svg id="dunSvg" viewBox="0 0 700 340" role="img" aria-label="Interactive DUN seats"></svg>
+      </div>
+      <div class="dun-legend">
+        ${parties.map(p => `
+          <div class="legend-item">
+            <span class="legend-color" style="background:${p.color}"></span>
+            ${escapeHtml(p.short)} (${countPartySeats(p.id)})
+          </div>`).join("")}
         </div>
-      `).join("");
+    </section>
+  `;
+}
 
-      legend.querySelectorAll(".legend-item").forEach(item => {
-        const partyName = item.dataset.party;
+function drawDashboardDun() {
+  const svg = document.getElementById("dashboardDunSvg");
+  if (!svg) return;
 
-        item.addEventListener("mouseenter", () => {
-          hoveredParty = partyName;
-          updatePartyHighlight();
-        });
+  const NS = "http://www.w3.org/2000/svg";
+  svg.innerHTML = "";
 
-        item.addEventListener("mouseleave", () => {
-          hoveredParty = null;
-          updatePartyHighlight();
-        });
+  const parties = activeParties();
+  const counts = parties.map(p => ({ id:p.id, count:countPartySeats(p.id), color:p.color }));
+  let seatIndex = 0;
+  const total = state.seats.length;
+  const cx = 350, cy = 310, rx = 300, ry = 270;
 
-        item.addEventListener("click", () => {
-          hoveredParty = hoveredParty === partyName ? null : partyName;
-          updatePartyHighlight();
-        });
-
-        item.addEventListener("keydown", event => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            hoveredParty = hoveredParty === partyName ? null : partyName;
-            updatePartyHighlight();
-          }
-        });
-      });
+  counts.forEach(party => {
+    for (let i = 0; i < party.count; i++) {
+      const angle = Math.PI + Math.PI * seatIndex / Math.max(total - 1, 1);
+      const circle = document.createElementNS(NS, "circle");
+      circle.setAttribute("cx", cx + rx * Math.cos(angle));
+      circle.setAttribute("cy", cy + ry * Math.sin(angle));
+      circle.setAttribute("r", 5);
+      circle.setAttribute("fill", party.color);
+      svg.appendChild(circle);
+      seatIndex++;
     }
+  });
+}
 
-    function updatePartyHighlight() {
-      document.querySelectorAll(".seat").forEach(seat => {
-        seat.classList.toggle(
-          "dimmed",
-          hoveredParty !== null && seat.dataset.party !== hoveredParty
-        );
-      });
+const originalRenderDashboard = renderDashboard;
+renderDashboard = function() {
+  const html = originalRenderDashboard();
+  setTimeout(drawDashboardDun, 0);
+  return html;
+};
 
-      document.querySelectorAll(".legend-item").forEach(item => {
-        item.classList.toggle("active", item.dataset.party === hoveredParty);
-      });
-    }
+function renderDun() {
+  const parties = activeParties().slice().sort((a,b) => countPartySeats(b.id) - countPartySeats(a.id));
 
-    function selectSeat(number) {
-      selectedSeat = number;
-      const party = getPartyForSeat(number);
+  return `
+    <div class="page-heading">
+      <div>
+        <h1>${t("chamber")}</h1>
+        <div class="muted">${t("chamberSub")}</div>
+      </div>
+      <button data-action="clear-highlight">${t("clearFilter")}</button>
+    </div>
 
-      document.querySelectorAll(".seat").forEach(seat => {
-        seat.classList.toggle("selected", Number(seat.dataset.seat) === number);
-      });
-
-      const info = document.getElementById("seatInfo");
-      if (!info) return;
-
-      const side = number <= governmentSeatCount
-        ? (currentLanguage === "en" ? "Government" : "Kerajaan")
-        : (currentLanguage === "en" ? "Opposition" : "Pembangkang");
-
-      info.innerHTML = `
-        <h4>${translations[currentLanguage].seat} ${number}</h4>
-        <p><strong>${translations[currentLanguage].party}:</strong> ${party.name}</p>
-        <p><strong>${currentLanguage === "en" ? "Side" : "Blok"}:</strong> ${side}</p>
-        <p><strong>${translations[currentLanguage].representative}:</strong> Demo Representative ${number}</p>
-      `;
-    }
-
-    function renderPlaceholder(t, title) {
-      pageContent.innerHTML = `
-        <article class="placeholder">
-          <h3>${title}</h3>
-          <p>${t.placeholder}</p>
-        </article>
-      `;
-    }
-
-    function updatePage() {
-      const t = translations[currentLanguage];
-
-      pageTitle.textContent = t[currentPage];
-      pageSubtitle.textContent = t.pageSubtitle;
-
-      navButtons.forEach(button => {
-        const active = button.dataset.page === currentPage;
-        button.classList.toggle("active", active);
-        button.setAttribute("aria-current", active ? "page" : "false");
-      });
-
-      if (currentPage === "dashboard") renderDashboard(t);
-      else if (currentPage === "dun") renderDun(t);
-      else renderPlaceholder(t, t[currentPage]);
-    }
-
-    function updateLanguage() {
-      const t = translations[currentLanguage];
-      document.documentElement.lang = currentLanguage;
-
-      document.querySelectorAll("[data-i18n]").forEach(element => {
-        const key = element.dataset.i18n;
-        if (t[key]) element.textContent = t[key];
-      });
-
-      languageToggle.textContent = currentLanguage === "en" ? "BM" : "EN";
-      updatePage();
-    }
-
-    navButtons.forEach(button => {
-      button.addEventListener("click", () => {
-        currentPage = button.dataset.page;
-        updatePage();
-      });
-    });
-
-    languageToggle.addEventListener("click", () => {
-      currentLanguage = currentLanguage === "en" ? "bm" : "en";
-      updateLanguage();
-    });
-
-    updateLanguage();
-  </script>
-</body>
-</html>
+    <section class="card">
+      <div class="dun-toolbar">
+        <label for="partyFilter">${t("filterParty")}</label>
+        <select id="partyFilter">
+          <option value="">${t("allParties")}</option>
+          ${parties.map(p => `<option value="${p.id}" ${state.highlightedParty === p.id ? "selected" : ""}>${escapeHtml(p.short)}</option>`).join("")}
+        </select>
+      </div>
+      <div id="seatInfo" class="muted">${t("chamberSub")}</div>
+      <div class="dun-chart">
+        <svg id="dunSvg" viewBox="0 0 700 340" role="img" aria-label="Interactive DUN seats"></svg>
+      </div>
+      <div class="dun-legend">
+        ${parties.map(p => `
+          <div class="legend-item">
+            <span class="legend-color" style="background:${p.color}"></span>
+            ${escapeHtml(p.short)} (${countPartySeats(p.id)})
+          </div>`).join("")}
+      </div>
+    </section>
+  `;
+}
