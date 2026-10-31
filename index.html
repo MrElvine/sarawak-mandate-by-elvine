@@ -9,31 +9,22 @@
 :root{
   --bg:#0b1220;
   --panel:#141f30;
-  --panel2:#1b2b40;
   --line:#2b3b50;
   --gold:#e5b95c;
   --text:#edf2f7;
   --muted:#9aabc0;
   --green:#67d6a0;
   --red:#ff7b86;
-  --blue:#83baff;
 }
 *{box-sizing:border-box}
 body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
+  margin:0;background:var(--bg);color:var(--text);
   font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
 }
 header{
-  padding:20px clamp(16px,4vw,40px);
-  background:#111c2c;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:12px
+  padding:20px clamp(16px,4vw,40px);background:#111c2c;
+  border-bottom:1px solid var(--line);display:flex;
+  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px
 }
 h1{margin:0;font-size:clamp(20px,4vw,29px)}
 h2{margin:0 0 14px;font-size:19px}
@@ -43,12 +34,8 @@ main{max-width:1250px;margin:auto;padding:22px 16px 55px}
 .nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
 button,input,select,textarea{font:inherit;border-radius:7px;padding:10px 12px}
 button{
-  border:1px solid #bd9644;
-  background:var(--gold);
-  color:#101827;
-  font-weight:700;
-  cursor:pointer;
-  margin:4px 4px 4px 0
+  border:1px solid #bd9644;background:var(--gold);color:#101827;
+  font-weight:700;cursor:pointer;margin:4px 4px 4px 0
 }
 button.secondary{background:#26374d;border-color:#405570;color:var(--text)}
 button.danger{background:#482630;border-color:#8f4555;color:#ffdce1}
@@ -56,45 +43,22 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .nav button{background:#1b2b40;color:var(--text);border:1px solid #3b5069}
 .nav button.active{background:var(--gold);color:#101827;border-color:var(--gold)}
 input,select,textarea{
-  width:100%;
-  background:#0c1625;
-  border:1px solid var(--line);
-  color:var(--text);
-  margin:4px 0 10px
+  width:100%;background:#0c1625;border:1px solid var(--line);
+  color:var(--text);margin:4px 0 10px
 }
 textarea{min-height:90px;resize:vertical}
 label{display:block;font-size:13px;color:var(--muted)}
 .card{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:18px;
-  margin-bottom:16px;
-  min-width:0
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:18px;margin-bottom:16px;min-width:0
 }
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
 .layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,1fr);gap:16px;margin-top:16px}
 .stat-label{color:var(--muted);font-size:13px}
 .stat-value{font-size:24px;font-weight:750;margin-top:5px;color:var(--gold)}
 .small{color:var(--muted);font-size:13px}
-.tag{
-  display:inline-block;
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:3px 9px;
-  font-size:12px;
-  color:var(--muted);
-  margin-right:5px
-}
-.choice{
-  display:block;
-  width:100%;
-  text-align:left;
-  background:#1b2b40;
-  color:var(--text);
-  border:1px solid #3b5069;
-  margin:9px 0
-}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:12px;color:var(--muted);margin-right:5px}
+.choice{display:block;width:100%;text-align:left;background:#1b2b40;color:var(--text);border:1px solid #3b5069;margin:9px 0}
 .choice:hover,.secondary:hover{background:#2a405a}
 .record{border-bottom:1px solid var(--line);padding:12px 0}
 .record:last-child{border:0}
@@ -107,53 +71,28 @@ footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
 
 /* Situation popup */
 .modal-backdrop{
-  position:fixed;
-  inset:0;
-  z-index:1000;
-  background:rgba(3,8,16,.84);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  overflow:auto
+  position:fixed;inset:0;z-index:1000;background:rgba(3,8,16,.84);
+  display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto
 }
 .modal{
-  width:min(720px,100%);
-  max-height:92vh;
-  overflow:auto;
-  background:var(--panel);
-  border:1px solid #53677f;
-  border-radius:16px;
-  padding:24px;
-  box-shadow:0 24px 80px #0009
+  width:min(720px,100%);max-height:92vh;overflow:auto;background:var(--panel);
+  border:1px solid #53677f;border-radius:16px;padding:24px;box-shadow:0 24px 80px #0009
 }
 .modal h2{margin-top:12px}
 .modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
 
-/* Map placeholder */
+/* Sarawak map placeholder */
 .map-placeholder{
-  min-height:330px;
-  border:1px solid var(--line);
-  border-radius:10px;
+  min-height:330px;border:1px solid var(--line);border-radius:10px;
   background:linear-gradient(145deg,#172c3c,#10202e);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:20px;
-  color:var(--muted)
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:20px;color:var(--muted)
 }
 .map-placeholder strong{display:block;color:var(--text);font-size:20px;margin-bottom:8px}
 
 /* DUN chamber */
 .dun-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px}
-.dun-map{
-  width:100%;
-  height:auto;
-  display:block;
-  background:#1b244d;
-  border-radius:12px
-}
+.dun-map{width:100%;height:auto;display:block;background:#1b244d;border-radius:12px}
 .dun-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .legend-item{display:flex;align-items:center;gap:7px;font-size:13px}
 .legend-dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex-shrink:0}
@@ -200,7 +139,7 @@ footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
       <h3 id="eventTitle"></h3>
       <p id="eventDescription"></p>
       <div id="choices"></div>
-      <p class="small">Choose your response. Its effects will be recorded in Turn Records.</p>
+      <p class="small">Choose a response. Its effects will be recorded in Turn Records.</p>
     </section>
   </div>
 
@@ -355,7 +294,7 @@ footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:w
 
 <script>
 /* ---------- GAME STATE ---------- */
-const initialState = () => ({
+const initialState=()=>({
   week:1,
   money:500,
   income:30,
@@ -377,24 +316,21 @@ const initialState = () => ({
 function loadGame(){
   try{
     const saved=JSON.parse(localStorage.getItem("sarawakPoliticalSave"));
-    if(!saved) return null;
+    if(!saved)return null;
 
-    const base=initialState();
-    const migrated={...base,...saved};
-
+    const migrated={...initialState(),...saved};
     migrated.actions=Array.isArray(saved.actions)?saved.actions:[];
     migrated.queue=Array.isArray(saved.queue)?saved.queue:[];
     migrated.policies=Array.isArray(saved.policies)?saved.policies:[];
     migrated.records=Array.isArray(saved.records)
-      ? saved.records
-      : Array.isArray(saved.history)
-        ? saved.history.map(item=>({
-            week:saved.week||1,
-            type:"Previous Record",
-            text:typeof item==="string"?item:JSON.stringify(item)
-          }))
-        : [];
-
+      ?saved.records
+      :Array.isArray(saved.history)
+        ?saved.history.map(item=>({
+          week:saved.week||1,
+          type:"Previous Record",
+          text:typeof item==="string"?item:JSON.stringify(item)
+        }))
+        :[];
     return migrated;
   }catch(error){
     return null;
@@ -449,8 +385,7 @@ const events=[
 ];
 
 /* ---------- DUN PARTY CONFIGURATION ---------- */
-/* Edit party names, seat counts, sides and colors here.
-   Total seats must equal 82. Government + opposition = 82. */
+/* Change names, seat counts, sides and colors here. Total must equal 82. */
 const dunParties=[
   {name:"Sarawak Unity Coalition",short:"SUC",seats:48,side:"government",color:"#299e70"},
   {name:"People's Reform Alliance",short:"PRA",seats:20,side:"opposition",color:"#e34b42"},
@@ -462,9 +397,7 @@ const TOTAL_DUN_SEATS=82;
 const SIMPLE_MAJORITY=Math.floor(TOTAL_DUN_SEATS/2)+1;
 
 /* ---------- HELPERS ---------- */
-function currentEvent(){
-  return events[game.eventIndex%events.length];
-}
+function currentEvent(){return events[game.eventIndex%events.length]}
 
 function clamp(key,min=0,max=100){
   game[key]=Math.max(min,Math.min(max,game[key]));
@@ -487,21 +420,12 @@ function applyEffects(effects){
   clampAll();
 }
 
-function used(actionName){
-  return game.actions.includes(actionName);
-}
-
-function mark(actionName){
-  game.actions.push(actionName);
-}
+function used(actionName){return game.actions.includes(actionName)}
+function mark(actionName){game.actions.push(actionName)}
 
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g,char=>({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[char]));
 }
 
@@ -510,11 +434,9 @@ function showPage(page){
   ["dashboard","dun","records","policies"].forEach(name=>{
     document.getElementById(name+"Page").classList.toggle("hidden",name!==page);
   });
-
   document.querySelectorAll(".nav button").forEach(button=>{
     button.classList.toggle("active",button.dataset.page===page);
   });
-
   render();
 }
 
@@ -534,10 +456,7 @@ function render(){
   ];
 
   document.getElementById("stats").innerHTML=stats.map(([label,value])=>`
-    <div class="card">
-      <div class="stat-label">${label}</div>
-      <div class="stat-value">${value}</div>
-    </div>
+    <div class="card"><div class="stat-label">${label}</div><div class="stat-value">${value}</div></div>
   `).join("");
 
   const event=currentEvent();
@@ -548,7 +467,6 @@ function render(){
 
   const choices=document.getElementById("choices");
   choices.innerHTML="";
-
   event.choices.forEach((choice,index)=>{
     const button=document.createElement("button");
     button.type="button";
@@ -573,8 +491,7 @@ function render(){
 
   document.getElementById("policySummary").innerHTML=game.policies.length
     ?game.policies.slice(0,3).map(policy=>`
-      <p><strong>${escapeHtml(policy.name)}</strong>
-      <span class="tag">${escapeHtml(policy.status)}</span></p>
+      <p><strong>${escapeHtml(policy.name)}</strong> <span class="tag">${escapeHtml(policy.status)}</span></p>
     `).join("")
     :"No policies drafted yet.";
 
@@ -616,12 +533,9 @@ function chooseEvent(index){
 
   applyEffects(choice.effects);
   game.eventResolved=true;
-
   addRecord("Situation",event.title+" — "+choice.message);
 
-  // Hide immediately, then update the rest of the interface.
   document.getElementById("situationModal").classList.add("hidden");
-
   saveSilent();
   render();
 }
@@ -631,7 +545,6 @@ function renderDUN(){
   const totalSeats=dunParties.reduce((sum,party)=>sum+party.seats,0);
   const government=dunParties.filter(party=>party.side==="government");
   const opposition=dunParties.filter(party=>party.side==="opposition");
-
   const governmentSeats=government.reduce((sum,party)=>sum+party.seats,0);
   const oppositionSeats=opposition.reduce((sum,party)=>sum+party.seats,0);
 
@@ -641,10 +554,8 @@ function renderDUN(){
 
   if(totalSeats!==TOTAL_DUN_SEATS){
     svg.innerHTML=`<text x="400" y="220" fill="#ff7b86" text-anchor="middle">Party seat totals must equal ${TOTAL_DUN_SEATS}.</text>`;
-    document.getElementById("dunSummary").innerHTML=
-      `<p class="bad">Configured seats: ${totalSeats} / ${TOTAL_DUN_SEATS}</p>`;
-    document.getElementById("balanceSummary").innerHTML=
-      "<p class='small'>Correct the party seat totals in dunParties to display the chamber.</p>";
+    document.getElementById("dunSummary").innerHTML=`<p class="bad">Configured seats: ${totalSeats} / ${TOTAL_DUN_SEATS}</p>`;
+    document.getElementById("balanceSummary").innerHTML="<p class='small'>Correct party seat totals in dunParties.</p>";
     return;
   }
 
@@ -654,13 +565,25 @@ function renderDUN(){
     return element;
   }
 
-  // Chamber rows total exactly 82 seats.
+  // Five curved rows: 10 + 14 + 18 + 18 + 22 = 82 seats.
   const rowCounts=[10,14,18,18,22];
   const centerX=400;
   const baseY=365;
   const radii=[115,165,215,265,315];
+  const allSeats=[];
 
-  // Dashed center divider: visual majority threshold.
+  rowCounts.forEach((count,row)=>{
+    const radius=radii[row];
+    for(let i=0;i<count;i++){
+      const angle=Math.PI+(Math.PI*i/(count-1));
+      allSeats.push({
+        x:centerX+radius*Math.cos(angle),
+        y:baseY+radius*Math.sin(angle)
+      });
+    }
+  });
+
+  // Keep the majority marker at 42 seats, independent of party size.
   svg.appendChild(makeSvg("line",{
     x1:centerX,y1:42,x2:centerX,y2:375,class:"majority-line"
   }));
@@ -672,34 +595,30 @@ function renderDUN(){
   majorityLabel.textContent=`${SIMPLE_MAJORITY} for majority`;
   svg.appendChild(majorityLabel);
 
-  const seats=[];
-  rowCounts.forEach((count,row)=>{
-    const radius=radii[row];
-    for(let i=0;i<count;i++){
-      // Semi-circle from left to right.
-      const angle=Math.PI+(Math.PI*i/(count-1));
-      seats.push({
-        x:centerX+radius*Math.cos(angle),
-        y:baseY+radius*Math.sin(angle)
-      });
+  // Place all government seats at the leftmost positions.
+  // The government may extend beyond the majority marker.
+  allSeats.sort((a,b)=>a.x-b.x);
+  const governmentPositions=allSeats.slice(0,governmentSeats);
+  const oppositionPositions=allSeats.slice(governmentSeats);
+
+  let gIndex=0;
+  government.forEach(party=>{
+    for(let i=0;i<party.seats;i++){
+      const seat=governmentPositions[gIndex++];
+      if(!seat)continue;
+      svg.appendChild(makeSvg("circle",{
+        cx:seat.x,cy:seat.y,r:9.5,fill:party.color,class:"seat"
+      }));
     }
   });
 
-  // Government seats first (left), opposition seats afterward (right).
-  const orderedParties=[...government,...opposition];
-  let seatIndex=0;
-
-  orderedParties.forEach(party=>{
+  let oIndex=0;
+  opposition.forEach(party=>{
     for(let i=0;i<party.seats;i++){
-      if(seatIndex>=seats.length)break;
-      const seat=seats[seatIndex++];
-
+      const seat=oppositionPositions[oIndex++];
+      if(!seat)continue;
       svg.appendChild(makeSvg("circle",{
-        cx:seat.x,
-        cy:seat.y,
-        r:9.5,
-        fill:party.color,
-        class:"seat"
+        cx:seat.x,cy:seat.y,r:9.5,fill:party.color,class:"seat"
       }));
     }
   });
@@ -721,9 +640,7 @@ function renderDUN(){
   const hasMajority=governmentSeats>=SIMPLE_MAJORITY;
   document.getElementById("balanceSummary").innerHTML=`
     <p class="${hasMajority?"good":"bad"}">
-      ${hasMajority
-        ?"The government holds a simple majority."
-        :"The government does not hold a simple majority."}
+      ${hasMajority?"The government holds a simple majority.":"The government does not hold a simple majority."}
     </p>
     <p class="small">Government: ${governmentSeats} / ${totalSeats} seats</p>
     <p class="small">Opposition: ${oppositionSeats} / ${totalSeats} seats</p>
@@ -733,11 +650,7 @@ function renderDUN(){
 
 /* ---------- POLITICAL ACTIONS ---------- */
 function action(actionName,limitMessage,recordMessage,effects){
-  if(used(actionName)){
-    alert(limitMessage);
-    return;
-  }
-
+  if(used(actionName)){alert(limitMessage);return}
   mark(actionName);
   applyEffects(effects);
   addRecord("Action",recordMessage);
@@ -754,31 +667,19 @@ function pressConference(){
 }
 
 function acceptBribe(){
-  if(used("bribe")){
-    alert("One bribe decision per week.");
-    return;
-  }
-
+  if(used("bribe")){alert("One bribe decision per week.");return}
   if(!confirm("Accept a secret bribe of RM25M? This may damage integrity and trigger a future scandal."))return;
 
   mark("bribe");
   applyEffects({money:25,integrity:-15,approval:-5});
-
-  if(Math.random()<0.25){
-    game.queue.push({label:"Potential corruption investigation",weeks:2,type:"scandal"});
-  }
-
+  if(Math.random()<0.25)game.queue.push({label:"Potential corruption investigation",weeks:2,type:"scandal"});
   addRecord("Decision","Accepted a bribe: +RM25M; integrity and approval decreased. Investigation risk added.");
   saveSilent();
   render();
 }
 
 function startInvestorTalks(){
-  if(used("investor")){
-    alert("Investor talks already initiated this week.");
-    return;
-  }
-
+  if(used("investor")){alert("Investor talks already initiated this week.");return}
   mark("investor");
   game.queue.push({label:"Investor negotiations",weeks:1,type:"investor"});
   addRecord("Initiative","Investor negotiations initiated; outcome pending.");
@@ -787,11 +688,7 @@ function startInvestorTalks(){
 }
 
 function startFederalTalks(){
-  if(used("federal")){
-    alert("Federal negotiations already initiated this week.");
-    return;
-  }
-
+  if(used("federal")){alert("Federal negotiations already initiated this week.");return}
   mark("federal");
   game.queue.push({label:"Federal / MA63 negotiations",weeks:2,type:"federal"});
   addRecord("Initiative","Federal / MA63 negotiations initiated; response pending.");
@@ -802,13 +699,9 @@ function startFederalTalks(){
 /* ---------- POLICY CENTRE ---------- */
 function generatePolicy(event){
   event.preventDefault();
-
   const name=document.getElementById("policyName").value.trim();
 
-  if(used("policy")){
-    alert("One policy draft per week in this prototype.");
-    return;
-  }
+  if(used("policy")){alert("One policy draft per week in this prototype.");return}
 
   pendingPolicy={
     name,
@@ -845,12 +738,10 @@ Progress will be monitored against measurable indicators, with periodic reportin
 
 function savePolicy(status){
   if(!pendingPolicy)return;
-
   const text=document.getElementById("policyDraft").value.trim();
 
   if(status==="Approved"&&game.money<pendingPolicy.cost){
-    alert("Insufficient treasury to approve this policy.");
-    return;
+    alert("Insufficient treasury to approve this policy.");return;
   }
 
   if(status==="Approved"){
@@ -860,28 +751,18 @@ function savePolicy(status){
 
   mark("policy");
   game.policies.unshift({
-    name:pendingPolicy.name,
-    text,
-    status,
-    cost:pendingPolicy.cost,
-    week:game.week
+    name:pendingPolicy.name,text,status,cost:pendingPolicy.cost,week:game.week
   });
 
-  addRecord("Policy",
-    `${pendingPolicy.name} saved as ${status}${status==="Approved"?" (budget RM"+pendingPolicy.cost.toFixed(1)+"M committed)":""}.`
-  );
-
+  addRecord("Policy",`${pendingPolicy.name} saved as ${status}${status==="Approved"?" (budget RM"+pendingPolicy.cost.toFixed(1)+"M committed)":""}.`);
   pendingPolicy=null;
   document.getElementById("policyEditor").classList.add("hidden");
   document.getElementById("policyForm").reset();
-
   saveSilent();
   render();
 }
 
-function approvePolicy(){
-  savePolicy("Approved");
-}
+function approvePolicy(){savePolicy("Approved")}
 
 function cancelPolicyDraft(){
   pendingPolicy=null;
@@ -901,11 +782,7 @@ function resolveQueue(){
 
   for(const item of game.queue){
     item.weeks--;
-
-    if(item.weeks>0){
-      remaining.push(item);
-      continue;
-    }
+    if(item.weeks>0){remaining.push(item);continue}
 
     if(item.type==="investor"){
       applyEffects({money:20,economy:3,approval:2});
@@ -918,23 +795,19 @@ function resolveQueue(){
       addRecord("Outcome","Corruption investigation opened following a leaked allegation.");
     }
   }
-
   game.queue=remaining;
 }
 
 function nextTurn(){
   if(!game.eventResolved){
-    alert("Please resolve the situation before advancing to the next turn.");
-    return;
+    alert("Please resolve the situation before advancing to the next turn.");return;
   }
 
   const previousMoney=game.money;
-
   game.money+=game.income-game.expenses;
   resolveQueue();
 
-  addRecord(
-    "Weekly Finance",
+  addRecord("Weekly Finance",
     `Income RM${game.income}M; expenditure RM${game.expenses}M; net operating balance RM${game.income-game.expenses}M. Treasury: RM${previousMoney.toFixed(1)}M → RM${game.money.toFixed(1)}M.`
   );
 
@@ -945,11 +818,9 @@ function nextTurn(){
 
   clampAll();
   addRecord("Turn","Week advanced. New situation available.");
-
   saveSilent();
   render();
 
-  // Ensure next week's situation is presented immediately.
   document.getElementById("situationModal").classList.remove("hidden");
 }
 
@@ -965,7 +836,6 @@ function saveGame(){
 
 function resetGame(){
   if(!confirm("Start a new game? This will erase the saved game in this browser."))return;
-
   game=initialState();
   localStorage.removeItem("sarawakPoliticalSave");
   render();
