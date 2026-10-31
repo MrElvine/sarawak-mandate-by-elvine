@@ -6,295 +6,362 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sarawak Political Simulator</title>
 <style>
+:root {
+  --bg:#0b1220; --panel:#141f30; --line:#2b3b50;
+  --gold:#e5b95c; --text:#edf2f7; --muted:#9aabc0;
+  --green:#67d6a0; --red:#ff7b86; --blue:#83baff;
+}
+* { box-sizing:border-box; }
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #101820;
-  color: #f1f5f9;
+  margin:0; background:var(--bg); color:var(--text);
+  font:15px/1.5 system-ui, sans-serif;
 }
 header {
-  padding: 24px;
-  background: #1b2935;
-  border-bottom: 2px solid #d4a84f;
+  padding:22px clamp(16px,4vw,40px);
+  background:#111c2c; border-bottom:1px solid var(--line);
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:12px;
 }
-main {
-  max-width: 1000px;
-  margin: auto;
-  padding: 20px;
-}
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
-}
-.card {
-  background: #1b2935;
-  border: 1px solid #344654;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 16px;
-}
-.stat {
-  font-size: 24px;
-  color: #e8bd62;
-  margin-top: 8px;
+h1 { margin:0; font-size:clamp(20px,4vw,30px); }
+h2 { margin:0 0 12px; font-size:20px; }
+h3 { margin:0 0 8px; font-size:16px; }
+p { margin:8px 0; }
+main { max-width:1200px; margin:auto; padding:24px 16px 60px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+.layout { display:grid; grid-template-columns: minmax(0,1.5fr) minmax(280px,1fr); gap:16px; margin-top:16px; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:16px; min-width:0; }
+.stat-label { color:var(--muted); font-size:13px; }
+.stat-value { font-size:25px; font-weight:750; margin-top:5px; color:var(--gold); }
+.small { color:var(--muted); font-size:13px; }
+button, input, select {
+  font:inherit; border-radius:7px; padding:10px 12px;
 }
 button {
-  background: #d4a84f;
-  color: #101820;
-  border: 0;
-  padding: 12px 16px;
-  border-radius: 6px;
-  margin: 5px;
-  cursor: pointer;
-  font-weight: bold;
+  border:1px solid #bd9644; background:var(--gold); color:#101827;
+  font-weight:700; cursor:pointer; margin:4px 4px 4px 0;
 }
-button:hover { background: #f0cc7d; }
-button:disabled { opacity: 0.4; cursor: not-allowed; }
-input {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #526575;
-  background: #101820;
-  color: white;
-  width: min(90%, 350px);
-}
-#log p {
-  border-bottom: 1px solid #344654;
-  padding-bottom: 8px;
-}
+button.secondary { background:#26374d; border-color:#405570; color:var(--text); }
+button.danger { background:#482630; border-color:#8f4555; color:#ffdce1; }
+button:disabled { opacity:.4; cursor:not-allowed; }
+input,select { width:100%; background:#0c1625; border:1px solid var(--line); color:var(--text); margin:4px 0 10px; }
+.choice { display:block; width:100%; text-align:left; background:#1b2b40; color:var(--text); border:1px solid #3b5069; margin:9px 0; }
+.choice:hover, .secondary:hover { background:#2a405a; }
+.tag { display:inline-block; border:1px solid var(--line); border-radius:20px; padding:3px 9px; font-size:12px; color:var(--muted); }
+.good { color:var(--green); } .bad { color:var(--red); }
+.log { max-height:250px; overflow:auto; }
+.log p { border-bottom:1px solid var(--line); padding-bottom:8px; }
+footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+@media(max-width:760px) { .layout { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
-
 <header>
-  <h1>Sarawak Political Simulator</h1>
-  <p id="week">Week 1</p>
+  <div>
+    <h1>🏛 Sarawak Political Simulator</h1>
+    <div class="small">Political strategy · Governance · Weekly simulation</div>
+  </div>
+  <div>
+    <span class="tag" id="weekTag">Week 1</span>
+    <span class="tag" id="phaseTag">Planning phase</span>
+  </div>
 </header>
 
 <main>
-  <section class="stats">
-    <div class="card">Treasury<div class="stat" id="money">RM500M</div></div>
-    <div class="card">Party Loyalty<div class="stat" id="loyalty">70</div></div>
-    <div class="card">Integrity<div class="stat" id="integrity">70</div></div>
-    <div class="card">Public Approval<div class="stat" id="approval">60</div></div>
-    <div class="card">Economy<div class="stat" id="economy">50</div></div>
-  </section>
+  <section class="grid" id="stats"></section>
+
+  <div class="layout">
+    <div>
+      <section class="card">
+        <h2>Situation of the Week</h2>
+        <span class="tag" id="eventTag">Domestic affairs</span>
+        <h3 id="eventTitle"></h3>
+        <p id="eventDescription"></p>
+        <div id="choices"></div>
+      </section>
+
+      <section class="card">
+        <h2>Government & Political Actions</h2>
+        <p class="small">Take actions before advancing the week. Some actions have costs or weekly limits.</p>
+        <button onclick="cabinetMeeting()">Hold Cabinet Meeting</button>
+        <button onclick="pressConference()">Press Conference</button>
+        <button class="secondary" onclick="startInvestorTalks()">Seek Investor</button>
+        <button class="danger" onclick="acceptBribe()">Accept Bribe</button>
+        <button class="secondary" onclick="startFederalTalks()">Federal Negotiations</button>
+      </section>
+
+      <section class="card">
+        <h2>Policy Desk</h2>
+        <label for="policyName">Policy name</label>
+        <input id="policyName" placeholder="e.g. Sarawak Rural Connectivity Initiative">
+        <button onclick="draftPolicy()">Draft Policy</button>
+        <div id="policyResult" class="small"></div>
+      </section>
+    </div>
+
+    <div>
+      <section class="card">
+        <h2>Weekly Budget</h2>
+        <div id="budget"></div>
+      </section>
+
+      <section class="card">
+        <h2>Action Queue</h2>
+        <div id="queue" class="small">No pending actions.</div>
+      </section>
+
+      <section class="card">
+        <h2>Weekly Report</h2>
+        <div id="log" class="log small"></div>
+      </section>
+
+      <section class="card">
+        <h2>Save Game</h2>
+        <p class="small">Progress is saved automatically in this browser.</p>
+        <button class="secondary" onclick="saveGame()">Save Now</button>
+        <button class="danger" onclick="resetGame()">New Game</button>
+      </section>
+    </div>
+  </div>
 
   <section class="card">
-    <h2>Situation of the Week</h2>
-    <h3 id="situation">Rural water infrastructure crisis</h3>
-    <p id="description">
-      Residents demand faster action on delayed water projects.
-    </p>
-    <div id="choices"></div>
+    <footer>
+      <div>
+        <h2 style="margin:0">End of Week</h2>
+        <div class="small">Resolve pending actions and advance the simulation.</div>
+      </div>
+      <button onclick="nextTurn()">NEXT TURN →</button>
+    </footer>
   </section>
-
-  <section class="card">
-    <h2>Free Actions</h2>
-    <button onclick="acceptBribe()">Accept Bribe</button>
-    <button onclick="seekInvestor()">Seek Investor</button>
-    <button onclick="holdCabinetMeeting()">Cabinet Meeting</button>
-  </section>
-
-  <section class="card">
-    <h2>Create Policy</h2>
-    <input id="policyName" placeholder="Enter policy name">
-    <button onclick="createPolicy()">Draft Policy</button>
-    <p id="policyDescription"></p>
-  </section>
-
-  <section class="card">
-    <h2>Weekly Report</h2>
-    <div id="log">Your political journey begins.</div>
-  </section>
-
-  <button onclick="nextTurn()">NEXT TURN →</button>
 </main>
 
 <script>
-const game = {
-  week: 1,
-  money: 500,
-  loyalty: 70,
-  integrity: 70,
-  approval: 60,
-  economy: 50,
-  actions: [],
-  eventResolved: false
-};
+const initialState = () => ({
+  week:1, money:500, income:30, expenses:20,
+  loyalty:70, integrity:70, approval:60,
+  economy:50, stability:65, federal:50,
+  eventResolved:false, actions:[], queue:[],
+  policies:[], history:[], eventIndex:0,
+  bribeCooldown:0, investorCooldown:0
+});
 
-const situations = [
+let game = loadGame() || initialState();
+
+const events = [
   {
-    title: "Rural Water Infrastructure Crisis",
-    description: "Residents demand faster action on delayed water projects.",
-    choices: [
-      {
-        text: "Fund emergency repairs (RM10M)",
-        effects: { money: -10, approval: 5, integrity: 2 }
-      },
-      {
-        text: "Blame the previous administration",
-        effects: { loyalty: 4, integrity: -5, approval: -3 }
-      },
-      {
-        text: "Negotiate with contractors",
-        effects: { approval: 2, loyalty: -1, integrity: 3 }
-      }
+    category:"Public Services",
+    title:"Rural Water Infrastructure Crisis",
+    description:"Residents demand faster action on delayed water projects. The issue is receiving growing public attention.",
+    choices:[
+      {text:"Fund emergency repairs (RM10M)", effects:{money:-10,approval:5,integrity:2}, message:"Emergency repairs funded."},
+      {text:"Blame the previous administration", effects:{loyalty:4,integrity:-5,approval:-3}, message:"Your supporters approve, but public trust suffers."},
+      {text:"Negotiate with contractors", effects:{approval:2,integrity:3,stability:2}, message:"Negotiations begin. Progress may take time."}
     ]
   },
   {
-    title: "Federal Education Funding",
-    description: "The federal government invites Sarawak to discuss education funding.",
-    choices: [
-      {
-        text: "Request greater state authority",
-        effects: { loyalty: 3, approval: 3 }
-      },
-      {
-        text: "Negotiate a joint funding agreement",
-        effects: { money: 10, approval: 2, integrity: 2 }
-      },
-      {
-        text: "Delay negotiations",
-        effects: { loyalty: -2, approval: -2 }
-      }
+    category:"Federal Relations",
+    title:"Federal Education Funding",
+    description:"The federal government invites Sarawak to discuss education funding and administrative cooperation.",
+    choices:[
+      {text:"Request greater state authority", effects:{federal:-3,loyalty:3,approval:3}, message:"Sarawak presses for greater authority."},
+      {text:"Negotiate joint funding", effects:{money:10,federal:5,approval:2}, message:"A joint funding proposal is accepted in principle."},
+      {text:"Delay negotiations", effects:{federal:-2,approval:-2}, message:"The opportunity is postponed."}
+    ]
+  },
+  {
+    category:"Economic Affairs",
+    title:"Investor Interest in Sarawak",
+    description:"A regional consortium is considering a major investment, but requests assurances about infrastructure and policy stability.",
+    choices:[
+      {text:"Offer a transparent investment framework", effects:{economy:4,integrity:3,approval:2}, message:"Investor confidence improves."},
+      {text:"Offer generous incentives", effects:{money:-8,economy:5,loyalty:2}, message:"Investment incentives are announced."},
+      {text:"Decline the proposal", effects:{stability:2,economy:-2}, message:"The proposal is declined."}
+    ]
+  },
+  {
+    category:"Political Affairs",
+    title:"Coalition Tensions",
+    description:"A coalition partner demands a greater role in policy decisions and threatens to withdraw support.",
+    choices:[
+      {text:"Negotiate a power-sharing agreement", effects:{loyalty:3,stability:5,money:-2}, message:"A compromise agreement stabilizes the coalition."},
+      {text:"Reject the demand", effects:{loyalty:-5,stability:-6,integrity:2}, message:"The coalition partner is angered."},
+      {text:"Offer additional cabinet representation", effects:{loyalty:5,stability:3,integrity:-1}, message:"The coalition remains in government."}
     ]
   }
 ];
 
-function currentSituation() {
-  return situations[(game.week - 1) % situations.length];
+function currentEvent(){ return events[(game.eventIndex) % events.length]; }
+function clamp(key,min=0,max=100){ game[key]=Math.max(min,Math.min(max,game[key])); }
+function clampAll(){
+  ["loyalty","integrity","approval","economy","stability","federal"].forEach(k=>clamp(k));
+  game.money=Math.max(0,Math.round(game.money*10)/10);
 }
+function log(message){
+  game.history.unshift("Week "+game.week+": "+message);
+  game.history=game.history.slice(0,30);
+}
+function applyEffects(effects){
+  for(const [key,value] of Object.entries(effects)) game[key]+=value;
+  clampAll();
+}
+function used(action){ return game.actions.includes(action); }
+function mark(action){ game.actions.push(action); }
 
-function render() {
-  document.getElementById("week").textContent = "Week " + game.week;
-  document.getElementById("money").textContent = "RM" + game.money + "M";
-  document.getElementById("loyalty").textContent = game.loyalty;
-  document.getElementById("integrity").textContent = game.integrity;
-  document.getElementById("approval").textContent = game.approval;
-  document.getElementById("economy").textContent = game.economy;
+function render(){
+  document.getElementById("weekTag").textContent="Week "+game.week;
+  document.getElementById("phaseTag").textContent=game.eventResolved?"Situation resolved":"Planning phase";
 
-  const event = currentSituation();
-  document.getElementById("situation").textContent = event.title;
-  document.getElementById("description").textContent = event.description;
+  const statData=[
+    ["Treasury","RM"+game.money.toFixed(1)+"M"],
+    ["Party Loyalty",game.loyalty],
+    ["Integrity",game.integrity],
+    ["Public Approval",game.approval],
+    ["Economy",game.economy],
+    ["Political Stability",game.stability],
+    ["Federal Relations",game.federal]
+  ];
+  document.getElementById("stats").innerHTML=statData.map(([label,value])=>
+    `<div class="card"><div class="stat-label">${label}</div><div class="stat-value">${value}</div></div>`
+  ).join("");
 
-  const choices = document.getElementById("choices");
-  choices.innerHTML = "";
-
-  event.choices.forEach((choice, index) => {
-    const button = document.createElement("button");
-    button.textContent = choice.text;
-    button.disabled = game.eventResolved;
-    button.onclick = () => choose(index);
+  const event=currentEvent();
+  document.getElementById("eventTag").textContent=event.category;
+  document.getElementById("eventTitle").textContent=event.title;
+  document.getElementById("eventDescription").textContent=event.description;
+  const choices=document.getElementById("choices");
+  choices.innerHTML="";
+  event.choices.forEach((choice,index)=>{
+    const button=document.createElement("button");
+    button.className="choice";
+    button.textContent=choice.text;
+    button.disabled=game.eventResolved;
+    button.onclick=()=>chooseEvent(index);
     choices.appendChild(button);
   });
+
+  document.getElementById("budget").innerHTML=
+    `<p>Starting treasury: RM${game.money.toFixed(1)}M</p>
+     <p>Weekly income: +RM${game.income}M</p>
+     <p>Operating expenditure: −RM${game.expenses}M</p>
+     <p>Projected weekly balance: <strong>RM${(game.income-game.expenses).toFixed(1)}M</strong></p>`;
+
+  document.getElementById("queue").innerHTML=game.queue.length
+    ?game.queue.map(item=>`<p>${item.label} — ${item.weeks} week(s) remaining</p>`).join("")
+    :"No pending actions.";
+
+  document.getElementById("log").innerHTML=game.history.length
+    ?game.history.map(item=>`<p>${item}</p>`).join("")
+    :"Your political journey begins.";
 }
 
-function clampStats() {
-  ["loyalty", "integrity", "approval", "economy"].forEach(key => {
-    game[key] = Math.max(0, Math.min(100, game[key]));
-  });
-}
-
-function applyEffects(effects) {
-  for (const [key, value] of Object.entries(effects)) {
-    game[key] += value;
+function chooseEvent(index){
+  if(game.eventResolved)return;
+  const choice=currentEvent().choices[index];
+  if(game.money+choice.effects.money<0){
+    alert("Insufficient treasury for this decision.");
+    return;
   }
-  clampStats();
-  render();
-}
-
-function log(message) {
-  document.getElementById("log").innerHTML +=
-    "<p>Week " + game.week + ": " + message + "</p>";
-}
-
-function choose(index) {
-  if (game.eventResolved) return;
-  const choice = currentSituation().choices[index];
   applyEffects(choice.effects);
-  game.eventResolved = true;
-  log("Decision: " + choice.text);
+  game.eventResolved=true;
+  log(choice.message);
   render();
 }
 
-function acceptBribe() {
-  if (game.actions.includes("bribe")) {
-    alert("You have already accepted a bribe this week.");
-    return;
-  }
-
-  game.actions.push("bribe");
-  game.money += 25;
-  game.integrity -= 15;
-  game.approval -= 5;
-  clampStats();
-  log("Accepted a bribe: +RM25M, integrity and approval decreased.");
+function cabinetMeeting(){
+  if(used("cabinet"))return alert("One cabinet meeting per week.");
+  mark("cabinet");
+  applyEffects({loyalty:3,stability:2});
+  log("Cabinet meeting improved party cohesion and stability.");
+  render();
+}
+function pressConference(){
+  if(used("press"))return alert("One press conference per week.");
+  mark("press");
+  applyEffects({approval:2});
+  log("Press conference improved public visibility.");
+  render();
+}
+function acceptBribe(){
+  if(used("bribe"))return alert("One bribe decision per week.");
+  if(!confirm("Accept a secret bribe of RM25M? This may damage integrity and trigger future scandal."))return;
+  mark("bribe");
+  applyEffects({money:25,integrity:-15,approval:-5});
+  if(Math.random()<0.25)game.queue.push({label:"Potential corruption investigation",weeks:2,type:"scandal"});
+  log("Accepted a bribe: +RM25M, integrity and approval decreased. There is a risk of investigation.");
+  render();
+}
+function startInvestorTalks(){
+  if(used("investor"))return alert("Investor talks already initiated this week.");
+  mark("investor");
+  game.queue.push({label:"Investor negotiations",weeks:1,type:"investor"});
+  log("Investor negotiations initiated. Outcome will be resolved at the end of next week.");
+  render();
+}
+function startFederalTalks(){
+  if(used("federal"))return alert("Federal negotiations already initiated this week.");
+  mark("federal");
+  game.queue.push({label:"Federal / MA63 negotiations",weeks:2,type:"federal"});
+  log("Federal negotiations initiated. Awaiting response.");
+  render();
+}
+function draftPolicy(){
+  const name=document.getElementById("policyName").value.trim();
+  if(!name)return alert("Enter a policy name first.");
+  if(used("policy"))return alert("One policy draft per week in this prototype.");
+  mark("policy");
+  const description=`${name} is a proposed initiative intended to improve public outcomes through targeted planning, investment and implementation. Further details, funding and measurable objectives require government review.`;
+  game.policies.push({name,description,status:"Draft"});
+  document.getElementById("policyResult").textContent=description;
+  log("Policy drafted: "+name+". AI-generated descriptions will be integrated in a later phase.");
   render();
 }
 
-function seekInvestor() {
-  if (game.actions.includes("investor")) {
-    alert("You have already approached an investor this week.");
-    return;
-  }
-
-  game.actions.push("investor");
-  log("Investor negotiations started. Resolution next week.");
-}
-
-function holdCabinetMeeting() {
-  if (game.actions.includes("cabinet")) {
-    alert("Cabinet meeting already held this week.");
-    return;
-  }
-
-  game.actions.push("cabinet");
-  game.loyalty += 3;
-  game.integrity += 1;
-  clampStats();
-  log("Cabinet meeting improved party cohesion.");
-  render();
-}
-
-function createPolicy() {
-  const name = document.getElementById("policyName").value.trim();
-  if (!name) return;
-
-  document.getElementById("policyDescription").textContent =
-    name + ": Draft policy created. AI-generated descriptions will be added in a later development phase.";
-
-  log("Policy drafted: " + name);
-}
-
-function nextTurn() {
-  if (!game.eventResolved) {
-    if (!confirm("You have not resolved this week's situation. Continue anyway?")) {
-      return;
+function resolveQueue(){
+  const remaining=[];
+  for(const item of game.queue){
+    item.weeks--;
+    if(item.weeks>0){remaining.push(item);continue;}
+    if(item.type==="investor"){
+      applyEffects({money:20,economy:3,approval:2});
+      log("Investor secured: +RM20M and economic growth.");
+    }else if(item.type==="federal"){
+      applyEffects({federal:5,approval:2});
+      log("Federal talks advanced; relationship improved.");
+    }else if(item.type==="scandal"){
+      applyEffects({integrity:-10,approval:-8,stability:-4});
+      log("Corruption investigation opened following a leaked allegation.");
     }
   }
-
-  // Resolve recurring finances.
-  game.money += 10;
-
-  // Resolve investor negotiations.
-  if (game.actions.includes("investor")) {
-    game.money += 15;
-    game.economy += 3;
-    game.approval += 2;
-    log("Investor secured: +RM15M and economic growth.");
-  }
-
-  game.week++;
-  game.actions = [];
-  game.eventResolved = false;
-
-  clampStats();
-  log("New week begins.");
-  render();
+  game.queue=remaining;
 }
 
+function nextTurn(){
+  if(!game.eventResolved && !confirm("You have not resolved this week's situation. Advance anyway?"))return;
+  game.money+=game.income-game.expenses;
+  resolveQueue();
+  if(game.bribeCooldown>0)game.bribeCooldown--;
+  if(game.investorCooldown>0)game.investorCooldown--;
+  game.week++;
+  game.eventIndex++;
+  game.actions=[];
+  game.eventResolved=false;
+  clampAll();
+  log("Week advanced. Treasury and ongoing actions processed.");
+  saveGame();
+  render();
+}
+function saveGame(){
+  localStorage.setItem("sarawakPoliticalSave",JSON.stringify(game));
+  alert("Game saved in this browser.");
+}
+function loadGame(){
+  try{return JSON.parse(localStorage.getItem("sarawakPoliticalSave"));}catch(e){return null;}
+}
+function resetGame(){
+  if(!confirm("Start a new game? This will erase the saved game in this browser."))return;
+  game=initialState();
+  localStorage.removeItem("sarawakPoliticalSave");
+  render();
+}
 render();
 </script>
 </body>
