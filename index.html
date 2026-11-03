@@ -9,6 +9,7 @@ nav h1{font-size:15px;margin:4px 8px 14px;line-height:1.25}nav button{display:bl
 nav button.on,nav button:hover{background:#24396b;color:#fff}nav .lang{margin-top:14px;border:1px solid #3b5086;text-align:center}
 main{flex:1;padding:20px;min-width:0;max-width:1100px}h2{margin:0 0 14px}h3{margin:0 0 8px}main>h2{color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5)}main .grid>p.mu{color:#e5e9f3}
 .card,.dlg{background:rgba(255,255,255,.72);backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);border:1px solid rgba(255,255,255,.5);box-shadow:0 8px 28px rgba(0,0,0,.18);border-radius:var(--rd);padding:14px}
+#clock{position:sticky;top:8px;z-index:5}
 .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}.stat b{display:block;font-size:26px}.stat span,.mu{color:var(--mu);font-size:13px}
 .btn{border:1px solid var(--bd);background:rgba(255,255,255,.75);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:14px}.btn:hover{background:#eef2fa}.btn.p{background:var(--ac);color:#fff;border-color:var(--ac)}.btn.d{color:#b42318;border-color:#f0b9b3}
 .btn:disabled{opacity:.45;cursor:not-allowed}
@@ -35,56 +36,89 @@ label{display:block;font-size:13px;color:var(--mu);margin-top:10px}input,select,
 "use strict";
 const TOTAL=82;
 /* ---------- i18n ---------- */
-const D={en:{title:"Sarawak Political Simulator",dash:"Dashboard",dun:"DUN",parties:"Parties",election:"Election",cabinet:"Cabinet",policies:"Policies",total:"Total DUN seats",maj:"Seats for majority",govS:"Government seats",act:"Active parties",dist:"Party seat distribution",chart:"DUN seating chart",all:"Show all",save:"Save",cancel:"Cancel",del:"Delete",edit:"Edit",add:"Add",close:"Close",yes:"Yes, delete",name:"Name",abbr:"Abbreviation",leader:"Leader",color:"Colour",coal:"Coalition",ideo:"Ideology / platform",gov:"Government",opp:"Opposition",rep:"Representative",cons:"Constituency",party:"Party",minister:"Minister",port:"Portfolio",ptitle:"Title",cat:"Category",desc:"Description",status:"Status",st0:"Proposed",st1:"In Progress",st2:"Completed",req:"Required field missing",saved:"Saved",deleted:"Deleted",confirm:"Delete this item? This cannot be undone.",base:"Baseline data: 82 DUN seats as at the Oct 2026 dissolution (GPS-aligned 80, DAP 2). Representative names are left blank/unverified. Edit anything freely.",sim:"Simulated / edited data differs from baseline (dashed outline = changed seat).",swing:"Swing (%)",simBtn:"Run election",reset:"Restore baseline",restored:"Baseline restored",hung:"Hung DUN: no side has a majority",govMaj:"Government majority",oppMaj:"Opposition majority",seats:"Seats",chg:"Change",addParty:"Add party",addMin:"Add minister",addPol:"Add policy",toGov:"Move to government",toOpp:"Move to opposition",ph:"No items yet.",inuse:"Seats of this party move to Independent.",quick:"Quick navigation",lang:"Bahasa Melayu",unv:"(unverified)",simDone:"Election simulated",noP:"No party selected",ptl:"registered",edSeat:"Edit seat",levels:"Government standing",approval:"Public Approval",loyalty:"Party Loyalty",economy:"Economy",stability:"Stability",autonomy:"Sarawak Autonomy",gameNote:"Game values (fictional), not real-world data.",loyNote:"Auto: seat-weighted average of government parties.",ploy:"Loyalty (0-100)",loyL:"Loyalty",majLine:"Simple majority",majNote:"Reference line only — the government can hold more seats than this.",week:"Week",left:"Weeks to election",endW:"End week ▶",resolve:"Resolve situation",ok:"OK",newG:"New game",elDay:"Election day",swingRes:"Final swing for government",log:"Recent decisions",map:"Sarawak map",mapNote:"Schematic tile map — positions are approximate, not to scale. Click a tile to see who governs it.",gby:"Governed by",pickD:"Click a tile to see who governs that DUN.",mom:"Election momentum",moved:"Seat changed hands",polAdd:"Policy added",turnT:"Campaign to the next election",pendMsg:"A situation needs your decision.",conseq:"Consequences",funds:"Funds",cap:"Political capital",ap:"Actions left",area0:"Urban",area1:"Semi-urban",area2:"Rural",sup:"Govt support",inc:"Incumbent strength",estNote:"Estimated values for gameplay, not real polling or results.",actVisit:"Visit & ceramah",actProj:"Local project",actMedia:"Statewide media push",noRes:"Not enough resources",actDone:"Action done"},
-ms:{title:"Simulator Politik Sarawak",dash:"Papan Pemuka",dun:"DUN",parties:"Parti",election:"Pilihan Raya",cabinet:"Kabinet",policies:"Dasar",total:"Jumlah kerusi DUN",maj:"Kerusi majoriti",govS:"Kerusi kerajaan",act:"Parti aktif",dist:"Agihan kerusi parti",chart:"Carta tempat duduk DUN",all:"Papar semua",save:"Simpan",cancel:"Batal",del:"Padam",edit:"Sunting",add:"Tambah",close:"Tutup",yes:"Ya, padam",name:"Nama",abbr:"Singkatan",leader:"Pemimpin",color:"Warna",coal:"Gabungan",ideo:"Ideologi / platform",gov:"Kerajaan",opp:"Pembangkang",rep:"Wakil rakyat",cons:"Kawasan",party:"Parti",minister:"Menteri",port:"Portfolio",ptitle:"Tajuk",cat:"Kategori",desc:"Penerangan",status:"Status",st0:"Dicadangkan",st1:"Sedang Dilaksana",st2:"Selesai",req:"Ruangan wajib belum diisi",saved:"Disimpan",deleted:"Dipadam",confirm:"Padam item ini? Tindakan ini tidak boleh dibatalkan.",base:"Data asas: 82 kerusi DUN ketika pembubaran Okt 2026 (GPS dan sekutu 80, DAP 2). Nama wakil rakyat dikosongkan/belum disahkan. Sunting bebas.",sim:"Data simulasi / suntingan berbeza daripada data asas (garis putus-putus = kerusi berubah).",swing:"Ayunan (%)",simBtn:"Jalankan pilihan raya",reset:"Pulihkan data asas",restored:"Data asas dipulihkan",hung:"DUN tergantung: tiada majoriti",govMaj:"Majoriti kerajaan",oppMaj:"Majoriti pembangkang",seats:"Kerusi",chg:"Perubahan",addParty:"Tambah parti",addMin:"Tambah menteri",addPol:"Tambah dasar",toGov:"Pindah ke kerajaan",toOpp:"Pindah ke pembangkang",ph:"Tiada item lagi.",inuse:"Kerusi parti ini dipindahkan kepada Bebas.",quick:"Pautan pantas",lang:"English",unv:"(belum disahkan)",simDone:"Pilihan raya disimulasi",noP:"Tiada parti dipilih",ptl:"berdaftar",edSeat:"Sunting kerusi",levels:"Kedudukan kerajaan",approval:"Sokongan Rakyat",loyalty:"Kesetiaan Parti",economy:"Ekonomi",stability:"Kestabilan",autonomy:"Autonomi Sarawak",gameNote:"Nilai permainan (fiksyen), bukan data sebenar.",loyNote:"Auto: purata berwajaran kerusi parti kerajaan.",ploy:"Kesetiaan (0-100)",loyL:"Kesetiaan",majLine:"Majoriti mudah",majNote:"Garis rujukan sahaja — kerajaan boleh miliki lebih banyak kerusi daripada ini.",week:"Minggu",left:"Minggu ke pilihan raya",endW:"Tamat minggu ▶",resolve:"Selesaikan situasi",ok:"OK",newG:"Permainan baharu",elDay:"Hari mengundi",swingRes:"Ayunan akhir untuk kerajaan",log:"Keputusan terkini",map:"Peta Sarawak",mapNote:"Peta jubin skematik — kedudukan anggaran, bukan skala sebenar. Klik jubin untuk lihat siapa memerintah.",gby:"Diperintah oleh",pickD:"Klik jubin untuk lihat siapa memerintah DUN itu.",mom:"Momentum pilihan raya",moved:"Kerusi bertukar tangan",polAdd:"Dasar ditambah",turnT:"Kempen menuju pilihan raya",pendMsg:"Satu situasi memerlukan keputusan anda.",conseq:"Akibat",funds:"Dana",cap:"Modal politik",ap:"Tindakan berbaki",area0:"Bandar",area1:"Separa bandar",area2:"Luar bandar",sup:"Sokongan kerajaan",inc:"Kekuatan penyandang",estNote:"Nilai anggaran untuk permainan, bukan tinjauan atau keputusan sebenar.",actVisit:"Lawatan & ceramah",actProj:"Projek tempatan",actMedia:"Kempen media seluruh negeri",noRes:"Sumber tak cukup",actDone:"Tindakan selesai"}};
-let lang="en",cur="dash",flt=null,selDun=null;
+const D={en:{title:"Sarawak Political Simulator",dash:"Dashboard",dun:"DUN",parties:"Parties",election:"Election Sandbox",cabinet:"Cabinet",policies:"Policies",total:"Total DUN seats",maj:"Seats for majority",govS:"Government seats",act:"Active parties",chart:"DUN seating chart",all:"Show all",save:"Save",cancel:"Cancel",del:"Delete",edit:"Edit",close:"Close",yes:"Yes, delete",name:"Name",abbr:"Abbreviation",leader:"Leader",color:"Colour",coal:"Coalition",ideo:"Ideology / platform",gov:"Government",opp:"Opposition",rep:"Representative",cons:"Constituency",party:"Party",minister:"Minister",port:"Portfolio",ptitle:"Title",cat:"Category",desc:"Description",status:"Status",st0:"Proposed",st1:"In Progress",st2:"Completed",req:"Required field missing",saved:"Saved",deleted:"Deleted",confirm:"Delete this item? This cannot be undone.",base:"Baseline data: 82 DUN seats as at the Oct 2026 dissolution (GPS-aligned 80, DAP 2). Representative names are left blank/unverified. Edit anything freely.",sim:"Simulated / edited data differs from baseline (dashed outline = changed seat).",swing:"Swing (%)",simBtn:"Run election",reset:"Restore baseline",restored:"Baseline restored",hung:"Hung DUN: no side has a majority",govMaj:"Government majority",oppMaj:"Opposition majority",seats:"Seats",chg:"Change",addParty:"Add party",addMin:"Add minister",addPol:"Add policy",toGov:"Move to government",toOpp:"Move to opposition",ph:"No items yet.",inuse:"Seats of this party move to Independent.",quick:"Quick navigation",lang:"Bahasa Melayu",unv:"(unverified)",simDone:"Election simulated",noP:"No party selected",ptl:"registered",edSeat:"Edit seat",levels:"Government standing",fin:"State finances",approval:"Public Approval",unrest:"Unrest",economy:"Economy",loyalty:"Party Loyalty",autonomy:"Sarawak Autonomy",money:"State funds (RM m)",debt:"State debt (RM m)",debtR:"Debt / annual revenue",net:"Monthly net (RM m)",gameNote:"Game values (fictional), not real-world data.",fdate:"The timeline is fictional, not the real election date.",ploy:"Loyalty (0-100)",loyL:"Loyalty",majLine:"Simple majority",majNote:"Reference line only — the government can hold more seats than this.",resume:"▶ Resume",pause:"⏸ Pause",paused:"Paused",running:"Running",need:"Decision required",dLeft:"Days to election",resolve:"Resolve situation",ok:"OK",newG:"New game",elDay:"Election day",swingRes:"Final swing for government",log:"Recent decisions",map:"Sarawak map",mapNote:"Schematic tile map — positions are approximate, not to scale. Click a tile to see who governs it.",gby:"Governed by",pickD:"Click a tile to see who governs that DUN.",mom:"Election momentum",moved:"Seat changed hands",polAdd:"Policy added",polDone:"Policy completed",conseq:"Consequences",cap:"Political capital",ap:"Actions left",area0:"Urban",area1:"Semi-urban",area2:"Rural",sup:"Govt support",inc:"Incumbent strength",estNote:"Estimated values for gameplay, not real polling or results.",actVisit:"Visit & ceramah",actProj:"Local project",actMedia:"Statewide media push",noRes:"Not enough resources",actDone:"Action done",monthEnd:"Month-end net (RM m)",borrowed:"Treasury empty: borrowed to cover the gap"},
+ms:{title:"Simulator Politik Sarawak",dash:"Papan Pemuka",dun:"DUN",parties:"Parti",election:"Sandbox Pilihan Raya",cabinet:"Kabinet",policies:"Dasar",total:"Jumlah kerusi DUN",maj:"Kerusi majoriti",govS:"Kerusi kerajaan",act:"Parti aktif",chart:"Carta tempat duduk DUN",all:"Papar semua",save:"Simpan",cancel:"Batal",del:"Padam",edit:"Sunting",close:"Tutup",yes:"Ya, padam",name:"Nama",abbr:"Singkatan",leader:"Pemimpin",color:"Warna",coal:"Gabungan",ideo:"Ideologi / platform",gov:"Kerajaan",opp:"Pembangkang",rep:"Wakil rakyat",cons:"Kawasan",party:"Parti",minister:"Menteri",port:"Portfolio",ptitle:"Tajuk",cat:"Kategori",desc:"Penerangan",status:"Status",st0:"Dicadangkan",st1:"Sedang Dilaksana",st2:"Selesai",req:"Ruangan wajib belum diisi",saved:"Disimpan",deleted:"Dipadam",confirm:"Padam item ini? Tindakan ini tidak boleh dibatalkan.",base:"Data asas: 82 kerusi DUN ketika pembubaran Okt 2026 (GPS dan sekutu 80, DAP 2). Nama wakil rakyat dikosongkan/belum disahkan. Sunting bebas.",sim:"Data simulasi / suntingan berbeza daripada data asas (garis putus-putus = kerusi berubah).",swing:"Ayunan (%)",simBtn:"Jalankan pilihan raya",reset:"Pulihkan data asas",restored:"Data asas dipulihkan",hung:"DUN tergantung: tiada majoriti",govMaj:"Majoriti kerajaan",oppMaj:"Majoriti pembangkang",seats:"Kerusi",chg:"Perubahan",addParty:"Tambah parti",addMin:"Tambah menteri",addPol:"Tambah dasar",toGov:"Pindah ke kerajaan",toOpp:"Pindah ke pembangkang",ph:"Tiada item lagi.",inuse:"Kerusi parti ini dipindahkan kepada Bebas.",quick:"Pautan pantas",lang:"English",unv:"(belum disahkan)",simDone:"Pilihan raya disimulasi",noP:"Tiada parti dipilih",ptl:"berdaftar",edSeat:"Sunting kerusi",levels:"Kedudukan kerajaan",fin:"Kewangan negeri",approval:"Sokongan Rakyat",unrest:"Kebangkitan / Keresahan",economy:"Ekonomi",loyalty:"Kesetiaan Parti",autonomy:"Autonomi Sarawak",money:"Dana negeri (RM juta)",debt:"Hutang negeri (RM juta)",debtR:"Hutang / hasil tahunan",net:"Bersih bulanan (RM juta)",gameNote:"Nilai permainan (fiksyen), bukan data sebenar.",fdate:"Garis masa ini fiksyen, bukan tarikh pilihan raya sebenar.",ploy:"Kesetiaan (0-100)",loyL:"Kesetiaan",majLine:"Majoriti mudah",majNote:"Garis rujukan sahaja — kerajaan boleh miliki lebih banyak kerusi daripada ini.",resume:"▶ Sambung",pause:"⏸ Jeda",paused:"Dijeda",running:"Berjalan",need:"Keputusan diperlukan",dLeft:"Hari ke pilihan raya",resolve:"Selesaikan situasi",ok:"OK",newG:"Permainan baharu",elDay:"Hari mengundi",swingRes:"Ayunan akhir untuk kerajaan",log:"Keputusan terkini",map:"Peta Sarawak",mapNote:"Peta jubin skematik — kedudukan anggaran, bukan skala sebenar. Klik jubin untuk lihat siapa memerintah.",gby:"Diperintah oleh",pickD:"Klik jubin untuk lihat siapa memerintah DUN itu.",mom:"Momentum pilihan raya",moved:"Kerusi bertukar tangan",polAdd:"Dasar ditambah",polDone:"Dasar siap",conseq:"Akibat",cap:"Modal politik",ap:"Tindakan berbaki",area0:"Bandar",area1:"Separa bandar",area2:"Luar bandar",sup:"Sokongan kerajaan",inc:"Kekuatan penyandang",estNote:"Nilai anggaran untuk permainan, bukan tinjauan atau keputusan sebenar.",actVisit:"Lawatan & ceramah",actProj:"Projek tempatan",actMedia:"Kempen media seluruh negeri",noRes:"Sumber tak cukup",actDone:"Tindakan selesai",monthEnd:"Bersih akhir bulan (RM juta)",borrowed:"Perbendaharaan kosong: berhutang untuk tampung kekurangan"}};
+let lang="en",cur="dash",flt=null,selDun=null,spd=0,last=1,timer=null;
 const t=k=>(D[lang][k]||D.en[k]||k);const L=()=>lang==="ms"?1:0;
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=s=>document.querySelector(s);const uid=()=>Math.random().toString(36).slice(2,8);
 const clamp=x=>Math.max(0,Math.min(100,Math.round(x)));
-/* ---------- situations (editable). fx: a approval, e economy, s stability, m autonomy, l gov loyalty, w momentum, f flip seat (g=gov->opp, o=opp->gov), pol "title|category" ---------- */
+const fmtDate=d=>new Date(Date.UTC(2027,0,1+d)).toLocaleDateString(lang==="ms"?"ms-MY":"en-GB",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});
+/* ---------- situations (editable)
+ fx keys: a approval, u unrest, e economy, m autonomy, l gov loyalty, w momentum, mo money (RM m), db debt (RM m),
+ f flip seat ("g" gov->opp, "o" opp->gov), pol "title|category", nx [eventId, daysLater] (chain event)
+ ch:1 = only appears via a chain, when(S) = condition for random events ---------- */
 const EV=[
-{t:["Floods hit the interior","Banjir melanda pedalaman"],d:["Rivers are overflowing and longhouses are cut off. People expect action.","Sungai melimpah dan rumah panjang terputus hubungan. Rakyat mahu tindakan."],c:[
- {t:["Release emergency funds","Lepaskan dana kecemasan"],fx:{a:6,e:-4,s:2,pol:"Flood relief fund|Disaster"}},
- {t:["Leave it to the agencies","Serahkan kepada agensi"],fx:{a:-3,s:-2,e:1}},
- {t:["Blame federal delays","Salahkan kelewatan Persekutuan"],fx:{a:1,m:4,s:-3}}]},
-{t:["Highway upgrade stalls","Naik taraf lebuh raya tergendala"],d:["Contractors say funds are late and rural roads are crumbling.","Kontraktor kata dana lewat dan jalan luar bandar semakin rosak."],c:[
+{id:"flood",t:["Floods hit the interior","Banjir melanda pedalaman"],d:["Rivers are overflowing and longhouses are cut off. People expect action.","Sungai melimpah dan rumah panjang terputus hubungan. Rakyat mahu tindakan."],c:[
+ {t:["Release emergency funds","Lepaskan dana kecemasan"],fx:{a:6,mo:-40,u:-2,pol:"Flood relief fund|Disaster"}},
+ {t:["Leave it to the agencies","Serahkan kepada agensi"],fx:{a:-3,u:4}},
+ {t:["Blame federal delays","Salahkan kelewatan Persekutuan"],fx:{a:1,m:4,u:3}}]},
+{id:"road",t:["Highway upgrade stalls","Naik taraf lebuh raya tergendala"],d:["Contractors say funds are late and rural roads are crumbling.","Kontraktor kata dana lewat dan jalan luar bandar semakin rosak."],c:[
  {t:["Ask the federal government","Minta dana Persekutuan"],fx:{e:4,a:2,m:-3}},
- {t:["Fund it from the state","Biayai daripada dana negeri"],fx:{e:-5,a:4,m:3,pol:"State road upgrade|Infrastructure"}},
- {t:["Do nothing for now","Tiada tindakan buat masa ini"],fx:{a:-5,l:-2}}]},
-{t:["Rural internet gap","Jurang internet luar bandar"],d:["Longhouse communities complain of poor connectivity for students and traders.","Komuniti rumah panjang mengadu capaian internet lemah untuk pelajar dan peniaga."],c:[
- {t:["Build community towers","Bina menara komuniti"],fx:{a:5,e:-3,pol:"Rural connectivity programme|Digital"}},
- {t:["Partner with a telco","Bekerjasama dengan syarikat telko"],fx:{a:2,e:2,m:-1}},
- {t:["Postpone the plan","Tangguhkan rancangan"],fx:{a:-4,e:1}}]},
-{t:["Autonomy talks with Putrajaya","Rundingan autonomi dengan Putrajaya"],d:["A new round of MA63 negotiations is due. How hard do you push?","Pusingan rundingan MA63 akan bermula. Setegas mana anda mahu mendesak?"],c:[
- {t:["Push hard in public","Desak secara terbuka"],fx:{m:6,s:-3,l:2,w:1}},
- {t:["Negotiate quietly","Berunding secara senyap"],fx:{m:2,s:1}},
- {t:["Concede for federal funds","Beralah demi dana Persekutuan"],fx:{m:-4,e:4,l:-2}}]},
-{t:["Coalition seat dispute","Pertelingkahan kerusi dalam gabungan"],d:["Two coalition partners are fighting over who gets which seats.","Dua parti komponen bertikai tentang pembahagian kerusi."],c:[
- {t:["Mediate personally","Jadi pengantara sendiri"],fx:{l:5,s:2,a:-1}},
- {t:["Favour the biggest party","Pihak parti terbesar"],fx:{l:-4,s:-2,w:1}},
+ {t:["Fund it from the state","Biayai daripada dana negeri"],fx:{mo:-60,a:4,m:3,e:2,pol:"State road upgrade|Infrastructure"}},
+ {t:["Do nothing for now","Tiada tindakan buat masa ini"],fx:{a:-5,u:3,l:-2}}]},
+{id:"net",t:["Rural internet gap","Jurang internet luar bandar"],d:["Longhouse communities complain of poor connectivity for students and traders.","Komuniti rumah panjang mengadu capaian internet lemah untuk pelajar dan peniaga."],c:[
+ {t:["Build community towers","Bina menara komuniti"],fx:{a:5,mo:-35,e:2,pol:"Rural connectivity programme|Digital"}},
+ {t:["Partner with a telco","Bekerjasama dengan syarikat telko"],fx:{a:2,mo:10,m:-1}},
+ {t:["Postpone the plan","Tangguhkan rancangan"],fx:{a:-4,u:2}}]},
+{id:"ma63",t:["Autonomy talks with Putrajaya","Rundingan autonomi dengan Putrajaya"],d:["A new round of MA63 negotiations is due. How hard do you push?","Pusingan rundingan MA63 akan bermula. Setegas mana anda mahu mendesak?"],c:[
+ {t:["Push hard in public","Desak secara terbuka"],fx:{m:6,u:3,l:2,w:1}},
+ {t:["Negotiate quietly","Berunding secara senyap"],fx:{m:2,u:-1}},
+ {t:["Concede for federal funds","Beralah demi dana Persekutuan"],fx:{m:-4,mo:60,l:-2}}]},
+{id:"coal",t:["Coalition seat dispute","Pertelingkahan kerusi dalam gabungan"],d:["Two coalition partners are fighting over who gets which seats.","Dua parti komponen bertikai tentang pembahagian kerusi."],c:[
+ {t:["Mediate personally","Jadi pengantara sendiri"],fx:{l:5,u:-2,a:-1}},
+ {t:["Favour the biggest party","Pihak parti terbesar"],fx:{l:-4,u:2,w:1}},
  {t:["Stay out of it","Tidak campur tangan"],fx:{l:-6,w:-1}}]},
-{t:["Rumours of a defection","Khabar wakil rakyat melompat"],d:["A government assemblyman is rumoured to be leaving the bloc.","Seorang wakil rakyat kerajaan dikhabarkan mahu keluar daripada blok."],c:[
- {t:["Offer a senior post","Tawarkan jawatan kanan"],fx:{l:-2,e:-2,s:1}},
- {t:["Let him go","Biarkan dia pergi"],fx:{f:"g",a:-1,s:-3}},
- {t:["Discipline him publicly","Ambil tindakan disiplin terbuka"],fx:{l:3,s:-2,a:-2}}]},
-{t:["Commodity prices fall","Harga komoditi jatuh"],d:["Falling export prices are squeezing smallholders.","Kejatuhan harga eksport menekan pekebun kecil."],c:[
- {t:["Pay a direct subsidy","Beri subsidi terus"],fx:{e:-6,a:5,l:2}},
- {t:["Offer tax relief","Beri pelepasan cukai"],fx:{e:-3,a:3}},
- {t:["Let the market adjust","Biar pasaran menyesuaikan diri"],fx:{e:-2,a:-5}}]},
-{t:["Opposition rally draws crowds","Ceramah pembangkang tarik ramai"],d:["Opposition parties fill a stadium and criticise the government.","Parti pembangkang memenuhi stadium dan mengkritik kerajaan."],c:[
- {t:["Hold a counter-rally","Adakan ceramah tandingan"],fx:{e:-2,a:2,s:-2,w:1}},
- {t:["Ignore it","Buat tidak endah"],fx:{a:-2,w:-1,s:1}},
- {t:["Open a public dialogue","Buka dialog awam"],fx:{s:3,a:1,l:1}}]},
-{t:["Scandal in a ministry","Skandal di sebuah kementerian"],d:["A report alleges mismanagement. The press is asking questions.","Satu laporan mendakwa salah urus. Media mula bertanya."],c:[
- {t:["Sack the minister","Pecat menteri"],fx:{a:3,l:-3,s:1}},
- {t:["Hush it up","Senyapkan perkara ini"],fx:{a:-8,l:2,w:-2}},
- {t:["Order an independent probe","Arahkan siasatan bebas"],fx:{a:1,s:1,e:-1,pol:"Transparency reform|Governance"}}]},
-{t:["Opposition figure wants to cross over","Tokoh pembangkang mahu menyertai kerajaan"],d:["An opposition assemblyman signals he is ready to join the government.","Seorang wakil rakyat pembangkang bersedia menyertai kerajaan."],c:[
- {t:["Welcome him with a post","Sambut dengan jawatan"],fx:{f:"o",l:-3,a:-1,e:-1}},
+{id:"defect",t:["Rumours of a defection","Khabar wakil rakyat melompat"],d:["A government assemblyman is rumoured to be leaving the bloc.","Seorang wakil rakyat kerajaan dikhabarkan mahu keluar daripada blok."],c:[
+ {t:["Offer a senior post","Tawarkan jawatan kanan"],fx:{l:-2,mo:-15,u:-1}},
+ {t:["Let him go","Biarkan dia pergi"],fx:{f:"g",a:-1,u:3}},
+ {t:["Discipline him publicly","Ambil tindakan disiplin terbuka"],fx:{l:3,u:2,a:-2}}]},
+{id:"price",t:["Commodity prices fall","Harga komoditi jatuh"],d:["Falling export prices are squeezing smallholders.","Kejatuhan harga eksport menekan pekebun kecil."],c:[
+ {t:["Pay a direct subsidy","Beri subsidi terus"],fx:{mo:-50,a:5,l:2}},
+ {t:["Offer tax relief","Beri pelepasan cukai"],fx:{mo:-25,a:3,e:-1}},
+ {t:["Let the market adjust","Biar pasaran menyesuaikan diri"],fx:{e:-3,a:-5,u:4}}]},
+{id:"rally",t:["Opposition rally draws crowds","Ceramah pembangkang tarik ramai"],d:["Opposition parties fill a stadium and criticise the government.","Parti pembangkang memenuhi stadium dan mengkritik kerajaan."],c:[
+ {t:["Hold a counter-rally","Adakan ceramah tandingan"],fx:{mo:-10,a:2,u:2,w:1}},
+ {t:["Ignore it","Buat tidak endah"],fx:{a:-2,w:-1,u:-1}},
+ {t:["Open a public dialogue","Buka dialog awam"],fx:{u:-3,a:1,l:1}}]},
+{id:"scandal",t:["Scandal in a ministry","Skandal di sebuah kementerian"],d:["A report alleges mismanagement. The press is asking questions.","Satu laporan mendakwa salah urus. Media mula bertanya."],c:[
+ {t:["Sack the minister","Pecat menteri"],fx:{a:3,l:-3,u:-1}},
+ {t:["Hush it up","Senyapkan perkara ini"],fx:{a:-3,l:2,nx:["leak",25]}},
+ {t:["Order an independent probe","Arahkan siasatan bebas"],fx:{a:1,u:-1,mo:-10,w:1,pol:"Transparency reform|Governance"}}]},
+{id:"cross",t:["Opposition figure wants to cross over","Tokoh pembangkang mahu menyertai kerajaan"],d:["An opposition assemblyman signals he is ready to join the government.","Seorang wakil rakyat pembangkang bersedia menyertai kerajaan."],c:[
+ {t:["Welcome him with a post","Sambut dengan jawatan"],fx:{f:"o",l:-3,a:-1,mo:-10}},
  {t:["Decline, stay principled","Tolak, kekal berprinsip"],fx:{a:2,l:2}},
- {t:["Keep him waiting","Biarkan dia menunggu"],fx:{s:-1,w:1}}]}
+ {t:["Keep him waiting","Biarkan dia menunggu"],fx:{u:1,w:1}}]},
+{id:"budget",when:s=>s.lv.money<200,t:["Revenue falls short","Hasil kurang daripada sasaran"],d:["The treasury is running thin and bills are piling up.","Perbendaharaan semakin tipis dan bil makin bertimbun."],c:[
+ {t:["Borrow to cover the gap","Berhutang untuk tampung"],fx:{db:150,mo:150}},
+ {t:["Cut public spending","Potong perbelanjaan awam"],fx:{mo:60,a:-4,u:4,e:-2}},
+ {t:["Raise fees and levies","Naikkan fi dan levi"],fx:{mo:80,a:-6,u:3}}]},
+{id:"youth",when:s=>s.lv.unrest>40,t:["Youth protest over jobs","Protes belia mengenai pekerjaan"],d:["Graduates gather downtown demanding jobs and lower living costs.","Graduan berhimpun di bandar menuntut pekerjaan dan kos sara hidup lebih rendah."],c:[
+ {t:["Launch a youth jobs scheme","Lancarkan skim pekerjaan belia"],fx:{mo:-45,u:-5,a:3,pol:"Youth jobs scheme|Social"}},
+ {t:["Break up the protest","Bubarkan protes"],fx:{u:-3,a:-6,w:-1,nx:["backlash",20]}},
+ {t:["Hold a dialogue","Adakan dialog"],fx:{u:-2,a:1,mo:-5}}]},
+{id:"royalty",t:["Gas royalty dispute","Pertikaian royalti gas"],d:["Talks on the state's share of resource revenue have reopened.","Rundingan mengenai bahagian hasil sumber negeri dibuka semula."],c:[
+ {t:["Demand a bigger share","Tuntut bahagian lebih besar"],fx:{m:5,u:2,l:1}},
+ {t:["Accept the federal offer","Terima tawaran Persekutuan"],fx:{mo:80,m:-3}},
+ {t:["Take it to court","Bawa ke mahkamah"],fx:{m:3,mo:-20,a:1}}]},
+{id:"invest",t:["Investor wants land","Pelabur mahu tanah"],d:["A large investor proposes a plantation and processing hub on native land.","Seorang pelabur besar mencadangkan pusat ladang dan pemprosesan atas tanah adat."],c:[
+ {t:["Approve quickly","Luluskan segera"],fx:{e:6,mo:40,a:-1,nx:["landprot",30]}},
+ {t:["Decline the project","Tolak projek"],fx:{e:-1,a:2}},
+ {t:["Negotiate with the community","Berunding dengan komuniti"],fx:{e:3,mo:10}}]},
+{id:"leak",ch:1,t:["The cover-up leaks","Pembohongan terbongkar"],d:["The press has documents showing the earlier scandal was buried.","Media memiliki dokumen yang menunjukkan skandal tadi disembunyikan."],c:[
+ {t:["Apologise publicly","Memohon maaf secara terbuka"],fx:{a:-6,u:2,l:-1}},
+ {t:["Deny everything","Nafikan semuanya"],fx:{a:-10,u:3,l:2}},
+ {t:["Accept resignations","Terima peletakan jawatan"],fx:{a:-3,l:-4,w:-1}}]},
+{id:"backlash",ch:1,t:["Backlash after the crackdown","Tindak balas selepas tindakan keras"],d:["Images of the crackdown are spreading online.","Gambar tindakan keras tersebar dalam talian."],c:[
+ {t:["Release those detained","Bebaskan mereka yang ditahan"],fx:{a:2,u:-3,mo:-10}},
+ {t:["Stand firm","Tegas dengan pendirian"],fx:{u:5,a:-4}},
+ {t:["Negotiate with the organisers","Berunding dengan penganjur"],fx:{u:-1,mo:-15}}]},
+{id:"landprot",ch:1,t:["Villagers protest the land deal","Penduduk kampung bantah perjanjian tanah"],d:["Communities say the plantation project ignores their native customary rights.","Komuniti berkata projek ladang mengabaikan hak adat mereka."],c:[
+ {t:["Compensate the community","Beri pampasan kepada komuniti"],fx:{mo:-40,u:-4,a:2}},
+ {t:["Ignore the protest","Abaikan bantahan"],fx:{u:6,a:-4,m:-1}},
+ {t:["Cancel the project","Batalkan projek"],fx:{e:-3,u:-3,a:3,mo:-10}}]}
 ];
+const evById=id=>EV.find(e=>e.id===id);
 /* ---------- data (editable) ---------- */
 const NAMES="Opar,Tasik Biru,Tanjong Datu,Pantai Damai,Demak Laut,Tupong,Samariang,Satok,Padungan,Pending,Batu Lintang,Kota Sentosa,Batu Kitang,Batu Kawah,Asajaya,Muara Tuang,Stakan,Serembu,Mambong,Tarat,Tebedu,Kedup,Bukit Semuja,Sadong Jaya,Simunjan,Gedong,Sebuyau,Lingga,Beting Maro,Balai Ringin,Bukit Begunan,Simanggang,Engkilili,Batang Ai,Saribas,Layar,Bukit Saban,Kalaka,Krian,Kabong,Kuala Rajang,Semop,Daro,Jemoreng,Repok,Meradong,Pakan,Meluan,Ngemah,Machan,Bukit Assek,Dudong,Bawang Assan,Pelawan,Nangka,Dalat,Tellian,Balingian,Tamin,Kakus,Pelagus,Katibas,Baleh,Belaga,Murum,Jepak,Tanjong Batu,Kemena,Samalaju,Bekenu,Lambir,Piasau,Pujut,Senadin,Marudi,Telang Usan,Mulu,Bukit Kota,Batu Danau,Ba'kelalan,Bukit Sari,Kidurong".split(",");
 while(NAMES.length<TOTAL)NAMES.push("N."+(NAMES.length+1));NAMES.length=TOTAL;
@@ -104,7 +138,7 @@ function mk(){
   {id:"psb",name:"Parti Sarawak Bersatu",abbr:"PSB",leader:"",color:"#e8a317",coal:"opp",ideo:"Sarawak-based opposition",loy:55},
   {id:"pkr",name:"Parti Keadilan Rakyat (Sarawak)",abbr:"PKR",leader:"",color:"#2aa7c9",coal:"opp",ideo:"Reformasi, social justice",loy:55}];
  const seats=NAMES.map((n,i)=>{const pt=i==8||i==9?"dap":i==10?"ind":"gps";return {id:i+1,name:n,rep:"",party:pt,...seatAttr(n,i,pt)}});
- return {parties,seats,cabinet:[],policies:[],res:{funds:40,cap:30,ap:2},lv:{approval:70,economy:65,stability:75,autonomy:60},game:{weeks:24,left:24,pend:null,used:[],log:[],mom:0,over:false,res:null}};
+ return {parties,seats,cabinet:[],policies:[],res:{cap:30,ap:3},lv:{approval:70,unrest:25,economy:65,autonomy:60,money:500,debt:1000},game:{day:0,total:360,next:10,q:[],pend:null,used:[],log:[],mom:0,over:false,res:null}};
 }
 let BASE=mk(),S=mk();
 const P=id=>S.parties.find(p=>p.id===id);
@@ -113,8 +147,9 @@ const maj=()=>Math.floor(S.seats.length/2)+1;
 const side=k=>S.seats.filter(s=>P(s.party)&&P(s.party).coal===k).length;
 const dirty=()=>S.seats.some((s,i)=>s.party!==BASE.seats[i].party||s.name!==BASE.seats[i].name||s.rep!==BASE.seats[i].rep);
 function loyalty(){const c=cnt();let w=0,n=0;S.parties.forEach(p=>{if(p.coal==="gov"){w+=(p.loy||0)*c[p.id];n+=c[p.id]}});return n?clamp(w/n):0}
+function fin(){const l=S.lv,a=S.policies.filter(p=>String(p.status)==="1").length,rev=Math.round(100+l.economy*1.2),net=rev-(150+a*10)-Math.round(l.debt*.004);return {rev,net,ratio:Math.round(l.debt/(rev*12)*100)}}
 /* ---------- UI helpers ---------- */
-function toast(m){const d=document.createElement("div");d.textContent=m;$("#toast").appendChild(d);setTimeout(()=>d.remove(),2200)}
+function toast(m){const d=document.createElement("div");d.textContent=m;$("#toast").appendChild(d);setTimeout(()=>d.remove(),2400)}
 function closeM(){$("#modal").hidden=true;$("#modal").innerHTML=""}
 function modal(title,fields,save){
  const o=$("#modal");o.hidden=false;
@@ -161,15 +196,21 @@ function mapSVG(){const n=S.seats.length,cols=Math.ceil(n/3),at=(i,o)=>pt((Math.
  const labs=TOWNS.map(([nm,i,sd])=>{const[x,y]=at(i,sd*68);return `<text x="${x.toFixed(0)}" y="${y.toFixed(0)}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" stroke="#0007" stroke-width="3" paint-order="stroke">${nm}</text>`}).join("");
  return `<svg class="ch" viewBox="0 -30 800 460" role="group" aria-label="${t("map")}"><polyline points="${poly}" fill="none" stroke="#2f6b4f" stroke-opacity=".55" stroke-width="118" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${poly}" fill="none" stroke="#86c79e" stroke-opacity=".35" stroke-width="96" stroke-linecap="round" stroke-linejoin="round"/>${labs}${tiles}</svg>`}
 function dunInfo(){if(selDun===null)return `<p class="mu" style="text-align:center">${t("pickD")}</p>`;const s=S.seats[selDun],p=P(s.party),r=S.res,off=S.game.over||r.ap<1;
- return `<div class="banner"><b>${esc(s.name)}</b> (N.${s.id}) · ${t("area"+s.area)}<br>${t("gby")}: ${p?`<i class="dot" style="background:${esc(p.color)}"></i> <b>${esc(p.abbr)}</b> · ${esc(p.name)} <span class="badge ${p.coal==="opp"?"opp":""}">${t(p.coal)}</span>`:"—"}<br>${t("rep")}: ${esc(s.rep)||t("unv")}<br>${t("sup")}: <b>${s.sup}%</b> · ${t("inc")}: <b>${s.inc}</b><div class="bar"><i style="width:${s.sup}%;background:${s.sup>=50?"#1f4fb2":"#d62839"}"></i></div><div class="row"><button class="btn" data-edit="${selDun}">${t("edit")}</button><button class="btn" data-act="visit" ${off?"disabled":""}>${t("actVisit")} <span class="mu">(4 ${t("cap")})</span></button><button class="btn" data-act="proj" ${off?"disabled":""}>${t("actProj")} <span class="mu">(10 ${t("funds")})</span></button></div></div>`}
-function resCard(){const r=S.res,off=S.game.over||r.ap<1;return `<div class="card sp"><div class="row" style="margin:0;justify-content:space-between"><span>💰 ${t("funds")}: <b>${r.funds}</b></span><span>⭐ ${t("cap")}: <b>${r.cap}</b></span><span>⚡ ${t("ap")}: <b>${r.ap}</b>/2</span></div><div class="row"><button class="btn" data-act="media" ${off?"disabled":""}>${t("actMedia")} <span class="mu">(12 ${t("funds")})</span></button></div><p class="mu" style="margin:6px 0 0">${t("estNote")}</p></div>`}
+ return `<div class="banner"><b>${esc(s.name)}</b> (N.${s.id}) · ${t("area"+s.area)}<br>${t("gby")}: ${p?`<i class="dot" style="background:${esc(p.color)}"></i> <b>${esc(p.abbr)}</b> · ${esc(p.name)} <span class="badge ${p.coal==="opp"?"opp":""}">${t(p.coal)}</span>`:"—"}<br>${t("rep")}: ${esc(s.rep)||t("unv")}<br>${t("sup")}: <b>${s.sup}%</b> · ${t("inc")}: <b>${s.inc}</b><div class="bar"><i style="width:${s.sup}%;background:${s.sup>=50?"#1f4fb2":"#d62839"}"></i></div><div class="row"><button class="btn" data-edit="${selDun}">${t("edit")}</button><button class="btn" data-act="visit" ${off?"disabled":""}>${t("actVisit")} <span class="mu">(4 ⭐)</span></button><button class="btn" data-act="proj" ${off?"disabled":""}>${t("actProj")} <span class="mu">(RM30m)</span></button></div></div>`}
+function resCard(){const r=S.res,off=S.game.over||r.ap<1;return `<div class="card sp"><div class="row" style="margin:0;justify-content:space-between"><span>⭐ ${t("cap")}: <b>${r.cap}</b></span><span>⚡ ${t("ap")}: <b>${r.ap}</b>/3</span></div><div class="row"><button class="btn" data-act="media" ${off?"disabled":""}>${t("actMedia")} <span class="mu">(RM40m)</span></button></div><p class="mu" style="margin:6px 0 0">${t("estNote")}</p></div>`}
 function legend(){const c=cnt();return `<div class="legend">${S.parties.map(p=>`<span class="lg${flt===p.id?" on":""}" data-f="${p.id}" tabindex="0" role="button"><i class="dot" style="background:${esc(p.color)}"></i>${esc(p.abbr)} <b>${c[p.id]}</b></span>`).join("")}<span class="lg" data-f="">${t("all")}</span></div>`}
-function meters(){const l=S.lv,m=[["approval",l.approval,1],["loyalty",loyalty(),0],["economy",l.economy,1],["stability",l.stability,1],["autonomy",l.autonomy,1]];
- return `<div class="card sp"><h3>${t("levels")}</h3><div class="grid">${m.map(([k,v,e])=>`<div><div class="row" style="margin:0;justify-content:space-between"><b>${t(k)}</b><span>${v}/100</span></div><div class="bar" role="progressbar" aria-label="${t(k)}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="100"><i style="width:${v}%;background:${v>=66?"#1a9d57":v>=40?"#e8a317":"#d62839"}"></i></div>${e?`<div class="row" style="margin-top:6px"><button class="btn" data-lv="${k}" data-d="-5">−5</button><button class="btn" data-lv="${k}" data-d="5">+5</button></div>`:`<span class="mu">${t("loyNote")}</span>`}</div>`).join("")}</div><p class="mu" style="margin-bottom:0">${t("gameNote")}</p></div>`}
-function turnCard(){const g=S.game,done=g.weeks-g.left;
- const btn=g.over?`<button class="btn p" id="ng">${t("newG")}</button>`:g.pend!==null?`<button class="btn p" id="resolve">${t("resolve")}</button>`:`<button class="btn p" id="endw">${t("endW")}</button>`;
+function levels(){const l=S.lv,f=fin(),m=[["approval",l.approval,0],["unrest",l.unrest,1],["economy",l.economy,0],["loyalty",loyalty(),0],["autonomy",l.autonomy,0]];
+ const col=(v,inv)=>{const g=inv?100-v:v;return g>=66?"#1a9d57":g>=40?"#e8a317":"#d62839"},dc=f.ratio>100?"#d62839":f.ratio>70?"#e8a317":"#1a9d57";
+ return `<div class="card sp"><h3>${t("levels")}</h3><div class="grid">${m.map(([k,v,i])=>`<div><div class="row" style="margin:0;justify-content:space-between"><b>${t(k)}</b><span>${v}/100</span></div><div class="bar" role="progressbar" aria-label="${t(k)}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="100"><i style="width:${v}%;background:${col(v,i)}"></i></div></div>`).join("")}</div>
+ <h3 style="margin-top:14px">${t("fin")}</h3><div class="grid"><div class="stat"><b style="color:${l.money<100?"#d62839":"inherit"}">${l.money}</b><span>${t("money")}</span></div><div class="stat"><b style="color:${f.net<0?"#d62839":"#1a9d57"}">${f.net>0?"+":""}${f.net}</b><span>${t("net")}</span></div><div class="stat"><b>${l.debt}</b><span>${t("debt")}</span></div><div class="stat"><b style="color:${dc}">${f.ratio}%</b><span>${t("debtR")}</span></div></div>
+ <p class="mu" style="margin-bottom:0">${t("gameNote")} ${t("fdate")}</p></div>`}
+function clockInner(){const g=S.game,run=spd>0&&!g.over&&g.pend===null,left=g.total-g.day;
+ const st=g.over?t("elDay"):g.pend!==null?t("need"):run?t("running")+" ×"+spd:t("paused");
+ const ctl=g.over?`<button class="btn p" id="ng">${t("newG")}</button>`:g.pend!==null?`<button class="btn p" id="resolve">${t("resolve")}</button>`:`<button class="btn ${spd?"":"p"}" data-spd="tog">${spd?t("pause"):t("resume")}</button>${[1,2,3].map(n=>`<button class="btn ${spd===n?"p":""}" data-spd="${n}">${"▶".repeat(n)}</button>`).join("")}`;
+ return `<div class="row" style="margin:0;justify-content:space-between"><b>📅 ${fmtDate(g.day)}</b><span>${st} · ${t("dLeft")}: <b>${Math.max(0,left)}</b></span></div><div class="bar"><i style="width:${Math.min(100,g.day/g.total*100)}%;background:var(--ac)"></i></div><div class="row">${ctl}</div>`}
+function histCard(){const g=S.game;if(!g.log.length&&!g.res)return "";
  const res=g.res?`<div class="banner ${g.res.txt==="hung"?"warn":""}"><b>${t("elDay")}: ${t(g.res.txt)}</b> — ${t("swingRes")}: ${g.res.sw>0?"+":""}${g.res.sw}% · ${t("gov")} ${g.res.gs} / ${t("opp")} ${g.res.os}</div>`:"";
- return `<div class="card sp"><h3>${t("turnT")}</h3><div class="row" style="margin:0;justify-content:space-between"><b>${t("week")} ${Math.min(done+1,g.weeks)} / ${g.weeks}</b><span>${t("left")}: <b>${g.left}</b></span></div><div class="bar"><i style="width:${done/g.weeks*100}%;background:var(--ac)"></i></div>${g.pend!==null?`<div class="banner warn">${t("pendMsg")}</div>`:""}${res}<div class="row">${btn}</div>${g.log.length?`<h3 style="margin-top:12px">${t("log")}</h3>${g.log.slice(-4).reverse().map(x=>`<div class="mu">W${x.w}: ${esc(EV[x.e].t[L()])} → ${esc(EV[x.e].c[x.c].t[L()])}</div>`).join("")}`:""}</div>`}
+ return `<div class="card sp">${res}${g.log.length?`<h3>${t("log")}</h3>${g.log.slice(-4).reverse().map(x=>{const ev=evById(x.e);return `<div class="mu">${fmtDate(x.d)}: ${esc(ev.t[L()])} → ${esc(ev.c[x.c].t[L()])}</div>`}).join("")}`:""}</div>`}
 function seatModal(i){const s=S.seats[i];
  modal(t("edSeat")+" #"+s.id,[{k:"name",l:"cons",v:s.name,r:1},{k:"rep",l:"rep",v:s.rep},{k:"party",l:"party",v:s.party,o:popts()}],v=>{s.name=v.name;s.rep=v.rep;s.party=v.party});
  if(!s.rep){const m=document.createElement("p");m.className="mu";m.textContent=t("rep")+": "+t("unv");$("#mf").prepend(m)}}
@@ -182,7 +223,7 @@ const V={
   <div class="card stat"><b>${maj()}</b><span>${t("maj")}</span></div>
   <div class="card stat"><b>${side("gov")}</b><span>${t("govS")}</span></div>
   <div class="card stat"><b>${act}</b><span>${t("act")} (${S.parties.length} ${t("ptl")})</span></div></div>
-  ${turnCard()}${resCard()}${meters()}
+  ${levels()}${resCard()}${histCard()}
   <div class="card sp"><h3>${t("map")}</h3>${legend()}${mapSVG()}<p class="mu" style="text-align:center">${t("mapNote")}</p>${dunInfo()}</div>
   <div class="card"><h3>${t("quick")}</h3><div class="row">${["dun","parties","election","cabinet","policies"].map(k=>`<button class="btn" data-go="${k}">${t(k)}</button>`).join("")}</div></div>`},
  dun(){return `<h2>${t("dun")}</h2>${banner()}<div class="card">${legend()}${chart()}</div>`},
@@ -198,10 +239,10 @@ const V={
 function render(){
  document.documentElement.lang=lang==="ms"?"ms":"en";document.title=t("title");
  $("#nav").innerHTML=`<h1>${t("title")}</h1>`+["dash","dun","parties","election","cabinet","policies"].map(k=>`<button data-go="${k}" class="${cur===k?"on":""}" ${cur===k?'aria-current="page"':""}>${t(k)}</button>`).join("")+`<button class="lang" id="lg">🌐 ${t("lang")}</button>`;
- $("#main").innerHTML=V[cur]();
+ $("#main").innerHTML=`<div class="card sp" id="clock">${clockInner()}</div>`+V[cur]();
  const s=$("#es");if(s)s.oninput=()=>{$("#ev").textContent=(s.value>0?"+":"")+s.value};
 }
-/* ---------- actions ---------- */
+/* ---------- forms ---------- */
 function partyForm(p){const n=!p;p=p||{name:"",abbr:"",leader:"",color:"#7a4fd1",coal:"opp",ideo:"",loy:50};
  modal(t(n?"addParty":"edit"),[{k:"name",l:"name",v:p.name,r:1},{k:"abbr",l:"abbr",v:p.abbr,r:1},{k:"leader",l:"leader",v:p.leader},{k:"color",l:"color",v:p.color,c:1},{k:"coal",l:"coal",v:p.coal,o:[["gov",t("gov")],["opp",t("opp")]]},{k:"loy",l:"ploy",v:p.loy,n:1},{k:"ideo",l:"ideo",v:p.ideo,ta:1}],v=>{v.loy=clamp(parseInt(v.loy)||0);if(n)S.parties.push({id:uid(),...v});else Object.assign(p,v)})}
 function delParty(id){const has=S.seats.some(s=>s.party===id);
@@ -212,16 +253,15 @@ function delParty(id){const has=S.seats.some(s=>s.party===id);
    if(!fb)return;
    S.seats.forEach(s=>{if(s.party===id)s.party=fb.id})}
   S.parties=S.parties.filter(x=>x.id!==id);S.cabinet.forEach(m=>{if(m.party===id)m.party=""});if(flt===id)flt=null})}
-function simulate(pid,sw,nolv){
+function simulate(pid,sw){
  const others=S.parties.filter(p=>p.id!==pid);if(!others.length)return;
  S.seats.forEach(s=>{
   if(sw<0&&s.party===pid&&Math.random()<Math.min(.95,-sw/20*.9)){
    const pool=others.filter(p=>S.seats.some(x=>x.party===p.id));const l=pool.length?pool:others;s.party=l[Math.floor(Math.random()*l.length)].id}
   else if(sw>0&&s.party!==pid&&Math.random()<Math.min(.9,sw/20*.6))s.party=pid});
- if(nolv)return;
  const g=P(pid).coal==="gov";
  S.lv.approval=clamp(S.lv.approval+(g?sw*.8:-sw*.4));
- S.lv.stability=clamp(S.lv.stability+(g?sw*.3:-sw*.2))}
+ S.lv.unrest=clamp(S.lv.unrest-(g?sw*.3:-sw*.2))}
 function cabForm(m){const n=!m;m=m||{name:"",port:"",party:S.parties[0]?S.parties[0].id:""};
  modal(t(n?"addMin":"edit"),[{k:"name",l:"minister",v:m.name,r:1},{k:"port",l:"port",v:m.port,r:1},{k:"party",l:"party",v:m.party,o:popts()}],v=>{if(n)S.cabinet.push({id:uid(),...v});else Object.assign(m,v)})}
 function polForm(p){const n=!p;p=p||{title:"",cat:"",desc:"",status:"0"};const was=String(p.status);
@@ -229,43 +269,63 @@ function polForm(p){const n=!p;p=p||{title:"",cat:"",desc:"",status:"0"};const w
   if(v.status==="2"&&(n||was!=="2"))S.lv.approval=clamp(S.lv.approval+3);
   if(n)S.policies.push({id:uid(),...v});else Object.assign(p,v)})}
 /* ---------- campaign actions ---------- */
-function act(k){const r=S.res,g=S.game;if(g.over||r.ap<1)return;const s=selDun===null?null:S.seats[selDun];
- const cost={visit:[0,4],proj:[10,0],media:[12,0]}[k];if(!cost||(k!=="media"&&!s))return;
- if(r.funds<cost[0]||r.cap<cost[1]){toast(t("noRes"));return}
- r.funds-=cost[0];r.cap-=cost[1];r.ap--;
+function act(k){const r=S.res,g=S.game,l=S.lv;if(g.over||r.ap<1)return;const s=selDun===null?null:S.seats[selDun];
+ const cost={visit:[0,4],proj:[30,0],media:[40,0]}[k];if(!cost||(k!=="media"&&!s))return;
+ if(l.money<cost[0]||r.cap<cost[1]){toast(t("noRes"));return}
+ l.money-=cost[0];r.cap-=cost[1];r.ap--;
  const up=(x,v)=>{x.sup=Math.min(95,x.sup+v)};
  if(k==="visit"){up(s,4);[-2,-1,1,2].forEach(d=>{const q=S.seats[selDun+d];if(q&&q.area===s.area)up(q,1)})}
- if(k==="proj"){up(s,8);S.lv.economy=clamp(S.lv.economy+1)}
- if(k==="media"){S.seats.forEach(q=>up(q,1));S.lv.approval=clamp(S.lv.approval+3)}
+ if(k==="proj"){up(s,8);l.economy=clamp(l.economy+1)}
+ if(k==="media"){S.seats.forEach(q=>up(q,1));l.approval=clamp(l.approval+3);l.unrest=clamp(l.unrest-1)}
  toast(t("actDone"));render()}
-/* ---------- turns, situations, election day ---------- */
+/* ---------- real-time clock, situations, election day ---------- */
+function setSpd(n){if(n==="tog"){if(spd){last=spd;n=0}else n=last}n=+n;spd=n;clearInterval(timer);timer=null;if(n)timer=setInterval(tick,[0,1500,700,300][n]);const c=$("#clock");if(c)c.innerHTML=clockInner()}
+function stopClock(){spd=0;clearInterval(timer);timer=null}
+function month(){const l=S.lv,f=fin();
+ l.money+=f.net;let msg=t("monthEnd")+": "+(f.net>0?"+":"")+f.net;
+ if(l.money<0){l.debt+=-l.money;l.money=0;l.approval=clamp(l.approval-2);msg=t("borrowed")}
+ l.unrest=clamp(l.unrest+(60-l.approval)*.06+(f.ratio>110?2:0)-(l.economy>70?1:0)+(Math.random()-.5)*2);
+ if(l.unrest>70)l.approval=clamp(l.approval-1);
+ l.economy=clamp(l.economy+Math.round((Math.random()-.5)*3)-(f.ratio>130?1:0));
+ S.policies.forEach(p=>{if(String(p.status)==="1"&&Math.random()<.1){p.status="2";l.approval=clamp(l.approval+2);l.economy=clamp(l.economy+1);toast(t("polDone")+": "+p.title)}});
+ S.seats.forEach(q=>{q.sup=Math.max(5,Math.min(95,q.sup+Math.round((l.approval-65)/12+(Math.random()-.5)-(l.unrest>60?1:0))))});
+ toast(msg)}
+function pickEv(){const g=S.game,ok=e=>!e.ch&&(!e.when||e.when(S));let p=EV.filter(e=>ok(e)&&!g.used.includes(e.id));
+ if(!p.length){g.used=[];p=EV.filter(ok)}if(!p.length)p=EV.filter(e=>!e.ch);return p[Math.floor(Math.random()*p.length)].id}
+function fire(id){const g=S.game;g.pend=id;if(!g.used.includes(id))g.used.push(id);render();showEvent()}
+function tick(){const g=S.game;if(g.over||g.pend!==null||!$("#modal").hidden)return;
+ g.day++;
+ if(g.day%7===0){S.res.ap=Math.min(3,S.res.ap+1);S.res.cap=Math.min(100,S.res.cap+3)}
+ const m=g.day%30===0;if(m)month();
+ if(g.day>=g.total){electionDay();return}
+ const due=g.q.findIndex(x=>x.day<=g.day);
+ if(due>=0){const x=g.q.splice(due,1)[0];fire(x.id);return}
+ if(g.day>=g.next){g.next=g.day+9+Math.floor(Math.random()*8);fire(pickEv());return}
+ if(m&&cur!=="election")render();else $("#clock").innerHTML=clockInner()}
 function flip(dir){const c=cnt(),gov=S.parties.filter(p=>p.coal==="gov"),opp=S.parties.filter(p=>p.coal==="opp");
  const from=dir==="g"?gov:opp,tos=dir==="g"?opp:gov;if(!from.length||!tos.length)return null;
  const pool=S.seats.filter(s=>from.some(p=>p.id===s.party));if(!pool.length)return null;
  const to=tos.slice().sort((a,b)=>c[b.id]-c[a.id])[0],s=pool[Math.floor(Math.random()*pool.length)];s.party=to.id;return s.name+" → "+to.abbr}
 function applyFx(fx){const out=[],ex=[],l=S.lv;
- [["a","approval"],["e","economy"],["s","stability"],["m","autonomy"]].forEach(([k,n])=>{if(fx[k]){l[n]=clamp(l[n]+fx[k]);out.push([n,fx[k]])}});
+ [["a","approval"],["u","unrest"],["e","economy"],["m","autonomy"]].forEach(([k,n])=>{if(fx[k]){l[n]=clamp(l[n]+fx[k]);out.push([n,fx[k]])}});
+ if(fx.mo){l.money+=fx.mo;out.push(["money",fx.mo])}
+ if(fx.db){l.debt+=fx.db;out.push(["debt",fx.db])}
  if(fx.l){S.parties.forEach(p=>{if(p.coal==="gov")p.loy=clamp((p.loy||0)+fx.l)});out.push(["loyalty",fx.l])}
  if(fx.w){S.game.mom+=fx.w;out.push(["mom",fx.w])}
  if(fx.f){const r=flip(fx.f);if(r)ex.push(t("moved")+": "+r)}
  if(fx.pol){const q=fx.pol.split("|");S.policies.push({id:uid(),title:q[0],cat:q[1],desc:"",status:"1"});ex.push(t("polAdd")+": "+q[0])}
+ if(fx.nx)S.game.q.push({id:fx.nx[0],day:S.game.day+fx.nx[1]});
  return {out,ex}}
-function showEvent(){const g=S.game,ev=EV[g.pend];if(!ev)return;const o=$("#modal");o.hidden=false;
+function showEvent(){const g=S.game,ev=evById(g.pend);if(!ev)return;const o=$("#modal");o.hidden=false;
  o.innerHTML=`<div class="dlg" role="dialog" aria-modal="true"><h3>⚠ ${esc(ev.t[L()])}</h3><p>${esc(ev.d[L()])}</p>${ev.c.map((c,i)=>`<button class="btn chb" data-ch="${i}">${esc(c.t[L()])}</button>`).join("")}</div>`}
 function showRes(ev,c,r){const o=$("#modal");o.hidden=false;
- o.innerHTML=`<div class="dlg" role="dialog" aria-modal="true"><h3>${t("conseq")}</h3><p><b>${esc(ev.t[L()])}</b> → ${esc(c.t[L()])}</p><ul>${r.out.map(([k,v])=>`<li>${t(k)} <b style="color:${v>0?"#1a9d57":"#b42318"}">${v>0?"+":""}${v}</b></li>`).join("")}${r.ex.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><div class="row"><button class="btn p" id="ok">${t("ok")}</button></div></div>`}
-function choose(i){const g=S.game,ev=EV[g.pend];if(!ev)return;const c=ev.c[i],r=applyFx(c.fx);
- g.log.push({w:g.weeks-g.left,e:g.pend,c:i});g.pend=null;render();showRes(ev,c,r)}
-function endWeek(){const g=S.game;if(g.over||g.pend!==null)return;g.left--;
- S.res.ap=2;S.res.funds+=8;S.res.cap=Math.min(100,S.res.cap+5);
- S.seats.forEach(q=>{q.sup=Math.max(5,Math.min(95,q.sup+Math.round((S.lv.approval-65)/25+(Math.random()-.5))))});
- ["approval","economy","stability","autonomy"].forEach(n=>{S.lv[n]=clamp(S.lv[n]+Math.round(Math.random()*4-2))});
- if(g.left<=0){electionDay();return}
- let pool=EV.map((_,i)=>i).filter(i=>!g.used.includes(i));if(!pool.length){g.used=[];pool=EV.map((_,i)=>i)}
- g.pend=pool[Math.floor(Math.random()*pool.length)];g.used.push(g.pend);render();showEvent()}
-function electionDay(){const g=S.game,l=S.lv;g.over=true;g.left=0;
+ const bad=(k,v)=>(k==="unrest"||k==="debt")?v>0:v<0;
+ o.innerHTML=`<div class="dlg" role="dialog" aria-modal="true"><h3>${t("conseq")}</h3><p><b>${esc(ev.t[L()])}</b> → ${esc(c.t[L()])}</p><ul>${r.out.map(([k,v])=>`<li>${t(k)} <b style="color:${bad(k,v)?"#b42318":"#1a9d57"}">${v>0?"+":""}${v}</b></li>`).join("")}${r.ex.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><div class="row"><button class="btn p" id="ok">${t("ok")}</button></div></div>`}
+function choose(i){const g=S.game,ev=evById(g.pend);if(!ev)return;const c=ev.c[i],r=applyFx(c.fx);
+ g.log.push({d:g.day,e:g.pend,c:i});g.pend=null;render();showRes(ev,c,r)}
+function electionDay(){const g=S.game,l=S.lv,f=fin();g.over=true;g.day=g.total;stopClock();
  const c0=cnt(),by=k=>S.parties.filter(p=>p.coal===k).sort((a,b)=>c0[b.id]-c0[a.id]),govP=by("gov"),oppP=by("opp");
- const shift=(l.approval-65)*.25+(l.economy-60)*.1+(l.stability-65)*.1+(loyalty()-75)*.1+(l.autonomy-55)*.05+g.mom*1.5;
+ const shift=(l.approval-65)*.25+(l.economy-60)*.1-(l.unrest-30)*.15+(loyalty()-75)*.1+(l.autonomy-55)*.05+g.mom*1.5-Math.max(0,f.ratio-80)*.08;
  let flips=0;
  S.seats.forEach(s=>{const hg=P(s.party)&&P(s.party).coal==="gov",eff=s.sup+shift+s.inc*.08*(hg?1:-1)+(Math.random()-.5)*12;
   if(eff>=50&&!hg&&govP.length){s.party=govP[0].id;flips++}
@@ -276,10 +336,10 @@ function electionDay(){const g=S.game,l=S.lv;g.over=true;g.left=0;
  o.innerHTML=`<div class="dlg" role="dialog" aria-modal="true"><h3>🗳 ${t("elDay")}</h3><p><b>${t(g.res.txt)}</b><br>${t("swingRes")}: ${sw>0?"+":""}${sw}%<br>${t("gov")} ${gs} / ${t("opp")} ${os} (${t("maj")}: ${m})<br>${t("moved")}: ${flips}</p><div class="row"><button class="btn p" id="ng">${t("newG")}</button><button class="btn" id="ok">${t("close")}</button></div></div>`}
 const byId=(a,id)=>a.find(x=>x.id===id);
 document.addEventListener("click",e=>{
- const el=e.target.closest("[data-act],[data-go],[data-f],[data-lv],[data-ch],[data-edit],[data-pe],[data-pc],[data-pd],[data-me],[data-md],[data-le],[data-ld],.seat,button[id]");if(!el)return;const d=el.dataset;
+ const el=e.target.closest("[data-spd],[data-act],[data-go],[data-f],[data-ch],[data-edit],[data-pe],[data-pc],[data-pd],[data-me],[data-md],[data-le],[data-ld],.seat,button[id]");if(!el)return;const d=el.dataset;
+ if(d.spd!==undefined){setSpd(d.spd);return}
  if(d.go){cur=d.go;render();return}
  if(el.id==="lg"){lang=lang==="en"?"ms":"en";render();return}
- if(d.lv){S.lv[d.lv]=clamp(S.lv[d.lv]+Number(d.d));render();return}
  if(d.act){act(d.act);return}
  if(d.ch!==undefined){choose(+d.ch);return}
  if(d.edit!==undefined){seatModal(+d.edit);return}
@@ -290,13 +350,15 @@ document.addEventListener("click",e=>{
  else if(d.me)cabForm(byId(S.cabinet,d.me));else if(d.md)ask(t("confirm"),()=>{S.cabinet=S.cabinet.filter(x=>x.id!==d.md)});
  else if(d.le)polForm(byId(S.policies,d.le));else if(d.ld)ask(t("confirm"),()=>{S.policies=S.policies.filter(x=>x.id!==d.ld)});
  else if(el.id==="addP")partyForm();else if(el.id==="addM")cabForm();else if(el.id==="addL")polForm();
- else if(el.id==="endw")endWeek();else if(el.id==="resolve")showEvent();
+ else if(el.id==="resolve")showEvent();
  else if(el.id==="ok"){closeM();render()}
- else if(el.id==="ng"){S=mk();flt=null;selDun=null;closeM();render()}
+ else if(el.id==="ng"){S=mk();flt=null;selDun=null;stopClock();closeM();render()}
  else if(el.id==="sim"){const pid=$("#ep").value;if(!pid){toast(t("noP"));return}simulate(pid,+$("#es").value);toast(t("simDone"));render()}
- else if(el.id==="rst"){S=JSON.parse(JSON.stringify({...BASE,cabinet:S.cabinet,policies:S.policies,game:S.game,res:S.res}));flt=null;selDun=null;toast(t("restored"));render()}
+ else if(el.id==="rst"){S=JSON.parse(JSON.stringify({...BASE,cabinet:S.cabinet,policies:S.policies,game:S.game,res:S.res,lv:S.lv}));flt=null;selDun=null;toast(t("restored"));render()}
 });
-document.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){const el=e.target.closest(".seat,.lg");if(el){e.preventDefault();el.dispatchEvent(new MouseEvent("click",{bubbles:true}))}}});
+document.addEventListener("keydown",e=>{
+ if(e.code==="Space"&&e.target===document.body&&$("#modal").hidden){e.preventDefault();setSpd("tog");return}
+ if(e.key==="Enter"||e.key===" "){const el=e.target.closest(".seat,.lg");if(el){e.preventDefault();el.dispatchEvent(new MouseEvent("click",{bubbles:true}))}}});
 /* ---------- hover highlight + tooltip ---------- */
 const tip=document.createElement("div");tip.id="tip";document.body.appendChild(tip);
 function hl(el){
