@@ -1,0 +1,203 @@
+<style>
+  /* Phase 3 visual polish and party gallery */
+  .p3studio,.p3gallery{margin:12px 0;padding:18px;border:1px solid rgba(255,255,255,.7);border-radius:14px;background:rgba(255,255,255,.82);box-shadow:0 10px 28px rgba(13,32,63,.1)}
+  .p3studio h3,.p3gallery h3{margin:0 0 5px}
+  .p3note{font-size:13px;color:#667085;margin:0 0 14px}
+  .p3form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .p3form label{display:block;font-size:13px;color:#667085}
+  .p3form input,.p3form textarea{width:100%;margin-top:4px;padding:10px;border:1px solid #d5deeb;border-radius:9px;font:inherit;background:#fff}
+  .p3form textarea{min-height:86px;resize:vertical}
+  .p3full{grid-column:1/-1}
+  .p3draft{margin-top:12px;padding:13px;border-left:4px solid #e6ad3e;border-radius:8px;background:#fff8e7;white-space:pre-wrap}
+  .p3policy{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  .p3badge{display:inline-block;padding:3px 9px;border-radius:20px;background:#e8f4ec;color:#17633d;font-size:12px;font-weight:700}
+  .p3parties{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:12px}
+  .p3party{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #dfe6f0;border-radius:12px;background:rgba(255,255,255,.8)}
+  .p3party svg{width:54px;height:54px;flex:none}
+  .p3party .p3logo{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;border:3px solid #fff;box-shadow:0 2px 8px #0002}
+  .p3party strong{display:block}
+  .p3party small{display:block;color:#667085}
+  @media(max-width:600px){.p3form{grid-template-columns:1fr}.p3full{grid-column:auto}}
+</style>
+
+<script>
+(function(){
+  "use strict";
+
+  /*
+   * Phase 3 Policy Studio.
+   * Drafting is generated locally from the player's policy name and issue text.
+   * Approved policies stay active across terms and apply a small monthly effect.
+   */
+  let p3Name = "";
+  let p3Issue = "";
+  let p3Draft = "";
+
+  const p3OldPolicies = V.policies;
+  V.policies = function(){
+    const studio = `
+      <section class="p3studio">
+        <h3>✨ Policy Studio</h3>
+        <p class="p3note">
+          Local drafting assistant: enter a policy name and issue. The draft is created in this browser,
+          then you can approve it for a continuing in-game effect.
+        </p>
+        <div class="p3form">
+          <label>Policy name
+            <input id="p3Name" maxlength="70" value="${esc(p3Name)}" placeholder="e.g. Rural Clinic Access">
+          </label>
+          <label>Issue to address
+            <input id="p3Issue" maxlength="180" value="${esc(p3Issue)}" placeholder="e.g. Remote villages have limited healthcare">
+          </label>
+          <div class="p3full">
+            <button type="button" class="btn p" data-p3="draft">Draft policy</button>
+          </div>
+        </div>
+        ${p3Draft ? `
+          <div class="p3draft" role="status"><b>Suggested policy draft</b><br>${esc(p3Draft)}</div>
+          <div class="p3policy">
+            <button type="button" class="btn p" data-p3="approve">Approve and activate</button>
+            <span class="p3note" style="margin:0">Active policies cost RM4m per in-game month.</span>
+          </div>` : ""}
+      </section>
+      ${p3OldPolicies()}`;
+    return studio;
+  };
+
+  function p3MakeDraft(name, issue){
+    const text = issue.toLowerCase();
+    let track = "public services";
+    let action = "set a clear service standard, publish progress each month, and review results with affected communities";
+    if (/health|clinic|doctor|hospital|medical|dengue/.test(text)){
+      track = "health access";
+      action = "prioritise underserved areas, coordinate staffing and supplies, and publish service-coverage updates";
+    } else if (/school|student|teacher|education|internet|digital/.test(text)){
+      track = "education and connectivity";
+      action = "identify underserved communities, improve access and staffing, and measure participation each term";
+    } else if (/job|work|worker|income|price|cost|business|econom/.test(text)){
+      track = "jobs and household resilience";
+      action = "target support to affected households and local businesses, then track jobs and affordability";
+    } else if (/road|bridge|transport|ferry|infrastructure/.test(text)){
+      track = "transport and infrastructure";
+      action = "prioritise high-need routes, publish delivery milestones, and review safety and access outcomes";
+    } else if (/forest|river|water|environment|flood|land|wildlife/.test(text)){
+      track = "environment and community safeguards";
+      action = "consult affected communities, set transparent safeguards, and publish monitoring results";
+    }
+
+    return `${name} — ${track}.\n\nObjective: Address “${issue}” through a practical, measurable state programme.\n\nActions: ${action}.\n\nAccountability: Publish a short progress update every month and review the policy after one in-game year.\n\nSuggested game effect: If approved, this policy provides a small monthly improvement to a related state indicator, provided the treasury can cover its upkeep.`;
+  }
+
+  function p3EffectFor(issue){
+    const text = issue.toLowerCase();
+    if (/unrest|tension|protest|safety|security/.test(text)) return "unrest";
+    if (/autonomy|state right|federal/.test(text)) return "autonomy";
+    if (/job|work|income|business|econom|road|trade|industry/.test(text)) return "economy";
+    return "approval";
+  }
+
+  function p3Approve(){
+    const name = p3Name.trim();
+    if (!name || !p3Draft) {
+      toast("Draft a policy and enter its name first.");
+      return;
+    }
+    const effect = p3EffectFor(p3Issue);
+    S.policies.push({
+      id: uid(),
+      title: name,
+      cat: "Phase 3",
+      desc: p3Draft,
+      status: "2",
+      phase3Ongoing: true,
+      phase3Effect: effect
+    });
+    p3Draft = "";
+    p3Name = "";
+    p3Issue = "";
+    save();
+    toast("Policy approved and added to your active game.");
+    render();
+  }
+
+  /*
+   * Keep the existing party management screen and add mock-up logo/leader portraits.
+   * These portraits are decorative placeholders, not real photographs.
+   */
+  const p3OldParties = V.parties;
+  V.parties = function(){
+    const gallery = `
+      <section class="p3gallery">
+        <h3>Party emblems & leader portraits</h3>
+        <p class="p3note">Decorative mock-ups based on your current party names and colours.</p>
+        <div class="p3parties">
+          ${S.parties.map(p => {
+            const color = esc(p.color || "#526783");
+            const abbr = esc(p.abbr || "PTY");
+            const leader = esc(p.leader || "Leader not set");
+            const name = esc(p.name || "Party");
+            return `
+              <article class="p3party">
+                <svg viewBox="0 0 64 64" role="img" aria-label="Mock-up portrait for ${leader}">
+                  <circle cx="32" cy="32" r="31" fill="${color}"/>
+                  <path d="M12 58c2-13 9-19 20-19s18 6 20 19" fill="#f3d7b5"/>
+                  <path d="M20 27c0-11 5-17 12-17 9 0 13 7 12 18l-3 9H23z" fill="#273447"/>
+                  <ellipse cx="32" cy="29" rx="11" ry="13" fill="#d9a77f"/>
+                  <path d="M21 25c1-10 6-14 12-14 7 0 11 5 11 13-5-1-8-4-10-7-3 5-7 7-13 8" fill="#273447"/>
+                  <path d="M27 32h2m7 0h2" stroke="#273447" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span class="p3logo" style="background:${color}">${abbr}</span>
+                <div><strong>${name}</strong><small>${leader}</small></div>
+              </article>`;
+          }).join("")}
+        </div>
+      </section>`;
+    return p3OldParties() + gallery;
+  };
+
+  document.addEventListener("input", function(e){
+    if (e.target.id === "p3Name") p3Name = e.target.value;
+    if (e.target.id === "p3Issue") p3Issue = e.target.value;
+  });
+
+  document.addEventListener("click", function(e){
+    const button = e.target.closest("[data-p3]");
+    if (!button) return;
+
+    if (button.dataset.p3 === "draft") {
+      p3Name = ($("#p3Name")?.value || "").trim();
+      p3Issue = ($("#p3Issue")?.value || "").trim();
+      if (!p3Name || !p3Issue) {
+        toast("Enter both a policy name and an issue.");
+        return;
+      }
+      p3Draft = p3MakeDraft(p3Name, p3Issue);
+      render();
+    }
+
+    if (button.dataset.p3 === "approve") p3Approve();
+  });
+
+  /*
+   * A status-2 Phase 3 policy will not be auto-completed by the original
+   * policy system. It remains active and applies its effect every game month.
+   */
+  const p3OriginalMonth = month;
+  month = function(){
+    p3OriginalMonth();
+    S.policies
+      .filter(p => p.phase3Ongoing)
+      .forEach(p => {
+        if ((Number(S.lv.money) || 0) < 4) return;
+        S.lv.money -= 4;
+        if (p.phase3Effect === "approval") S.lv.approval = clamp(S.lv.approval + 1);
+        if (p.phase3Effect === "economy") S.lv.economy = clamp(S.lv.economy + 1);
+        if (p.phase3Effect === "unrest") S.lv.unrest = clamp(S.lv.unrest - 1);
+        if (p.phase3Effect === "autonomy") S.lv.autonomy = clamp(S.lv.autonomy + 1);
+      });
+    save();
+  };
+
+  render();
+})();
+</script>
