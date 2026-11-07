@@ -945,7 +945,7 @@ function render(){
  hl(null);
  document.documentElement.lang=lang==="ms"?"ms":"en";document.title="Sarawak Mandate";
  $("#nav").innerHTML=`<h1 class="brandblock"><span>SARAWAK MANDATE</span><small>${B("The Political Strategy Simulator","Simulator Strategi Politik")}</small></h1>`+["dash","dun","map","parties","cabinet"].concat(playerBloc()==="gov"?["federal"]:[]).map(k=>`<button data-go="${k}" class="${cur===k&&!(k==="dash"&&0)?"on":""}" ${cur===k?'aria-current="page"':""}><span class="ni">${ICN[k]}</span>${k==="map"?B("Map","Peta"):k==="federal"?B("Putrajaya","Putrajaya"):t(k)}</button>`).join("")+`<div class="navtools"><button id="set" title="${B("Settings","Tetapan")}">⚙</button><button id="sv" title="${B("Backup","Sandaran")}">⇩</button><button id="how" title="${t("how")}">ℹ</button><button id="snd" title="${B("Sound","Bunyi")}">${SND?"♪":"∅"}</button><button id="lg" class="lang" title="${B("Language","Bahasa")}">${lang==="ms"?"EN":"BM"}</button></div>`;
- if(window.__wkSeen!=null&&S.game&&window.__wkSeen!==S.game.wk)window.__enter=true;if(S.game)window.__wkSeen=S.game.wk;const ent=window.__enter;window.__enter=false;$("#main").className=(ent?"enter ":"")+(cur==="dash"?"dashmode":cur==="map"?"mapmode":"tab-"+cur)+(playerBloc()==="opp"?" bloc-opp":" bloc-gov");
+ if(S.game)window.__wkSeen=S.game.wk;const ent=window.__enter;window.__enter=false;$("#main").className=(ent?"enter ":"")+(cur==="dash"?"dashmode":cur==="map"?"mapmode":"tab-"+cur)+(playerBloc()==="opp"?" bloc-opp":" bloc-gov");
  $("#main").innerHTML=`<div class="card sp" id="clock">${clockInner()}</div>`+V[cur]();
  const s=$("#es");if(s)s.oninput=()=>{$("#ev").textContent=(s.value>0?"+":"")+s.value};
  animStats();save();openDeskTalks();
