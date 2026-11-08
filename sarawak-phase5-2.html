@@ -363,6 +363,14 @@ body.theme-light .sit .sitR .chb:hover:not(:disabled){background:#2b3a55}
 .sit .sitcw{border-top:1px dashed rgba(128,128,128,.45);margin-top:10px;padding-top:2px}
 .sit .sitc{display:flex;justify-content:space-between;margin-top:9px;font-size:13.5px}
 .sit .sitnote{font-size:12px;opacity:.65;margin-top:12px;min-height:2.6em}
+.stat.fin[data-fin]{cursor:pointer;transition:transform .15s,box-shadow .15s}.stat.fin[data-fin]:hover{box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.dlg.fin{max-width:500px}
+.fin .sitq{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.65;margin:16px 0 4px}
+.fin .finh{display:flex;gap:12px;margin:4px 0}.fin .finh>div{flex:1;border:1px solid rgba(128,128,128,.35);border-radius:12px;padding:10px 14px}
+.fin .finh b{display:block;font-size:26px;line-height:1.2}
+.fin .finr{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid rgba(128,128,128,.25);font-size:14px}
+.fin .finsub{padding-left:14px;font-size:13px;opacity:.85}.fin .finsub .finr{padding:3px 0}
+.fin .finb .bar{height:6px;margin-top:0}.fin .finnote{margin:8px 0 0;font-size:12.5px}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
 <div class="ov" id="modal" hidden></div><div id="toast" aria-live="polite"></div>
@@ -1261,7 +1269,7 @@ function topbar(){const l=S.lv,f=fin(),opp=playerBloc()==="opp",m=opp?[["approva
  const lab=k=>opp?({approval:B("Their approval","Sokongan mereka"),unrest:B("Public pressure","Tekanan awam"),oppS:B("Your strength","Kekuatan anda"),economy:B("Their economy","Ekonomi mereka")}[k]||t(k)):t(k);
  const col=(v,inv)=>{const g=inv?100-v:v;return g>=66?"#1a9d57":g>=40?"#e8a317":"#d62839"},dc=f.ratio>100?"#d62839":f.ratio>70?"#e8a317":"#1a9d57";
  return `<div class="tb">${m.map(([k,v,i])=>`<div class="card stat" data-card="${k}"><span>${lab(k)}</span><b class="sn" data-k="${k}" data-v="${v}" style="color:${col(v,i)}">${v}</b><div class="bar" role="progressbar" aria-label="${lab(k)}" aria-valuenow="${v}" aria-valuemin="0" aria-valuemax="100"><i data-k="${k}" data-v="${v}" style="width:${v}%;background:${col(v,i)}"></i></div></div>`).join("")}
- <div class="card stat fin"><span>◈ ${opp?B("Campaign fund","Dana kempen"):t("money")}</span><b style="color:${(opp?S.game.chest:l.money)<40?"#d62839":"inherit"}">RM${opp?(S.game.chest||0):l.money}m</b><span style="color:${f.net<0?"#d62839":"#1a9d57"}">${f.net>0?"+":""}${f.net}/${B("mo","bln")}</span><span style="color:${dc}">${t("debtR")} ${f.ratio}%</span></div></div>`}
+ <div class="card stat fin"${opp?"":` data-fin="1" role="button" tabindex="0" title="${B("Open financial planning","Buka perancangan kewangan")}"`}><span>◈ ${opp?B("Campaign fund","Dana kempen"):B("Financial Planning","Perancangan Kewangan")}</span><b style="color:${(opp?S.game.chest:l.money)<40?"#d62839":"inherit"}">RM${opp?(S.game.chest||0):l.money}m</b><span style="color:${f.net<0?"#d62839":"#1a9d57"}">${f.net>0?"+":""}${f.net}/${B("mo","bln")}</span><span style="color:${dc}">${t("debtR")} ${f.ratio}%</span></div></div>`}
 function pollProj(){const l=S.lv,g=S.game,f=fin(),dOff=diffProfile().swing,MS=manifestoShift();
  const shift=MS.v+(l.approval-65)*.25+(l.economy-60)*.1-(l.unrest-30)*.15+(loyalty()-75)*.1+(l.autonomy-55)*.05+g.mom*1.5-Math.max(0,f.ratio-80)*.08-(S.opp.str-40)*.16-(g.term-1)*3.5-7+dOff;
  let gv=0;S.seats.forEach(q=>{const hg=P(q.party)&&P(q.party).coal==="gov",eff=50+(q.sup-50)*.5+shift+(q.inc||0)*.08*(hg?1:-1);if(eff>=50)gv++});
@@ -1637,21 +1645,50 @@ function applyFx(fx0,ev){const sf=softFx(fx0,ev),fx=tuneFx(sf.fx),out=[],ex=[],l
   if(d){const hit=[];S.seats.forEach((q,i)=>{if(ids.includes(dv(i))){q.sup=Math.max(5,Math.min(95,q.sup+d));hit.push(i)}});pulse=pulse.concat(hit);
    ex.push(t("localSup")+": "+ids.map(i=>DIV[i].n).join(", ")+" ("+(d>0?"+":"")+d+")")}}
  return {out,ex}}
-function sitRows(i){try{const l=S.lv,opp=playerBloc()==="opp",ev=evById(S.game.pend),c=i>=0&&ev?ev.c[i]:null,fx=c?tuneFx(softFx(c.fx||{},ev).fx):{},
+function twistFor(ev,c,i){const w=window.__tw=window.__tw||{},k=ev.id+"|"+i;if(!(k in w))w[k]=twist(ev,c,i);return w[k]}
+function finModal(){const o=$("#modal"),l=S.lv,f=fin(),g=S.game,b=bud(),up=polUpkeep(),intr=Math.round(l.debt*.004),exp=150+up+intr,bn=budNet(),
+ wks=Math.max(0,52-(g.wk||0)-1),mos=Math.round(wks*7/30.42),proj=l.money+f.net*mos,run=f.net<0?Math.floor(l.money/-f.net):null,
+ sg=v=>(v>0?"+":v<0?"-":"")+"RM"+Math.abs(v)+"m",cl=v=>v<0?"#d62839":"#1a9d57",
+ R=(k,v,sty)=>`<div class="finr"><span>${k}</span><b${sty?` style="${sty}"`:""}>${v}</b></div>`,
+ pol=S.policies.filter(p=>(String(p.status)==="1"||String(p.status)==="2")&&(p.up||0)>0).sort((x,y)=>(y.up||0)-(x.up||0)).slice(0,4),
+ alloc=Object.keys(BS).map(k=>`<div class="finb"><div class="finr" style="border:0;padding:3px 0"><span>${BS[k].n[L()]}</span><b>${b.w[k]}%</b></div><div class="bar"><i style="width:${Math.min(100,b.w[k]*2)}%;background:#1f4fb2"></i></div></div>`).join("");
+ o.hidden=false;
+ o.innerHTML=`<div class="dlg wide fin" role="dialog" aria-modal="true"><h3>${B("Financial Planning","Perancangan Kewangan")}</h3>
+ <div class="finh"><div><span class="mu">${B("State fund","Dana negeri")}</span><b style="color:${l.money<100?"#d62839":"inherit"}">RM${l.money}m</b></div><div><span class="mu">${B("Net per month","Bersih sebulan")}</span><b style="color:${cl(f.net)}">${sg(f.net)}</b></div></div>
+ <div class="sitq">${B("Income and spending (monthly)","Pendapatan dan perbelanjaan (bulanan)")}</div>
+ ${R(B("Revenue","Hasil"),"RM"+f.rev+"m","color:#1a9d57")}
+ ${R(B("Expenditure","Perbelanjaan"),"RM"+exp+"m")}
+ <div class="finsub">${R(B("Running the state","Pentadbiran negeri"),"RM150m")}${R(B("Policy upkeep","Penyelenggaraan polisi"),"RM"+up+"m")}${R(B("Debt interest","Faedah hutang"),"RM"+intr+"m")}</div>
+ ${R(B("Budget stance","Pendirian belanjawan")+" ("+(BL[b.lvl]||BL.n).n[L()].split(":")[0]+")",sg(bn),bn?"color:"+cl(bn):"")}
+ <div class="sitq">${B("Investment: budget allocation","Pelaburan: peruntukan belanjawan")}</div>${alloc}
+ <p class="mu finnote">${b.set===g.term?B("This term's budget has been tabled.","Belanjawan penggal ini sudah dibentang."):B("This term's budget is not tabled yet. Open the Budget tab to set it.","Belanjawan penggal ini belum dibentang. Buka tab Belanjawan untuk menetapkannya.")}</p>
+ <div class="sitq">${B("Debt","Hutang")}</div>
+ ${R(B("State debt","Hutang negeri"),"RM"+l.debt+"m")}${R(B("Debt against yearly revenue","Hutang berbanding hasil tahunan"),f.ratio+"%","color:"+(f.ratio>100?"#d62839":f.ratio>70?"#e8a317":"#1a9d57"))}
+ ${pol.length?`<div class="sitq">${B("Costliest policies","Polisi paling mahal")}</div>${pol.map(x=>R(esc(x.title),"RM"+x.up+"m/"+B("mo","bln"))).join("")}`:""}
+ <div class="sitq">${B("Outlook","Tinjauan")}</div>
+ ${R(B("Fund at the election, if nothing changes","Dana pada pilihan raya, jika tiada perubahan"),"RM"+proj+"m","color:"+cl(proj))}
+ ${R(B("How long the fund lasts","Berapa lama dana bertahan"),run==null?B("It keeps growing","Terus bertambah"):run+" "+B("months","bulan"),run!=null&&run<6?"color:#d62839":"")}
+ <div class="row"><button type="button" class="btn p" id="mc">${t("close")}</button></div></div>`;$("#mc").onclick=closeM}
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest(".stat.fin[data-fin]"))finModal()});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches(".stat.fin[data-fin]")){e.preventDefault();finModal()}});
+function sitRows(i){try{const l=S.lv,opp=playerBloc()==="opp",ev=evById(S.game.pend),c=i>=0&&ev?ev.c[i]:null,fx=c?tuneFx(softFx(c.fx||{},ev).fx):{},tw=c?twistFor(ev,c,i):null,
 col=(v,inv)=>{const g=inv?100-v:v;return g>=66?"#1a9d57":g>=40?"#e8a317":"#d62839"},
+st=(v,fk)=>{let x=clamp(v+(fx[fk]||0));if(tw&&tw[fk])x=clamp(x+tw[fk]);return x},
+loy2=d=>{const cc=cnt();let w=0,n=0;S.parties.forEach(p=>{if(p.coal==="gov"){w+=clamp((p.loy||0)+d)*cc[p.id];n+=cc[p.id]}});return n?clamp(w/n):0},
+dOf=(k,v,fk)=>fk==="l"?(fx.l?loy2(fx.l)-v:0):fk==="os"?(fx.os?Math.round(Math.max(10,Math.min(95,S.opp.str+fx.os))-S.opp.str):0):st(v,fk)-v,
 bars=opp?[["economy",l.economy,"e",0],["oppS",Math.round(S.opp.str),"os",0]]:[["approval",l.approval,"a",0],["unrest",l.unrest,"u",1],["economy",l.economy,"e",0],["loyalty",Math.round(loyalty()),"l",0],["autonomy",l.autonomy,"m",0],["oppS",Math.round(S.opp.str),"os",1]],
 cash=[["money",l.money,"mo",0],["debt",l.debt,"db",1]],
 chip=(dd,inv,pre,suf)=>dd?` <em class="sd ${(inv?dd<0:dd>0)?"g":"b"}">${dd>0?"+":"-"}${pre}${Math.abs(dd)}${suf}</em>`:"";
-const rows=bars.map(([k,v,fk,inv])=>{const nv=Math.max(0,Math.min(100,v+(fx[fk]||0))),dd=nv-v,base=Math.min(v,nv),good=inv?dd<0:dd>0;
+const rows=bars.map(([k,v,fk,inv])=>{const dd=dOf(k,v,fk),base=Math.max(0,Math.min(v,v+dd)),good=inv?dd<0:dd>0;
 return `<div class="sitm"><span>${t(k)}</span><b style="color:${col(v,inv)}">${v}${chip(dd,inv,"","")}</b><div class="bar"><i style="width:${base}%;background:${col(v,inv)}"></i>${dd?`<i style="width:${Math.abs(dd)}%;background:${good?"#1a9d57":"#d62839"};opacity:.85"></i>`:""}</div></div>`}).join("");
 const cr=cash.map(([k,v,fk,inv])=>{const dd=fx[fk]||0;return `<div class="sitc"><span>${CHL(k)}</span><b>RM${v}m${chip(dd,inv,"RM","m")}</b></div>`}).join("");
 return rows+`<div class="sitcw">${cr}</div>`}catch(e){return ""}}
-function sitNote(i){return i>=0?B("Estimated impact of this choice. Events can still add a twist.","Anggaran kesan pilihan ini. Peristiwa masih boleh menambah kejutan."):B("Hover over a choice to preview what it will move.","Letakkan kursor pada satu pilihan untuk lihat apa yang akan berubah.")}
+function sitNote(i){if(i<0)return B("Hover over a choice to preview what it will move.","Letakkan kursor pada satu pilihan untuk lihat apa yang akan berubah.");let tx="";try{const ev=evById(S.game.pend),c=ev&&ev.c[i],tw=c&&twistFor(ev,c,i);if(tw&&tw.tx)tx=" "+tw.tx}catch(e){}return B("Exactly what this choice will move.","Tepat apa yang pilihan ini akan ubah.")+tx}
 function sitPrev(i){const r=$("#sitrows"),n=$("#sitnote");if(!r)return;r.innerHTML=sitRows(i);if(n)n.textContent=sitNote(i)}
 function sitSide(){return `<div class="sitS"><div class="sitq">${B("State of play","Keadaan semasa")}</div><div id="sitrows">${sitRows(-1)}</div><div class="sitnote" id="sitnote">${sitNote(-1)}</div></div>`}
 function sitHist(){try{const h=(S.game.log||[]).slice(-3).reverse().map(x=>{const e=evById(x.e),c=e&&e.c[x.c];return e&&c?`<li><b>${esc(e.t[L()])}</b><span>${esc(c.t[L()])}</span></li>`:""}).join("");return h?`<div class="sitH"><div class="sitq">${B("Recent decisions","Keputusan terkini")}</div><ul class="sith">${h}</ul></div>`:""}catch(e){return ""}}
 (function(){const q=".sit .chb[data-ch]",on=e=>{const b=e.target.closest&&e.target.closest(q);if(b)sitPrev(+b.dataset.ch)},off=e=>{const b=e.target.closest&&e.target.closest(q);if(b&&!(e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest(q)))sitPrev(-1)};document.addEventListener("mouseover",on);document.addEventListener("focusin",on);document.addEventListener("mouseout",off);document.addEventListener("focusout",off)})();
-function showEvent(){const g=S.game,ev=evById(g.pend);if(!ev)return;const o=$("#modal"),cc=CAT[ev.cat]||CAT.pol,adv=ev.adv&&S.cabinet.find(m=>m.port===ev.adv);o.hidden=false;
+function showEvent(){const g=S.game,ev=evById(g.pend);if(!ev)return;window.__tw={};const o=$("#modal"),cc=CAT[ev.cat]||CAT.pol,adv=ev.adv&&S.cabinet.find(m=>m.port===ev.adv);o.hidden=false;
  const hint=ev.adv?(adv&&ev.rec!=null?`<p class="adv">✧ <b>${esc(adv.name)}</b> (${PORT[ev.adv][L()]}) ${t("rec")}: <i>${esc(ev.c[ev.rec].t[L()])}</i></p>`:`<p class="mu">✧ ${t("noAdv")}: ${PORT[ev.adv][L()]}</p>`):"";
  const ids=(ev.reg||[]).map(dvIdx).filter(x=>x>=0),area=ids.length?`<p class="mu" style="margin-bottom:0">◉ ${t("aff")}: <b>${ids.map(i=>esc(DIV[i].n)).join(", ")}</b></p>${miniMap(ids)}`:"";
  o.innerHTML=`<div class="dlg wide sit" role="dialog" aria-modal="true"><div class="sitL"><p class="mu" style="margin:0 0 6px">▦ ${t("week")} ${Math.min(52,(g.wk||0)+1)}/52 · ${fmtDate(g.day)}</p><span class="tag" style="background:${cc[2]}">${cc[L()]}</span><h3>⚠︎ ${esc(ev.t[L()])}</h3><div class="chips mini">${stripChips()}</div>${ev.d[L()].split("||").map(x=>`<p>${esc(x)}</p>`).join("")}${sceneBrief(ev)}${area}${hint}${sitHist()}</div><div class="sitR"><div class="sitq">${B("Your decision","Keputusan anda")}</div>${ev.c.map((c,i)=>{const lk=c.need&&!S.cabinet.some(m=>m.port===c.need);return `<button class="btn chb" data-ch="${i}" ${lk?"disabled":""}><span class="mu">${i+1}.</span> ${esc(c.t[L()])}${c.need?`<br><span class="mu">${lk?"▪ "+B("Needs a","Perlu menteri")+" "+PORT[c.need][L()]+" "+B("minister","")+"":"▫ "+B("Unlocked by your","Dibuka oleh menteri")+" "+PORT[c.need][L()]+" "+B("minister","")}</span>`:""}</button>`}).join("")}${sitSide()}</div></div>`}
@@ -1700,7 +1737,7 @@ function twist(ev,c,i){const l=S.lv,fx=c.fx||{},adv=ev.adv&&S.cabinet.find(m=>m.
 function showRes(ev,c,r){const o=$("#modal"),was=!o.hidden;o.hidden=false;if(was){o.dataset.quiet="1";o.classList.add("swap")}
  const bad=(k,v)=>(k==="unrest"||k==="debt")?v>0:v<0,ch=r.out.map(([k,v])=>`<span class="rc ${bad(k,v)?"bd":"gd"}">${CHL(k)} ${v>0?"+":""}${v}</span>`).join("");
  o.innerHTML=`<div class="dlg wide res" role="dialog" aria-modal="true"><p class="mu" style="margin:0">${t("conseq")} · ${t("week")} ${Math.min(52,(S.game.wk||0)+1)}/52</p><h3>${esc(c.t[L()])}</h3>${(c.r[L()]||"").split("||").filter(Boolean).map(x=>`<p class="story">${esc(x)}</p>`).join("")}${r.tw?`<p class="tw">${esc(r.tw)}</p>`:""}${afterword(ev,c,r)}${r.ex.length?`<p class="mu">${r.ex.map(esc).join("<br>")}</p>`:""}<div class="row resF"><div class="chips">${ch}</div><button class="btn p" id="ok">${t("ok")}</button></div></div>`}
-function choose(i){const g=S.game,ev=evById(g.pend);if(!ev)return;const c=ev.c[i];if(!c||(c.need&&!S.cabinet.some(m=>m.port===c.need)))return;pulse=[];const r=applyFx(c.fx,ev),tw=twist(ev,c,i);if(tw){r.tw=tw.tx;[["a","approval"],["u","unrest"],["e","economy"]].forEach(([k,n])=>{if(tw[k]){S.lv[n]=clamp(S.lv[n]+tw[k]);r.out.push([n,tw[k]])}})}
+function choose(i){const g=S.game,ev=evById(g.pend);if(!ev)return;const c=ev.c[i];if(!c||(c.need&&!S.cabinet.some(m=>m.port===c.need)))return;pulse=[];const r=applyFx(c.fx,ev),tw=twistFor(ev,c,i);if(tw){r.tw=tw.tx;[["a","approval"],["u","unrest"],["e","economy"]].forEach(([k,n])=>{if(tw[k]){S.lv[n]=clamp(S.lv[n]+tw[k]);r.out.push([n,tw[k]])}})}
  g.log.push({d:g.day,e:g.pend,c:i});g.pend=null;notePress(ev,c);checkAch();render();document.querySelectorAll(".feeditem").forEach(e=>{e.style.animation="none"});showRes(ev,c,r)}
 const B=(en,ms)=>L()?ms:en;
 const apMax=()=>diffProfile().ap+(S.game.perks.includes("vigor")?1:0);
