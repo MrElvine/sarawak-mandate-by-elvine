@@ -400,13 +400,13 @@ body.theme-light .sit .sitR .chb:hover:not(:disabled){background:#2b3a55}
 .nlt i{display:block;width:100%;background:#1f4fb2;border-radius:6px 6px 0 0;min-height:2px}.nlt b{font-size:12px}.nlt span{font-size:11px;opacity:.7}
 @media(max-width:900px){.nl-grid{grid-template-columns:1fr}}
 
-.elh circle{transition:fill .9s ease,r .3s}.elh circle.pop{animation:edpop .9s ease-out}@keyframes edpop{0%{r:13}35%{r:21}100%{r:13}}
+.elh circle{transition:fill 1.4s ease,r .3s}.elh circle.pop{animation:edpop 1.3s ease-out}@keyframes edpop{0%{r:13}35%{r:21}100%{r:13}}
 .elh circle.cand{stroke:#fff;stroke-width:3;animation:edcand .8s ease-in-out infinite}@keyframes edcand{50%{r:18}}
 .elspd{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px}.elspd em{font-style:normal;opacity:.7;margin-right:2px}.elspd button{background:rgba(255,255,255,.08);color:inherit;border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:4px 11px;font:inherit;font-size:12px;cursor:pointer}.elspd button.on{background:#f2b134;color:#1a1408;border-color:#f2b134;font-weight:700}
 .decl{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.25fr) minmax(0,1fr);gap:22px;align-items:center;margin-top:12px;min-height:140px}
 .dc-k{margin:0;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.7}.decl h2{margin:4px 0 4px;font-family:Georgia,serif;font-size:32px;line-height:1.1}
 .dcrow{display:grid;grid-template-columns:54px minmax(0,1fr) 48px;gap:10px;align-items:center;margin:8px 0}.dcab{font-weight:800;letter-spacing:.03em}.dcrow b{text-align:right}
-.dcbar{height:14px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}.dcbar i{display:block;height:100%;width:0;border-radius:99px;transition:width 1s cubic-bezier(.22,.8,.3,1)}
+.dcbar{height:14px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}.dcbar i{display:block;height:100%;width:0;border-radius:99px;transition:width 1.6s cubic-bezier(.22,.8,.3,1)}
 .dcw{display:flex;align-items:center;justify-content:center;min-height:96px}.dcw .wait{margin:0;opacity:.75;font-style:italic}.dots::after{content:"";animation:dotz 1.2s steps(4,end) infinite}@keyframes dotz{0%{content:""}25%{content:"."}50%{content:".."}75%,100%{content:"..."}}
 .stamp{width:100%;border:2px solid var(--c);border-radius:16px;padding:12px 14px;text-align:center;background:rgba(255,255,255,.06);animation:stampIn .55s cubic-bezier(.2,1.4,.4,1) both}.stamp b{display:block;font-size:30px;line-height:1.1}.stamp span{display:block;font-size:15px;margin-top:2px}.stamp em{display:block;font-style:normal;font-size:12px;opacity:.8;margin-top:4px}
 .stamp.gain{box-shadow:0 0 0 3px rgba(242,177,52,.6),0 0 28px rgba(242,177,52,.5)}@keyframes stampIn{from{opacity:0;transform:scale(.7) rotate(-3deg)}to{opacity:1;transform:none}}
@@ -418,6 +418,14 @@ body.theme-light .sit .sitR .chb:hover:not(:disabled){background:#2b3a55}
 .night-wrap .mu,.night-wrap .nl-card .mu{color:rgba(244,239,228,.72)}
 .dcab,.stamp b{color:color-mix(in srgb,var(--c,currentColor) 55%,#fff)}
 .nl-three li b{font-size:14px;display:inline;font-weight:700}
+
+.night-wrap,.night-wrap p,.night-wrap h1,.night-wrap h2,.night-wrap h4,.night-wrap span,.night-wrap b,.night-wrap li,.night-wrap summary{color:#f4efe4}
+body .night-wrap .mu,body .night-wrap .nl-card .mu,body .night-wrap .tally span{color:rgba(244,239,228,.78)!important}
+.night-wrap .dcab,.night-wrap .stamp b{color:color-mix(in srgb,var(--c,#fff) 50%,#fff)}
+.night-wrap .btn:not(.p),.night-wrap .elspd button{background:#fff;color:#111;border:1px solid #fff}
+.night-wrap .elspd button.on{background:#f2b134;color:#1a1408;border-color:#f2b134}
+.night-wrap .btn.p{color:#1a1408}.night-wrap .nl-live{color:#ff8a96}
+body.theme-dark .btn:not(.p):not(:disabled):not(.d){background:#fff;color:#111}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
 <div class="ov" id="modal" hidden></div><div id="toast" aria-live="polite"></div>
@@ -1828,16 +1836,16 @@ function electionDay(){applyPromises();const g=S.game,l=S.lv,f=fin();
  turn=Math.max(55,Math.min(82,Math.round(66+(l.unrest-30)*.12+(S.opp.str-40)*.08))),
  regs=DIV.map((d,di)=>({d,di,t:S.seats.filter((_,i)=>dv(i)===di).length})).filter(r=>r.t>0),
  termBars=g.terms.map(x=>`<div class="nlt"><b>${x.gs}</b><i style="height:${Math.round(x.gs/nS*100)}%"></i><span>${B("T","P")}${x.n}</span></div>`).join(""),
- closeL=closest.map(x=>`<li><span>${esc(x.q.name)}</span><b style="color:${pcol(x.q.party)}">${pab(x.q.party)} +${x.m}</b></li>`).join(""),
+ closeL=closest.map(x=>`<li><span>${esc(x.q.name)}</span><b style="color:color-mix(in srgb,${pcol(x.q.party)} 50%,#fff)">${pab(x.q.party)} +${x.m}</b></li>`).join(""),
  gainL=gains.length?gains.slice(0,6).map(x=>`<li><span>${esc(x.q.name)}</span><b>${pab(prev[x.i])} \u2192 ${pab(x.q.party)}</b></li>`).join(""):`<li class="mu">${B("No seat changed hands.","Tiada kerusi bertukar tangan.")}</li>`,
  ty=140-mjN/nS*120,
  stat=S.parties.map(p=>{let ss=0,v=0,c=0;S.seats.forEach(q=>{if(q.party===p.id)ss++;const r=(q.vote||[]).find(x=>x.id===p.id);if(r){v+=r.pct;c++}});return {p,s:ss,avg:c?v/c:0,c}}).filter(x=>x.s>0||x.c>0).sort((a,b)=>b.s-a.s||b.avg-a.avg),
  scoreL=stat.map(x=>`<div class="scr"><i style="background:${pcol(x.p.id)}"></i><div><b>${esc(x.p.abbr)}</b> <span>${x.s} ${B("seats","kerusi")} \u00b7 ${Math.round(x.s/nS*100)}%</span><br><span class="mu">${B("average vote","purata undi")} ${x.avg.toFixed(1)}% \u00b7 ${B("stood in","bertanding di")} ${x.c}</span></div></div>`).join(""),
- allL=S.seats.map((q,i)=>`<div><i style="background:${pcol(q.party)}"></i><span><b>${esc(q.name)}</b> <span class="mu">N.${q.id}</span><br><span class="mu">${(q.vote||[]).map(x=>pab(x.id)+" "+x.pct+"%").join(" \u00b7 ")}</span></span><b style="color:${pcol(q.party)}">${pab(q.party)}${q.party!==prev[i]?" \u2191":""}</b></div>`).join("");
+ allL=S.seats.map((q,i)=>`<div><i style="background:${pcol(q.party)}"></i><span><b>${esc(q.name)}</b> <span class="mu">N.${q.id}</span><br><span class="mu">${(q.vote||[]).map(x=>pab(x.id)+" "+x.pct+"%").join(" \u00b7 ")}</span></span><b style="color:color-mix(in srgb,${pcol(q.party)} 50%,#fff)">${pab(q.party)}${q.party!==prev[i]?" \u2191":""}</b></div>`).join("");
  o.innerHTML=`<div class="night-wrap" role="dialog" aria-modal="true">
  <div class="nl-head"><div><p class="mu" style="margin:0">\u2691 ${B("Election night","Malam mengundi")} \u00b7 ${B("Term","Penggal")} ${g.term}</p><h1>${B("The count","Pengiraan")}</h1></div>
  <div class="nl-stats"><div><b>${nS}</b><span>${B("seats","kerusi")}</span></div><div><b>${mjN}</b><span>${B("to win","untuk menang")}</span></div><div><b>${turn}%</b><span>${B("turnout (game value)","keluar mengundi (nilai game)")}</span></div><div><b>${sw>0?"+":""}${sw}</b><span>${B("swing","ayunan")}</span></div></div></div>
- <div class="nl-banner"><span class="nl-live">\u25cf ${B("LIVE","LANGSUNG")}</span><p id="elt">${B("Polls have closed. The first results are coming in.","Pusat mengundi telah ditutup. Keputusan pertama sedang masuk.")}</p><span class="elspd" role="group" aria-label="${B("Count speed","Kelajuan pengiraan")}"><em>${B("Speed","Kelajuan")}</em><button type="button" data-spd="1.7">${B("Slow","Perlahan")}</button><button type="button" data-spd="1" class="on">${B("Normal","Biasa")}</button><button type="button" data-spd=".4">${B("Fast","Pantas")}</button></span></div>
+ <div class="nl-banner"><span class="nl-live">\u25cf ${B("LIVE","LANGSUNG")}</span><p id="elt">${B("Polls have closed. The first results are coming in.","Pusat mengundi telah ditutup. Keputusan pertama sedang masuk.")}</p><span class="elspd" role="group" aria-label="${B("Count speed","Kelajuan pengiraan")}"><em>${B("Speed","Kelajuan")}</em><button type="button" data-spd="1.6">${B("Slow","Perlahan")}</button><button type="button" data-spd="1" class="on">${B("Normal","Biasa")}</button><button type="button" data-spd=".4">${B("Fast","Pantas")}</button></span></div>
  <p id="majhit"></p>
  <div class="nl-card decl" id="decl" aria-live="polite"><div><p class="dc-k" id="dck">${B("Now declaring","Sedang diumumkan")}</p><h2 id="dcn">${B("Waiting for the first result","Menunggu keputusan pertama")}</h2><p class="mu" id="dcd" style="margin:0"></p></div><div id="dcb"></div><div id="dcw" class="dcw"></div></div>
  <div class="nl-grid"><div class="nl-card nl-main">${elHemi()}<div class="tally"><div><b id="tg">0</b><span>${t("gov")}</span></div><div><b id="to">0</b><span>${t("opp")}</span></div></div>
@@ -1904,9 +1912,9 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=matchMedia("(pr
   const e=$("#elt");if(e)e.innerHTML=comm(x);showWin(x);if(k>=n)end()};
  const unit=()=>(window.__elSpd||1)*(k<5?1.3:k>=n-8?1.5:1),loop=()=>{if(stop||!$("#elr"))return;
   if(red){step();if(!stop&&k<n)tmr=setTimeout(loop,40);return}
-  showCand(seq[k]);tmr=setTimeout(()=>{step();if(!stop&&k<n)tmr=setTimeout(loop,900*unit())},1000*unit())};
+  showCand(seq[k]);tmr=setTimeout(()=>{step();if(!stop&&k<n)tmr=setTimeout(loop,1700*unit())},2000*unit())};
  window.__elSpd=window.__elSpd||1;document.querySelectorAll("#night .elspd button").forEach(b=>{b.classList.toggle("on",+b.dataset.spd===window.__elSpd);b.onclick=()=>{window.__elSpd=+b.dataset.spd;document.querySelectorAll("#night .elspd button").forEach(z=>z.classList.toggle("on",z===b))}});
- tmr=setTimeout(loop,red?60:2200);
+ tmr=setTimeout(loop,red?60:2800);
  skip.onclick=()=>{clearTimeout(tmr);document.querySelectorAll(".elh circle.cand").forEach(c=>c.classList.remove("cand"));while(k<n&&$("#elr"))take(true);refresh();const tk=$("#tk");if(tk)tk.innerHTML=tkRows.slice(-7).reverse().join("");end()};
  $("#elr").before(skip);skip.style.margin="6px 0"}
 function hungModal(){const o=$("#modal");o.hidden=false;const hc=hungCost();
