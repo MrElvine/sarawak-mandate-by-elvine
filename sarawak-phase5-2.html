@@ -433,6 +433,11 @@ body.theme-dark .lg{background:#fff;color:#111}
 
 body.theme-dark main.tab-dun .hemi .tile,body.theme-dark .hemi .tile,body.theme-dark .dunl .banner,body.theme-dark main.tab-dun .banner{background:#fff!important;color:#111!important;border-color:#e2e2e2!important}
 body.theme-dark .hemi .tile span,body.theme-dark main.tab-dun .hemi .tile span,body.theme-dark .dunl .banner *{color:#111!important}
+
+.cnt{width:100%}.cnth{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;margin-bottom:8px}.livedot{width:8px;height:8px;border-radius:50%;background:#ef4444;animation:lvp 1.4s ease-in-out infinite}@keyframes lvp{50%{opacity:.25}}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cgrid>div{border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:7px 10px;background:rgba(255,255,255,.05)}.cgrid small{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}.cgrid b{font-size:20px;font-variant-numeric:tabular-nums}
+body.theme-dark .filt input,body.theme-dark .filt select,body.theme-dark main.tab-dun .filt input,body.theme-dark main.tab-dun .filt select{background:#fff!important;color:#111!important}
+body.theme-dark .chb .mu,body.theme-dark .dlg .btn:not(.p) .mu{color:#444!important}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
 <div class="ov" id="modal" hidden></div><div id="toast" aria-live="polite"></div>
@@ -1852,7 +1857,7 @@ function electionDay(){applyPromises();const g=S.game,l=S.lv,f=fin();
  o.innerHTML=`<div class="night-wrap" role="dialog" aria-modal="true">
  <div class="nl-head"><div><p class="mu" style="margin:0">\u2691 ${B("Election night","Malam mengundi")} \u00b7 ${B("Term","Penggal")} ${g.term}</p><h1>${B("The count","Pengiraan")}</h1></div>
  <div class="nl-stats"><div><b>${nS}</b><span>${B("seats","kerusi")}</span></div><div><b>${mjN}</b><span>${B("to win","untuk menang")}</span></div><div><b>${turn}%</b><span>${B("turnout (game value)","keluar mengundi (nilai game)")}</span></div><div><b>${sw>0?"+":""}${sw}</b><span>${B("swing","ayunan")}</span></div></div></div>
- <div class="nl-banner"><span class="nl-live">\u25cf ${B("LIVE","LANGSUNG")}</span><p id="elt">${B("Polls have closed. The first results are coming in.","Pusat mengundi telah ditutup. Keputusan pertama sedang masuk.")}</p><span class="elspd" role="group" aria-label="${B("Count speed","Kelajuan pengiraan")}"><em>${B("Speed","Kelajuan")}</em><button type="button" data-spd="1.6">${B("Slow","Perlahan")}</button><button type="button" data-spd="1" class="on">${B("Normal","Biasa")}</button><button type="button" data-spd=".4">${B("Fast","Pantas")}</button></span></div>
+ <div class="nl-banner"><span class="nl-live">\u25cf ${B("LIVE","LANGSUNG")}</span><p id="elt">${B("Polls have closed. The first results are coming in.","Pusat mengundi telah ditutup. Keputusan pertama sedang masuk.")}</p><span class="elspd" role="group" aria-label="${B("Count speed","Kelajuan pengiraan")}"><em>${B("Speed","Kelajuan")}</em><button type="button" data-spd="1">${B("Slow","Perlahan")}</button><button type="button" data-spd=".4" class="on">${B("Normal","Biasa")}</button><button type="button" data-spd=".15">${B("Fast","Pantas")}</button></span></div>
  <p id="majhit"></p>
  <div class="nl-card decl" id="decl" aria-live="polite"><div><p class="dc-k" id="dck">${B("Now declaring","Sedang diumumkan")}</p><h2 id="dcn">${B("Waiting for the first result","Menunggu keputusan pertama")}</h2><p class="mu" id="dcd" style="margin:0"></p></div><div id="dcb"></div><div id="dcw" class="dcw"></div></div>
  <div class="nl-grid"><div class="nl-card nl-main">${elHemi()}<div class="tally"><div><b id="tg">0</b><span>${t("gov")}</span></div><div><b id="to">0</b><span>${t("opp")}</span></div></div>
@@ -1918,15 +1923,15 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
   kk.textContent=B("Now counting","Sedang dikira")+" · N."+q.id;nm.textContent=q.name;ds.textContent=(dn_(i)?dn_(i)+" · ":"")+B("Held by ","Dipegang oleh ")+ab(prev[i]).replace(/&amp;/g,"&");
   cs={i,m:0,tr:mkTraj(i),lead:null};bx.style.height=(fin.length*RH)+"px";
   bx.innerHTML=fin.map((x,ix)=>`<div class="dcrow" style="transform:translateY(${ix*RH}px)"><span class="dcab" style="--c:${col(x.id)}">${ab(x.id)}</span><div class="dcbar"><i style="width:0;background:${col(x.id)}"></i></div><b>0.0%</b></div>`).join("");
-  w.innerHTML=`<div class="cnt"><p class="wait">${B("Counting votes","Mengira undi")}<span class="dots"></span></p><div class="cbar"><i id="cbi"></i></div><p class="mu" id="cls" style="margin:6px 0 0"></p></div>`};
+  w.innerHTML=`<div class="cnt"><div class="cnth"><span>${B("Live count","Kiraan langsung")}</span><i class="livedot"></i></div><div class="cgrid"><div><small>${B("Counted","Dikira")}</small><b id="cc">0%</b></div><div><small>${B("Leading","Mendahului")}</small><b id="cl">\u2014</b></div><div><small>${B("Lead","Majoriti")}</small><b id="cg">\u2014</b></div></div><div class="cbar"><i id="cbi"></i></div></div>`};
  const applyB=m=>{if(!cs)return;const t=cs.tr,P_=t.fin.length,bx=$("#dcb");if(!bx||!P_)return;let sw=0;const acc=new Array(P_).fill(0);
   for(let b=0;b<m;b++){sw+=t.w[b];for(let p=0;p<P_;p++)acc[p]+=t.w[b]*(t.fin[p].pct+t.d[b][p])}
   let v=acc.map(x=>Math.max(.5,x/sw));if(m<NB){const s2=v.reduce((a,b)=>a+b,0);v=v.map(x=>x*100/s2)}else v=t.fin.map(x=>x.pct);
   const ord=v.map((_,p)=>p).sort((a,b)=>v[b]-v[a]);
   ord.forEach((p,rank)=>{const row=bx.children[p];if(!row)return;row.style.transform=`translateY(${rank*RH}px)`;row.querySelector("i").style.width=v[p]+"%";row.querySelector("b").textContent=(m<NB?v[p].toFixed(1):v[p])+"%";row.classList.toggle("lead",rank===0)});
-  const ld=t.fin[ord[0]].id,gap=v[ord[0]]-(P_>1?v[ord[1]]:0),ls=$("#cls"),bar=$("#cbi");
+  const ld=t.fin[ord[0]].id,gap=v[ord[0]]-(P_>1?v[ord[1]]:0),bar=$("#cbi");
   if(bar)bar.style.width=(m/NB*100)+"%";
-  if(ls)ls.innerHTML=B("Counted ","Dikira ")+Math.round(m/NB*100)+"% · "+B("Leading: ","Mendahului: ")+ab(ld)+" +"+gap.toFixed(1);
+  const cc=$("#cc"),cl=$("#cl"),cg=$("#cg");if(cc)cc.textContent=Math.round(m/NB*100)+"%";if(cl){cl.textContent=ab(ld)}if(cg)cg.textContent="+"+gap.toFixed(1)+" "+B("pts","mata");
   if(cs.lead&&cs.lead!==ld&&m<NB){const e=$("#elt"),nmS=esc(S.seats[cs.i].name);if(e)e.innerHTML=B(`${ab(ld)} overtakes ${ab(cs.lead)} in <b>${nmS}</b>!`,`${ab(ld)} memintas ${ab(cs.lead)} di <b>${nmS}</b>!`);const r0=bx.children[ord[0]];if(r0){r0.classList.remove("flash");void r0.offsetWidth;r0.classList.add("flash")}}
   cs.lead=ld};
  const showWin=x=>{const w=$("#dcw");if(!w)return;const c=col(x.q.party),nm=esc(x.q.name);
@@ -1940,7 +1945,7 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
   phase="count";showCand(seq[k]);const tick=()=>{if(stop||!$("#elr"))return;cs.m++;applyB(cs.m);if(cs.m<NB)tmr=setTimeout(tick,900*unit());else tmr=setTimeout(commit,900*unit())};tmr=setTimeout(tick,600*unit())};
  const nextB=document.createElement("button");nextB.className="btn";nextB.id="elnext";nextB.textContent=B("Next seat ⏭","Kerusi seterusnya ⏭");
  nextB.onclick=()=>{if(stop||ended||!cs)return;clearTimeout(tmr);if(phase==="hold"){next()}else if(phase==="count"){cs.m=NB;applyB(NB);tmr=setTimeout(commit,500)}};
- window.__elSpd=window.__elSpd||1;document.querySelectorAll("#night .elspd button").forEach(b=>{b.classList.toggle("on",+b.dataset.spd===window.__elSpd);b.onclick=()=>{window.__elSpd=+b.dataset.spd;document.querySelectorAll("#night .elspd button").forEach(z=>z.classList.toggle("on",z===b))}});
+ window.__elSpd=window.__elSpd||.4;document.querySelectorAll("#night .elspd button").forEach(b=>{b.classList.toggle("on",+b.dataset.spd===window.__elSpd);b.onclick=()=>{window.__elSpd=+b.dataset.spd;document.querySelectorAll("#night .elspd button").forEach(z=>z.classList.toggle("on",z===b))}});
  tmr=setTimeout(next,red?60:2800);
  skip.onclick=()=>{clearTimeout(tmr);document.querySelectorAll(".elh circle.cand").forEach(c=>c.classList.remove("cand"));while(k<n&&$("#elr"))take(true);refresh();const tk=$("#tk");if(tk)tk.innerHTML=tkRows.slice(-7).reverse().join("");end()};
  $("#elr").before(nextB);$("#elr").before(skip);nextB.style.margin=skip.style.margin="6px 8px 6px 0"}
