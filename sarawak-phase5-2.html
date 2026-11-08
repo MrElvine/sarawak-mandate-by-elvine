@@ -396,8 +396,8 @@ body.theme-light .sit .sitR .chb:hover:not(:disabled){background:#2b3a55}
 .nl-three{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:12px 0}
 .nl-three ul{list-style:none;margin:0;padding:0}.nl-three li{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:13px}
 .tbs{display:flex;gap:10px;align-items:flex-end;height:110px}
-.tb{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
-.tb i{display:block;width:100%;background:#1f4fb2;border-radius:6px 6px 0 0;min-height:2px}.tb b{font-size:12px}.tb span{font-size:11px;opacity:.7}
+.nlt{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.nlt i{display:block;width:100%;background:#1f4fb2;border-radius:6px 6px 0 0;min-height:2px}.nlt b{font-size:12px}.nlt span{font-size:11px;opacity:.7}
 @media(max-width:900px){.nl-grid{grid-template-columns:1fr}}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
@@ -1808,7 +1808,7 @@ function electionDay(){applyPromises();const g=S.game,l=S.lv,f=fin();
  gains=S.seats.map((q,i)=>({q,i})).filter(x=>x.q.party!==prev[x.i]),
  turn=Math.max(55,Math.min(82,Math.round(66+(l.unrest-30)*.12+(S.opp.str-40)*.08))),
  regs=DIV.map((d,di)=>({d,di,t:S.seats.filter((_,i)=>dv(i)===di).length})).filter(r=>r.t>0),
- termBars=g.terms.map(x=>`<div class="tb"><b>${x.gs}</b><i style="height:${Math.round(x.gs/nS*100)}%"></i><span>${B("T","P")}${x.n}</span></div>`).join(""),
+ termBars=g.terms.map(x=>`<div class="nlt"><b>${x.gs}</b><i style="height:${Math.round(x.gs/nS*100)}%"></i><span>${B("T","P")}${x.n}</span></div>`).join(""),
  closeL=closest.map(x=>`<li><span>${esc(x.q.name)}</span><b style="color:${pcol(x.q.party)}">${pab(x.q.party)} +${x.m}</b></li>`).join(""),
  gainL=gains.length?gains.slice(0,6).map(x=>`<li><span>${esc(x.q.name)}</span><b>${pab(prev[x.i])} \u2192 ${pab(x.q.party)}</b></li>`).join(""):`<li class="mu">${B("No seat changed hands.","Tiada kerusi bertukar tangan.")}</li>`,
  ty=140-mjN/nS*120;
