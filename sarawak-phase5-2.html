@@ -482,7 +482,7 @@ body.theme-dark .chb .mu,body.theme-dark .dlg .btn:not(.p) .mu{color:#444!import
 .night-wrap .nl-main .night-card{padding:6px 12px;min-height:0}.night-wrap .nl-main .night-card b{font-size:20px}
 .night-wrap .nl-main .night-card span,.night-wrap .nl-main .night-card small,.night-wrap .nl-main .night-card p{font-size:11px;margin:0}
 .night-wrap .tally b{font-size:26px}.night-wrap .nl-main p.mu{margin:4px 0}
-.night-wrap #trd{max-height:130px;width:100%}
+.night-wrap #trd{max-height:none;width:100%}
 .night-wrap .decl .dcrow b{font-size:14px}.night-wrap .decl h2{font-size:22px;margin:2px 0}
 .night-wrap .nl-grid .cgrid>div{padding:5px 9px}.night-wrap .nl-grid .cgrid b{font-size:17px}
 .night-wrap #tk .ti,.night-wrap #tk>div{padding:4px 0}
@@ -506,6 +506,25 @@ body.theme-dark .chb .mu,body.theme-dark .dlg .btn:not(.p) .mu{color:#444!import
 .night-wrap .nl-main svg{max-height:clamp(180px,36vh,320px)}
 .night-wrap .nl-grid{grid-template-rows:auto 1fr}
 body.theme-light .neg .eyebrow{color:#8a5a00;opacity:1}body.theme-light .neg .nok{color:#15803d}body.theme-light .ngc{background:#f6f7f9}
+
+/* election night: fill the screen, larger type and buttons */
+.night-wrap .nl-head h1{font-size:38px}.night-wrap .nl-head .mu{font-size:14px}
+.night-wrap .nl-stats>div{padding:8px 20px;min-width:96px}.night-wrap .nl-stats b{font-size:26px}.night-wrap .nl-stats span{font-size:12px}
+.night-wrap .nl-banner{padding:12px 18px}.night-wrap .nl-banner p{font-size:18px}.night-wrap .elspd button{font-size:14px;padding:6px 16px}
+.night-wrap .elctl{margin:10px 0 12px;gap:12px}
+.night-wrap .elctl .btn{padding:12px 34px!important;font-size:16px!important;min-width:168px;font-weight:700;border-radius:99px}
+.night-wrap .nl-card h4{font-size:13px;letter-spacing:.14em;margin-bottom:10px}
+.night-wrap .nl-main,.night-wrap .nl-side .nl-card{display:flex;flex-direction:column;min-height:0}
+.night-wrap .nl-main svg.elh,.night-wrap .nl-main>svg{flex:1 1 0;min-height:220px;max-height:none!important;height:auto;width:100%}
+.night-wrap .nl-side .nl-card svg.trd{flex:1 1 0;min-height:100px;max-height:none!important;height:auto;width:100%}
+.night-wrap #tk{flex:1;overflow:hidden;min-height:0}.night-wrap #tk>.tk{padding:8px 0;font-size:15px}.night-wrap #tk>*:nth-child(n+3){display:grid}
+.night-wrap #pv{flex:1;display:flex;flex-direction:column;justify-content:space-evenly}.night-wrap .pvr{margin:10px 0;font-size:16px}.night-wrap .pvr .bar{height:11px}
+.night-wrap .tally b{font-size:30px}.night-wrap .tally span{font-size:15px}
+.night-wrap .nl-main .night-card b{font-size:22px}.night-wrap .nl-main p.mu{font-size:15px}
+.night-wrap .decl{padding:14px 18px}.night-wrap .decl h2{font-size:28px!important}.night-wrap .decl .dc-k{font-size:12px}
+.night-wrap .decl .dcrow{height:42px!important}.night-wrap .decl .dcrow b{font-size:19px}.night-wrap .decl .dcbar{height:11px!important}
+.night-wrap .decl .cgrid>div{padding:8px 12px}.night-wrap .decl .cgrid b{font-size:24px}.night-wrap .decl .cgrid small{font-size:11px}
+.night-wrap .rgh{font-size:14px}.night-wrap .rgh .mu{font-size:13px}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
 <div class="ov" id="modal" hidden></div><div id="toast" aria-live="polite"></div>
@@ -1943,11 +1962,16 @@ function electionDay(){applyPromises();const g=S.game,l=S.lv,f=fin();
  const fin_=()=>{const r=$("#elr");if(!r)return;$("#eln").innerHTML=B("All "+S.seats.length+" seats declared","Semua "+S.seats.length+" kerusi diumumkan");$("#elt").textContent=B("Result: ","Keputusan: ")+t(txt);{const lv=document.querySelector(".nl-live");if(lv){lv.textContent=B("\u25cf FINAL","\u25cf MUKTAMAD");lv.style.animation="none"}}r.style.display="block";r.style.transition="opacity .5s";r.style.opacity=1;{const old=document.querySelector(".elctl");if(old)old.remove();const bn=document.querySelector(".nl-banner"),eb0=$("#elb");if(bn&&eb0){const bar=document.createElement("div");bar.className="elctl";bar.appendChild(eb0);bn.after(bar)}}
   const b=$("#elb");if(txt==="govMaj"){confetti();b.innerHTML=`<button class="btn p" id="nextterm">${B("Begin next term","Mulakan penggal seterusnya")}</button>`}
   else if(txt==="hung")b.innerHTML=`<button class="btn p" id="hungb">${B("Negotiate a government","Runding bentuk kerajaan")}</button>`;
-  else{g.over=true;b.innerHTML=`<button class="btn p" id="ng">${t("newG")}</button><button class="btn" id="ok">${B("Return to the assembly as opposition","Kembali ke dewan sebagai pembangkang")}</button>`}};
+  else{g.over=true;b.innerHTML=`<button class="btn p" id="ng">${t("newG")}</button><button class="btn" id="oppb">${B("Return to the assembly as opposition","Kembali ke dewan sebagai pembangkang")}</button>`}};
  {const gr=document.querySelector(".nl-grid"),dc=$("#decl");if(gr&&dc)gr.prepend(dc)}
- window.nightFit=function(shrinkOnly){const w=document.querySelector(".night-wrap"),n=$("#night");if(!w||!n||!document.querySelector(".nl-grid"))return;if(innerWidth<1100){w.style.zoom="";return}
-  const cur=parseFloat(w.style.zoom)||1;if(!shrinkOnly)w.style.zoom=1;const cs=getComputedStyle(n),pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)-44,last=w.querySelector(":scope>.nl-card"),top=w.getBoundingClientRect().top,base=shrinkOnly?cur:1,h=(last.getBoundingClientRect().bottom-top)/base;
-  let z=Math.min((innerHeight-pad)/h,Math.max(1,(innerWidth-44)/1360));z=Math.max(.75,Math.min(1.35,z));if(shrinkOnly&&z>=cur)return;w.style.zoom=z.toFixed(3)};
+ window.nightFit=function(shrinkOnly){const w=document.querySelector(".night-wrap"),n=$("#night"),gr=document.querySelector(".nl-grid"),last=w&&w.querySelector(":scope>.nl-card");if(!w||!n||!gr||!last)return;
+  if(innerWidth<1100){w.style.zoom="";w.style.maxWidth="";gr.style.minHeight="";return}
+  if(shrinkOnly&&last.getBoundingClientRect().bottom<=innerHeight)return;
+  w.style.zoom=1;w.style.maxWidth="1360px";gr.style.minHeight="";const cs=getComputedStyle(n),pb=parseFloat(cs.paddingBottom)||0,top=w.getBoundingClientRect().top+n.scrollTop*0,avail=innerHeight-top-pb-34;
+  let h=last.getBoundingClientRect().bottom-top,z=Math.max(.7,Math.min(1.5,avail/h)),W=Math.max(1100,Math.min(2600,(innerWidth-48)/z));
+  if(W<1100)z=(innerWidth-48)/1100;
+  w.style.maxWidth=W+"px";w.style.zoom=z.toFixed(3);
+  const h2=(last.getBoundingClientRect().bottom-w.getBoundingClientRect().top)/z,extra=avail/z-h2;if(extra>2)gr.style.minHeight=(gr.getBoundingClientRect().height/z+extra)+"px"};
  if(!window.__nfBound){window.__nfBound=1;addEventListener("resize",()=>{if(window.nightFit)nightFit()})}
  setTimeout(()=>nightFit(),30);
  elReveal(prev,fin_)}
@@ -1987,7 +2011,7 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
   return B(`${nm}: ${ab(q.party)} holds with ${x.pct}%.`,`${nm}: ${ab(q.party)} kekal dengan ${x.pct}%.`)};
  const end=()=>{if(ended)return;ended=true;stop=true;clearTimeout(tmr);if(skip.parentNode)skip.remove();if(typeof nextB!=="undefined"&&nextB.parentNode)nextB.remove();{const eb=document.querySelector(".elctl");if(eb)eb.remove()}const e=$("#elt");if(e)e.innerHTML=B("All "+n+" seats declared.","Semua "+n+" kerusi diumumkan.");done()};
  const dn_=i=>{const di=dv(i);return di>=0&&DIV[di]?DIV[di].n:""};
- const RH=36,NB=8,rng=sd=>{let a=sd>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}},gauss=r=>{let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+ const RH=46,NB=8,rng=sd=>{let a=sd>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}},gauss=r=>{let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
  let cs=null,phase="idle";
  const mkTraj=i=>{const fin=S.seats[i].vote||[],P_=fin.length||1,r=rng(hsh2("cnt"+S.game.term+"_"+i)+7),w=[],d=[];for(let b=0;b<NB;b++)w.push(.6+r()*.9);const sw=w.reduce((a,b)=>a+b,0);
   for(let b=0;b<NB;b++){const sg=15*(1-.55*b/(NB-1)),row=fin.map(()=>gauss(r)*sg),mean=row.reduce((a,b)=>a+b,0)/P_;d.push(row.map(x=>x-mean))}
@@ -1996,7 +2020,7 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
  const showCand=i=>{const q=S.seats[i],fin=q.vote||[],kk=$("#dck"),nm=$("#dcn"),ds=$("#dcd"),bx=$("#dcb"),w=$("#dcw");if(!nm)return;const ed=$("#ed"+i);if(ed)ed.classList.add("cand");
   kk.textContent=B("Now counting","Sedang dikira")+" · N."+q.id;nm.textContent=q.name;ds.textContent=(dn_(i)?dn_(i)+" · ":"")+B("Held by ","Dipegang oleh ")+ab(prev[i]).replace(/&amp;/g,"&");
   cs={i,m:0,tr:mkTraj(i),lead:null,done:0};if(window.nightFit)setTimeout(()=>nightFit(true),0);bx.style.height=(fin.length*RH)+"px";
-  bx.innerHTML=fin.map((x,ix)=>`<div class="dcrow" style="transform:translateY(${ix*RH}px)"><span class="dcfl" title="${esc(P(x.id)?P(x.id).abbr:x.id)}">${P(x.id)?flagHTML(P(x.id),26):ab(x.id)}</span><div class="dcbar"><i style="width:0;background:linear-gradient(90deg,color-mix(in srgb,${col(x.id)} 70%,#000),${col(x.id)})"></i></div><b>0.0%</b></div>`).join("");
+  bx.innerHTML=fin.map((x,ix)=>`<div class="dcrow" style="transform:translateY(${ix*RH}px)"><span class="dcfl" title="${esc(P(x.id)?P(x.id).abbr:x.id)}">${P(x.id)?flagHTML(P(x.id),34):ab(x.id)}</span><div class="dcbar"><i style="width:0;background:linear-gradient(90deg,color-mix(in srgb,${col(x.id)} 70%,#000),${col(x.id)})"></i></div><b>0.0%</b></div>`).join("");
   w.innerHTML=`<div class="cnt"><div class="cnth"><span>${B("Live count","Kiraan langsung")}</span><i class="livedot"></i></div><div class="cgrid"><div><small>${B("Counted","Dikira")}</small><b id="cc">0%</b></div><div><small>${B("Leading","Mendahului")}</small><b id="cl">\u2014</b></div><div><small>${B("Lead","Majoriti")}</small><b id="cg">\u2014</b></div></div><div class="cbar"><i id="cbi"></i></div></div>`};
  const applyB=m=>{if(!cs)return;const t=cs.tr,P_=t.fin.length,bx=$("#dcb");if(!bx||!P_)return;let sw=0;const acc=new Array(P_).fill(0);
   for(let b=0;b<NB;b++){const wt=t.w[b]*Math.max(0,Math.min(1,m-b));if(wt<=0)continue;sw+=wt;for(let p=0;p<P_;p++)acc[p]+=wt*(t.fin[p].pct+t.d[b][p])}
@@ -2149,7 +2173,7 @@ document.addEventListener("click",e=>{
  else if(d.me)cabForm(byId(S.cabinet,d.me));else if(d.md)ask(t("confirm"),()=>{S.cabinet=S.cabinet.filter(x=>x.id!==d.md)});
  else if(d.le){const q=byId(S.policies,d.le);if(String(q.status)==="0")labModal(q);else reviewModal(q.id)}else if(d.ld)ask(t("confirm"),()=>{S.policies=S.policies.filter(x=>x.id!==d.ld)});
  else if(el.id==="addP")partyForm();else if(el.id==="addM")cabForm();else if(el.id==="addL")labModal();
- else if(el.id==="resolve")showEvent();else if(el.id==="pl_save")labSave(0);else if(el.id==="pl_vote")labSave(1);else if(el.id==="pl_ai")claudePolicy();else if(el.id==="mc2")closeM();else if(el.id==="set")settingsModal();else if(el.id==="sv")saveModal();else if(el.id==="bud_open")budgetModal();else if(el.id==="bud_ok")budSave();else if(el.id==="sv_x")saveIO(0);else if(el.id==="sv_i")saveIO(1);else if(el.id==="cf_s"){cfgSet({key:$("#cf_k").value.trim(),model:$("#cf_m").value.trim()});closeM();toast(t("saved"))}else if(el.id==="cf_x"){cfgSet({key:""});$("#cf_k").value=""}else if(el.id==="nextterm"){closeNight();mandateModal()}else if(el.id==="hungb"){closeNight();hungModal()}else if(el.id==="endwk")endWeek();
+ else if(el.id==="resolve")showEvent();else if(el.id==="pl_save")labSave(0);else if(el.id==="pl_vote")labSave(1);else if(el.id==="pl_ai")claudePolicy();else if(el.id==="mc2")closeM();else if(el.id==="set")settingsModal();else if(el.id==="sv")saveModal();else if(el.id==="bud_open")budgetModal();else if(el.id==="bud_ok")budSave();else if(el.id==="sv_x")saveIO(0);else if(el.id==="sv_i")saveIO(1);else if(el.id==="cf_s"){cfgSet({key:$("#cf_k").value.trim(),model:$("#cf_m").value.trim()});closeM();toast(t("saved"))}else if(el.id==="cf_x"){cfgSet({key:""});$("#cf_k").value=""}else if(el.id==="nextterm"){closeNight();mandateModal()}else if(el.id==="oppb"){closeNight();closeM();render()}else if(el.id==="hungb"){closeNight();hungModal()}else if(el.id==="endwk")endWeek();
  else if(el.id==="ok"){closeM();if(document.body.classList.contains("pre"))return;render();pulse=[];if(!S.game.first&&!S.game.over&&S.game.pend===null)fire(pickEv())}
  else if(el.id==="ng"||el.id==="ng2"){closeNight();newGame()}
  else if(el.id==="sim"){const pid=$("#ep").value;if(!pid){toast(t("noP"));return}simulate(pid,+$("#es").value);toast(t("simDone"));render();pulse=[]}
