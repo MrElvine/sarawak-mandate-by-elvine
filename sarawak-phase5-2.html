@@ -505,7 +505,6 @@ body.theme-dark .chb .mu,body.theme-dark .dlg .btn:not(.p) .mu{color:#444!import
 .night-wrap .rgs{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));max-height:none}.night-wrap .rg .stack{display:none}.night-wrap .rg{padding:0}.night-wrap .rgh{font-size:12px}
 .night-wrap .nl-main svg{max-height:clamp(180px,36vh,320px)}
 .night-wrap .nl-grid{grid-template-rows:auto 1fr}
-@media(max-height:880px) and (min-width:1101px){.night-wrap{zoom:.88}}@media(max-height:760px) and (min-width:1101px){.night-wrap{zoom:.78}}
 body.theme-light .neg .eyebrow{color:#8a5a00;opacity:1}body.theme-light .neg .nok{color:#15803d}body.theme-light .ngc{background:#f6f7f9}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
@@ -1946,6 +1945,11 @@ function electionDay(){applyPromises();const g=S.game,l=S.lv,f=fin();
   else if(txt==="hung")b.innerHTML=`<button class="btn p" id="hungb">${B("Negotiate a government","Runding bentuk kerajaan")}</button>`;
   else{g.over=true;b.innerHTML=`<button class="btn p" id="ng">${t("newG")}</button><button class="btn" id="ok">${B("Return to the assembly as opposition","Kembali ke dewan sebagai pembangkang")}</button>`}};
  {const gr=document.querySelector(".nl-grid"),dc=$("#decl");if(gr&&dc)gr.prepend(dc)}
+ window.nightFit=function(shrinkOnly){const w=document.querySelector(".night-wrap"),n=$("#night");if(!w||!n||!document.querySelector(".nl-grid"))return;if(innerWidth<1100){w.style.zoom="";return}
+  const cur=parseFloat(w.style.zoom)||1;if(!shrinkOnly)w.style.zoom=1;const cs=getComputedStyle(n),pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)-44,last=w.querySelector(":scope>.nl-card"),top=w.getBoundingClientRect().top,base=shrinkOnly?cur:1,h=(last.getBoundingClientRect().bottom-top)/base;
+  let z=Math.min((innerHeight-pad)/h,Math.max(1,(innerWidth-44)/1360));z=Math.max(.75,Math.min(1.35,z));if(shrinkOnly&&z>=cur)return;w.style.zoom=z.toFixed(3)};
+ if(!window.__nfBound){window.__nfBound=1;addEventListener("resize",()=>{if(window.nightFit)nightFit()})}
+ setTimeout(()=>nightFit(),30);
  elReveal(prev,fin_)}
 /* election night: hemicycle of seat dots, all grey, then each turns to the winner's colour */
 function hemiPos(n){const radii=[130,166,202,238,274],sum=radii.reduce((a,b)=>a+b,0),c=radii.map(r=>Math.round(n*r/sum));c[4]+=n-c.reduce((a,b)=>a+b,0);
@@ -1991,7 +1995,7 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
   return {fin,w,d}};
  const showCand=i=>{const q=S.seats[i],fin=q.vote||[],kk=$("#dck"),nm=$("#dcn"),ds=$("#dcd"),bx=$("#dcb"),w=$("#dcw");if(!nm)return;const ed=$("#ed"+i);if(ed)ed.classList.add("cand");
   kk.textContent=B("Now counting","Sedang dikira")+" · N."+q.id;nm.textContent=q.name;ds.textContent=(dn_(i)?dn_(i)+" · ":"")+B("Held by ","Dipegang oleh ")+ab(prev[i]).replace(/&amp;/g,"&");
-  cs={i,m:0,tr:mkTraj(i),lead:null,done:0};bx.style.height=(fin.length*RH)+"px";
+  cs={i,m:0,tr:mkTraj(i),lead:null,done:0};if(window.nightFit)setTimeout(()=>nightFit(true),0);bx.style.height=(fin.length*RH)+"px";
   bx.innerHTML=fin.map((x,ix)=>`<div class="dcrow" style="transform:translateY(${ix*RH}px)"><span class="dcfl" title="${esc(P(x.id)?P(x.id).abbr:x.id)}">${P(x.id)?flagHTML(P(x.id),26):ab(x.id)}</span><div class="dcbar"><i style="width:0;background:linear-gradient(90deg,color-mix(in srgb,${col(x.id)} 70%,#000),${col(x.id)})"></i></div><b>0.0%</b></div>`).join("");
   w.innerHTML=`<div class="cnt"><div class="cnth"><span>${B("Live count","Kiraan langsung")}</span><i class="livedot"></i></div><div class="cgrid"><div><small>${B("Counted","Dikira")}</small><b id="cc">0%</b></div><div><small>${B("Leading","Mendahului")}</small><b id="cl">\u2014</b></div><div><small>${B("Lead","Majoriti")}</small><b id="cg">\u2014</b></div></div><div class="cbar"><i id="cbi"></i></div></div>`};
  const applyB=m=>{if(!cs)return;const t=cs.tr,P_=t.fin.length,bx=$("#dcb");if(!bx||!P_)return;let sw=0;const acc=new Array(P_).fill(0);
