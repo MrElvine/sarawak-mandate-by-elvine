@@ -466,6 +466,47 @@ body.theme-dark .chb .mu,body.theme-dark .dlg .btn:not(.p) .mu{color:#444!import
 .neglog{margin-top:14px;font-size:13px;opacity:.9}.neglog small{text-transform:uppercase;letter-spacing:.1em;font-size:10px;opacity:.7}.neglog p{margin:2px 0 0}
 .negf{display:flex;justify-content:flex-end;margin-top:16px}.negf .btn small{display:block;font-size:11px;opacity:.7}
 @media(max-width:700px){.ngo{grid-template-columns:1fr}.negh{flex-direction:column}}
+
+/* compact election-night layout: no scrolling during the count */
+.night-wrap .nl-head h1{font-size:30px;margin:0}.night-wrap .nl-head{align-items:center}
+.night-wrap .nl-stats>div{padding:5px 14px;border-radius:12px;min-width:72px}.night-wrap .nl-stats b{font-size:20px}.night-wrap .nl-stats span{font-size:11px}
+.night-wrap .nl-banner{margin:8px 0 4px;padding:7px 14px}.night-wrap .nl-banner p{font-size:15px}
+.night-wrap .elctl{margin:6px 0 8px;gap:8px}.night-wrap .elctl .btn{padding:5px 15px;font-size:12px}
+#majhit:empty{display:none}
+.night-wrap .nl-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,.9fr);grid-template-areas:"main decl pv" "main tk race";gap:12px;margin-top:0;align-items:stretch}
+.night-wrap .nl-grid>.nl-main{grid-area:main}.night-wrap .nl-grid>.decl{grid-area:decl;display:flex;flex-direction:column;gap:8px;margin:0;padding:12px 14px}
+.night-wrap .nl-side{display:contents}.night-wrap .nl-side>.nl-card:nth-child(1){grid-area:tk}.night-wrap .nl-side>.nl-card:nth-child(2){grid-area:pv}.night-wrap .nl-side>.nl-card:nth-child(3){grid-area:race}
+.night-wrap .nl-card{padding:10px 14px;border-radius:14px}.night-wrap .nl-card h4{margin-bottom:6px}
+.night-wrap .nl-main .elh,.night-wrap .nl-main svg{max-height:clamp(200px,34vh,320px);width:100%}
+.night-wrap .nl-main .night-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.night-wrap .nl-main .night-card{padding:6px 12px;min-height:0}.night-wrap .nl-main .night-card b{font-size:20px}
+.night-wrap .nl-main .night-card span,.night-wrap .nl-main .night-card small,.night-wrap .nl-main .night-card p{font-size:11px;margin:0}
+.night-wrap .tally b{font-size:26px}.night-wrap .nl-main p.mu{margin:4px 0}
+.night-wrap #trd{max-height:130px;width:100%}
+.night-wrap .decl .dcrow b{font-size:14px}.night-wrap .decl h2{font-size:22px;margin:2px 0}
+.night-wrap .nl-grid .cgrid>div{padding:5px 9px}.night-wrap .nl-grid .cgrid b{font-size:17px}
+.night-wrap #tk .ti,.night-wrap #tk>div{padding:4px 0}
+.night-wrap>.nl-card{margin-top:10px!important}.night-wrap .rgs{gap:6px 14px}
+@media(max-width:1100px){.night-wrap .nl-grid{grid-template-columns:1fr 1fr;grid-template-areas:"main main" "decl pv" "tk race"}}
+@media(max-width:700px){.night-wrap .nl-grid{grid-template-columns:1fr;grid-template-areas:"decl" "main" "tk" "pv" "race"}}
+
+.night-wrap .decl #dcb{width:100%}.night-wrap .decl>div:first-child{text-align:left}.night-wrap .decl .dcw{width:100%}
+.night-wrap .nl-main svg{display:block;margin:0 auto;max-height:clamp(180px,30vh,300px)}
+.night-wrap .nl-main .night-cards{display:flex;gap:8px;margin-top:6px}.night-wrap .nl-main .night-card{flex:1;display:flex;align-items:center;gap:10px;padding:4px 12px}
+.night-wrap .nl-main .night-card>*:nth-child(n+3){display:none}.night-wrap .nl-main .night-card b{order:2;font-size:18px}
+.night-wrap .nl-main .tally{display:flex;gap:18px;margin:0}.night-wrap .tally b{font-size:22px;display:inline;margin-right:6px}.night-wrap .tally>div{display:flex;align-items:baseline;gap:4px}
+.night-wrap .nl-main .stw{margin:6px 0 2px!important}
+.night-wrap .rgs{max-height:64px;overflow:hidden}.night-wrap>.nl-card{padding:8px 14px}
+.night-wrap .nl-side .nl-card{overflow:hidden}
+
+.night-wrap .decl .cnth{display:none}.night-wrap .decl{gap:6px;padding:10px 14px}.night-wrap .decl .dc-k{margin:0}.night-wrap .decl h2{font-size:20px;margin:0}
+.night-wrap .decl .cbar{margin-top:6px}.night-wrap .decl .cgrid{gap:6px}.night-wrap .decl .cgrid small{font-size:9px}
+.night-wrap #tk>*:nth-child(n+3){display:none}
+.night-wrap .rgs{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));max-height:none}.night-wrap .rg .stack{display:none}.night-wrap .rg{padding:0}.night-wrap .rgh{font-size:12px}
+.night-wrap .nl-main svg{max-height:clamp(180px,36vh,320px)}
+.night-wrap .nl-grid{grid-template-rows:auto 1fr}
+@media(max-height:880px) and (min-width:1101px){.night-wrap{zoom:.88}}@media(max-height:760px) and (min-width:1101px){.night-wrap{zoom:.78}}
+body.theme-light .neg .eyebrow{color:#8a5a00;opacity:1}body.theme-light .neg .nok{color:#15803d}body.theme-light .ngc{background:#f6f7f9}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
 <div class="ov" id="modal" hidden></div><div id="toast" aria-live="polite"></div>
@@ -1895,15 +1936,16 @@ function electionDay(){applyPromises();const g=S.game,l=S.lv,f=fin();
  <div class="nl-card"><h4>${B("Popular vote so far","Undi popular setakat ini")}</h4><div id="pv"></div></div>
  <div class="nl-card"><h4>${B("The race to","Perlumbaan ke")} ${mjN}</h4><svg id="trd" class="trd" viewBox="0 0 360 160" role="img"><line x1="30" x2="350" y1="${ty.toFixed(1)}" y2="${ty.toFixed(1)}" stroke="#f0d48a" stroke-dasharray="4 4"/><text x="4" y="${(ty+4).toFixed(1)}">${mjN}</text><line x1="30" x2="350" y1="140" y2="140" stroke="rgba(255,255,255,.3)"/><polyline id="trg" fill="none" stroke="#6f9bff" stroke-width="3" points=""/><polyline id="tro" fill="none" stroke="#ff6b7a" stroke-width="3" points=""/><text x="30" y="156">0</text><text x="350" y="156" text-anchor="end">${nS}</text></svg><p class="mu" style="margin:4px 0 0;font-size:12px"><span style="color:#6f9bff">\u25cf</span> ${t("gov")} \u00a0 <span style="color:#ff6b7a">\u25cf</span> ${t("opp")}</p></div></div></div>
  <div class="nl-card" style="margin-top:16px"><h4>${B("By division","Mengikut bahagian")}</h4><div class="rgs">${regs.map(r=>`<div class="rg"><div class="rgh"><b>${esc(r.d.n)}</b><span class="mu" id="rgt${r.di}">0\u20130</span></div><div class="stack" style="height:8px"><div class="seg" id="rgg${r.di}" style="width:0;background:#1f4fb2"></div><div class="seg" id="rgo${r.di}" style="width:0;background:#d62839"></div></div></div>`).join("")}</div></div>
- <div id="elr" style="opacity:0;margin-top:16px"><div class="night-card" style="cursor:default"><b>${t(txt)}</b><span>${t("rank")}: ${t(rk)} \u00b7 ${t("score")} ${sc}/100</span><p>${B("Promises kept","Janji ditunaikan")}: ${kept}/${prN} \u00b7 ${B("House","Dewan")}: ${house} \u00b7 ${t("swingRes")}: ${sw>0?"+":""}${sw}% \u00b7 ${t("moved")}: ${flips}</p><p>${B("Legacy","Legasi")} ${leg} \u00b7 ${B("Best","Terbaik")} ${best}</p>
+ <div id="elr" style="opacity:0;margin-top:16px;display:none"><div class="night-card" style="cursor:default"><b>${t(txt)}</b><span>${t("rank")}: ${t(rk)} \u00b7 ${t("score")} ${sc}/100</span><p>${B("Promises kept","Janji ditunaikan")}: ${kept}/${prN} \u00b7 ${B("House","Dewan")}: ${house} \u00b7 ${t("swingRes")}: ${sw>0?"+":""}${sw}% \u00b7 ${t("moved")}: ${flips}</p><p>${B("Legacy","Legasi")} ${leg} \u00b7 ${B("Best","Terbaik")} ${best}</p>
  <div class="nl-three"><div><h4>${B("Closest races","Pertandingan paling tipis")}</h4><ul>${closeL}</ul></div><div><h4>${B("Seats that changed hands","Kerusi bertukar tangan")} (${gains.length})</h4><ul>${gainL}</ul></div><div><h4>${B("Government seats by term","Kerusi kerajaan setiap penggal")}</h4><div class="tbs">${termBars}</div></div></div>
  <div class="nl-card" style="margin-top:12px"><h4>${B("Party scorecard","Kad skor parti")}</h4><div class="scs">${scoreL}</div></div>
  <details class="nl-card allres" style="margin-top:12px"><summary>${B("All "+nS+" constituencies: vote share","Semua "+nS+" kawasan: peratus undi")}</summary><div class="ar">${allL}</div></details>
  <div class="row" id="elb"></div></div></div></div>`;
- const fin_=()=>{const r=$("#elr");if(!r)return;$("#eln").innerHTML=B("All "+S.seats.length+" seats declared","Semua "+S.seats.length+" kerusi diumumkan");$("#elt").textContent=B("Result: ","Keputusan: ")+t(txt);{const lv=document.querySelector(".nl-live");if(lv){lv.textContent=B("\u25cf FINAL","\u25cf MUKTAMAD");lv.style.animation="none"}}r.style.transition="opacity .5s";r.style.opacity=1;
-  const b=$("#elb");if(txt==="govMaj"){confetti();b.innerHTML=`<button class="btn p" id="nextterm">${B("Return to the assembly ▶","Kembali ke dewan ▶")}</button>`}
+ const fin_=()=>{const r=$("#elr");if(!r)return;$("#eln").innerHTML=B("All "+S.seats.length+" seats declared","Semua "+S.seats.length+" kerusi diumumkan");$("#elt").textContent=B("Result: ","Keputusan: ")+t(txt);{const lv=document.querySelector(".nl-live");if(lv){lv.textContent=B("\u25cf FINAL","\u25cf MUKTAMAD");lv.style.animation="none"}}r.style.display="block";r.style.transition="opacity .5s";r.style.opacity=1;{const old=document.querySelector(".elctl");if(old)old.remove();const bn=document.querySelector(".nl-banner"),eb0=$("#elb");if(bn&&eb0){const bar=document.createElement("div");bar.className="elctl";bar.appendChild(eb0);bn.after(bar)}}
+  const b=$("#elb");if(txt==="govMaj"){confetti();b.innerHTML=`<button class="btn p" id="nextterm">${B("Begin next term","Mulakan penggal seterusnya")}</button>`}
   else if(txt==="hung")b.innerHTML=`<button class="btn p" id="hungb">${B("Negotiate a government","Runding bentuk kerajaan")}</button>`;
-  else{g.over=true;b.innerHTML=`<button class="btn p" id="ng">${t("newG")}</button><button class="btn" id="ok">${t("close")}</button>`}};
+  else{g.over=true;b.innerHTML=`<button class="btn p" id="ng">${t("newG")}</button><button class="btn" id="ok">${B("Return to the assembly as opposition","Kembali ke dewan sebagai pembangkang")}</button>`}};
+ {const gr=document.querySelector(".nl-grid"),dc=$("#decl");if(gr&&dc)gr.prepend(dc)}
  elReveal(prev,fin_)}
 /* election night: hemicycle of seat dots, all grey, then each turns to the winner's colour */
 function hemiPos(n){const radii=[130,166,202,238,274],sum=radii.reduce((a,b)=>a+b,0),c=radii.map(r=>Math.round(n*r/sum));c[4]+=n-c.reduce((a,b)=>a+b,0);
@@ -1920,7 +1962,7 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
  const vs={},rg={},regTot={},tg=[0],to=[0],tkRows=[];DIV.forEach((d,di)=>rg[di]={g:0,o:0});S.seats.forEach((_,i)=>{const di=dv(i);if(di>=0)regTot[di]=(regTot[di]||0)+1});
  const col=id=>{const z=P(id);return z?(typeof uiColor==="function"?uiColor(z.color):z.color):"#ccc"},ab=id=>{const z=P(id);return z?esc(z.abbr):"?"},isGv=q=>{const p=P(q.party);return !!(p&&p.coal==="gov")};
  const X=i=>30+i/n*320,Y=v=>140-v/n*120,pts=a=>a.map((v,i)=>X(i).toFixed(1)+","+Y(v).toFixed(1)).join(" ");
- const skip=document.createElement("button");skip.className="btn";skip.id="elskip";skip.textContent=B("Skip to results","Langkau ke keputusan")+" \u23e9";
+ const skip=document.createElement("button");skip.className="btn";skip.id="elskip";skip.textContent=B("Skip to results","Langkau ke keputusan")+"";
  const paint=(i,q,anim)=>{const el=$("#ed"+i);if(!el)return;el.classList.remove("cand");el.setAttribute("fill",col(q.party));if(q.party===S.game.player){el.setAttribute("stroke","#e8c36a");el.setAttribute("stroke-width","3")}if(anim){el.classList.remove("pop");void el.getBoundingClientRect();el.classList.add("pop")}};
  const take=quiet=>{const i=seq[k],q=S.seats[i],gv=isGv(q);paint(i,q,!quiet);if(gv)gc++;else oc++;if(q.party)window.__pt[q.party]=(window.__pt[q.party]||0)+1;
   (q.vote||[]).forEach(x=>{vs[x.id]=(vs[x.id]||0)+x.pct});const di=dv(i);if(di>=0&&rg[di]){if(gv)rg[di].g++;else rg[di].o++}tg.push(gc);to.push(oc);k++;
@@ -1971,7 +2013,7 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
  const next=()=>{if(stop||!$("#elr"))return;
   if(red){step();if(!stop&&k<n)tmr=setTimeout(next,40);return}
   phase="count";showCand(seq[k]);let last=performance.now();const tick=()=>{if(stop||!$("#elr"))return;const now=performance.now(),dt=now-last;last=now;cs.m=Math.min(NB,cs.m+(dt/(7200*unit()))*NB);if(cs.m>=NB-1e-6||cs.skip){cs.m=NB;applyB(NB);cs.done=1;tmr=setTimeout(commit,900*unit())}else{applyB(cs.m);tmr=setTimeout(tick,90)}};tmr=setTimeout(tick,500*unit())};
- const nextB=document.createElement("button");nextB.className="btn";nextB.id="elnext";nextB.textContent=B("Next seat","Kerusi seterusnya")+" ⏭";
+ const nextB=document.createElement("button");nextB.className="btn";nextB.id="elnext";nextB.textContent=B("Next seat","Kerusi seterusnya")+"";
  nextB.onclick=()=>{if(stop||ended||!cs)return;clearTimeout(tmr);if(phase==="hold"){next()}else if(phase==="count"&&!cs.done){cs.m=NB;applyB(NB);cs.done=1;tmr=setTimeout(commit,500)}};
  window.__elSpd=window.__elSpd||.15;document.querySelectorAll("#night .elspd button").forEach(b=>{b.classList.toggle("on",+b.dataset.spd===window.__elSpd);b.onclick=()=>{window.__elSpd=+b.dataset.spd;document.querySelectorAll("#night .elspd button").forEach(z=>z.classList.toggle("on",z===b))}});
  tmr=setTimeout(next,red?60:2800);
@@ -2006,13 +2048,13 @@ function negRender(first){const o=$("#modal"),n=negState(),g=side("gov"),m=maj()
   <p class="ngd"><small>${B("Key demand","Tuntutan utama")}</small>${negDemand(p)}</p>
   <div class="ngm"><div class="ngl"><span>${B("Willingness","Kesediaan")}</span><b class="${st[1]}">${st[0]} · ${Math.round(pc)}%</b></div><div class="ngb"><i style="width:${pc}%"></i></div></div>
   <div class="ngo">${offs.map(f=>{const dis=u[f.k]||n.ap<=0||ready||done||!f.can();return `<button type="button" class="btn ngbtn${u[f.k]?" used":""}" data-neg="o" data-p="${esc(p.id)}" data-k="${f.k}" ${dis?"disabled":""}><span class="ngi">${f.ic}</span><b>${f.n}</b><small>${u[f.k]?B("Offered","Ditawarkan"):f.d}</small></button>`}).join("")}</div>
-  <button type="button" class="btn p ngj" data-neg="j" data-p="${esc(p.id)}" ${ready&&!done?"":"disabled"}>${B("Invite into coalition","Jemput ke dalam gabungan")} ▶</button></div>`};
+  <button type="button" class="btn p ngj" data-neg="j" data-p="${esc(p.id)}" ${ready&&!done?"":"disabled"}>${B("Invite into coalition","Jemput ke dalam gabungan")}</button></div>`};
  const pct=Math.min(100,g/tot*100),mp=m/tot*100;
  o.innerHTML=`<div class="dlg wide neg" role="dialog" aria-modal="true"><div class="negh"><div><p class="eyebrow">${B("Hung assembly","DUN tergantung")} · ${B("Term","Penggal")} ${S.game.term}</p><h3>${B("Coalition negotiations","Rundingan gabungan")}</h3><p class="mu">${B("No bloc holds a simple majority. Win over other parties to reach ","Tiada blok memegang majoriti mudah. Pikat parti lain untuk mencapai ")}<b>${m}</b> ${B("seats.","kerusi.")}</p></div><div class="negap"><b>${n.ap}</b><small>${B("approaches left","pendekatan berbaki")}</small></div></div>
-  <div class="negbar"><div class="negbt"><span>${B("Your bloc","Blok anda")} <b>${g}</b> / ${m} ${B("needed","diperlukan")}</span>${done?`<span class="nok">✓ ${B("Majority secured","Majoriti dicapai")}</span>`:`<span>${B("Short by","Kurang")} <b>${m-g}</b></span>`}</div><div class="negtr"><i style="width:${pct}%"></i><s style="left:${mp}%"></s></div>${allies.length?`<div class="negal">${allies.map(p=>`<span>${flagHTML(p,18)}${esc(p.abbr)} <b>${c[p.id]}</b></span>`).join("")}</div>`:""}</div>
+  <div class="negbar"><div class="negbt"><span>${B("Your bloc","Blok anda")} <b>${g}</b> / ${m} ${B("needed","diperlukan")}</span>${done?`<span class="nok">${B("Majority secured","Majoriti dicapai")}</span>`:`<span>${B("Short by","Kurang")} <b>${m-g}</b></span>`}</div><div class="negtr"><i style="width:${pct}%"></i><s style="left:${mp}%"></s></div>${allies.length?`<div class="negal">${allies.map(p=>`<span>${flagHTML(p,18)}${esc(p.abbr)} <b>${c[p.id]}</b></span>`).join("")}</div>`:""}</div>
   <div class="nggrid">${cands.map(card).join("")||`<p class="mu">${B("No other party holds seats.","Tiada parti lain memegang kerusi.")}</p>`}</div>
   ${n.log.length?`<div class="neglog"><small>${B("Latest","Terkini")}</small><p>${n.log.slice(-1)[0]}</p></div>`:""}
-  <div class="negf">${done?`<button type="button" class="btn p" data-neg="f">${B("Form government","Bentuk kerajaan")} ▶</button>`:`<button type="button" class="btn" data-neg="m">${B("Govern as a minority","Perintah sebagai minoriti")}<small>${B("-approval, +unrest","-sokongan, +keresahan")}</small></button>`}</div></div>`;
+  <div class="negf">${done?`<button type="button" class="btn p" data-neg="f">${B("Form government","Bentuk kerajaan")}</button>`:`<button type="button" class="btn" data-neg="m">${B("Govern as a minority","Perintah sebagai minoriti")}<small>${B("-approval, +unrest","-sokongan, +keresahan")}</small></button>`}</div></div>`;
  const d=o.querySelector(".dlg");if(d&&!first)d.scrollTop=sc;
  if(!window.__negBound){window.__negBound=1;o.addEventListener("click",e=>{const b=e.target.closest("[data-neg]");if(!b||b.disabled||!o.querySelector(".neg"))return;e.stopPropagation();const a=b.dataset.neg,n=negState(),p=P(b.dataset.p);
   if(a==="o"&&p){const f=negOffers().find(x=>x.k===b.dataset.k);if(!f||n.ap<=0||(n.used[p.id]||{})[f.k])return;f.pay();n.ap--;(n.used[p.id]=n.used[p.id]||{})[f.k]=1;const dv=f.v+(hsh2("o"+p.id+f.k+S.game.term)%9)-4;n.will[p.id]=negWill(p)+dv;n.log.push(esc(p.abbr)+": "+f.n+" → +"+dv+"% "+B("willingness","kesediaan"));negRender()}
