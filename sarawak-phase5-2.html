@@ -445,6 +445,27 @@ body.theme-dark .chb .mu,body.theme-dark .dlg .btn:not(.p) .mu{color:#444!import
 .dcbar{height:8px!important;background:rgba(255,255,255,.1)!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
 .dcbar i{transition:width .12s linear!important;box-shadow:0 0 8px rgba(255,255,255,.12)}
 .cbar i{transition:width .12s linear!important}
+.elctl{display:flex;justify-content:flex-end;gap:10px;margin:10px 0}
+.night-wrap .elctl .btn{border-radius:99px;padding:8px 18px;font-size:13px;font-weight:600;letter-spacing:.02em;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .2s,box-shadow .2s}
+.night-wrap .elctl .btn:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(0,0,0,.35)}
+.dlg.neg{max-width:1040px;width:min(1040px,96vw);max-height:92vh;overflow:auto}
+.negh{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.negh h3{margin:2px 0 4px;font-size:24px}.negh .eyebrow{margin:0;font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
+.negap{text-align:center;border:1px solid rgba(128,128,128,.35);border-radius:12px;padding:8px 16px;min-width:110px}.negap b{display:block;font-size:28px;line-height:1}.negap small{font-size:11px;opacity:.75}
+.negbar{margin:14px 0;padding:12px 14px;border:1px solid rgba(128,128,128,.3);border-radius:12px}.negbt{display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px}.nok{color:#16a34a;font-weight:700}
+.negtr{position:relative;height:10px;border-radius:99px;background:rgba(128,128,128,.25)}.negtr i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#1f4fb2,#4f86f0);transition:width .6s ease}.negtr s{position:absolute;top:-4px;bottom:-4px;width:2px;background:#f2b134}
+.negal{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.negal span{display:inline-flex;align-items:center;gap:6px;font-size:12px;border:1px solid rgba(128,128,128,.35);border-radius:99px;padding:3px 10px}
+.nggrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.ngc{border:1px solid rgba(128,128,128,.35);border-left:4px solid var(--pc);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;background:rgba(128,128,128,.07)}
+.ngh{display:flex;align-items:center;gap:12px}.ngt{flex:1;min-width:0}.ngt b{display:block;font-size:15px}.ngt span{font-size:12px;opacity:.75}.ngs{text-align:center}.ngs b{font-size:26px;line-height:1;display:block}.ngs small{font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.7}
+.ngd{margin:0;font-size:13px}.ngd small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.1em;opacity:.65}
+.ngl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}.ngl b.ok{color:#16a34a}.ngl b.warm{color:#d97706}
+.ngb{height:8px;border-radius:99px;background:rgba(128,128,128,.28);overflow:hidden}.ngb i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pc),color-mix(in srgb,var(--pc) 60%,#fff));transition:width .6s ease}
+.ngo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ngbtn{display:flex!important;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 10px!important;text-align:left;font-size:12px}.ngbtn b{font-size:12px;display:block}.ngbtn small{display:block;font-size:11px;opacity:.7}.ngi{font-size:13px}.ngbtn.used{opacity:.55}
+.ngj{width:100%}
+.neglog{margin-top:14px;font-size:13px;opacity:.9}.neglog small{text-transform:uppercase;letter-spacing:.1em;font-size:10px;opacity:.7}.neglog p{margin:2px 0 0}
+.negf{display:flex;justify-content:flex-end;margin-top:16px}.negf .btn small{display:block;font-size:11px;opacity:.7}
+@media(max-width:700px){.ngo{grid-template-columns:1fr}.negh{flex-direction:column}}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
 <div class="ov" id="modal" hidden></div><div id="toast" aria-live="polite"></div>
@@ -1864,7 +1885,7 @@ function electionDay(){applyPromises();const g=S.game,l=S.lv,f=fin();
  o.innerHTML=`<div class="night-wrap" role="dialog" aria-modal="true">
  <div class="nl-head"><div><p class="mu" style="margin:0">\u2691 ${B("Election night","Malam mengundi")} \u00b7 ${B("Term","Penggal")} ${g.term}</p><h1>${B("The count","Pengiraan")}</h1></div>
  <div class="nl-stats"><div><b>${nS}</b><span>${B("seats","kerusi")}</span></div><div><b>${mjN}</b><span>${B("to win","untuk menang")}</span></div><div><b>${turn}%</b><span>${B("turnout (game value)","keluar mengundi (nilai game)")}</span></div><div><b>${sw>0?"+":""}${sw}</b><span>${B("swing","ayunan")}</span></div></div></div>
- <div class="nl-banner"><span class="nl-live">\u25cf ${B("LIVE","LANGSUNG")}</span><p id="elt">${B("Polls have closed. The first results are coming in.","Pusat mengundi telah ditutup. Keputusan pertama sedang masuk.")}</p><span class="elspd" role="group" aria-label="${B("Count speed","Kelajuan pengiraan")}"><em>${B("Speed","Kelajuan")}</em><button type="button" data-spd="1">${B("Slow","Perlahan")}</button><button type="button" data-spd=".4" class="on">${B("Normal","Biasa")}</button><button type="button" data-spd=".15">${B("Fast","Pantas")}</button></span></div>
+ <div class="nl-banner"><span class="nl-live">\u25cf ${B("LIVE","LANGSUNG")}</span><p id="elt">${B("Polls have closed. The first results are coming in.","Pusat mengundi telah ditutup. Keputusan pertama sedang masuk.")}</p><span class="elspd" role="group" aria-label="${B("Count speed","Kelajuan pengiraan")}"><em>${B("Speed","Kelajuan")}</em><button type="button" data-spd=".4">${B("Slow","Perlahan")}</button><button type="button" data-spd=".15" class="on">${B("Normal","Biasa")}</button><button type="button" data-spd=".06">${B("Fast","Pantas")}</button></span></div>
  <p id="majhit"></p>
  <div class="nl-card decl" id="decl" aria-live="polite"><div><p class="dc-k" id="dck">${B("Now declaring","Sedang diumumkan")}</p><h2 id="dcn">${B("Waiting for the first result","Menunggu keputusan pertama")}</h2><p class="mu" id="dcd" style="margin:0"></p></div><div id="dcb"></div><div id="dcw" class="dcw"></div></div>
  <div class="nl-grid"><div class="nl-card nl-main">${elHemi()}<div class="tally"><div><b id="tg">0</b><span>${t("gov")}</span></div><div><b id="to">0</b><span>${t("opp")}</span></div></div>
@@ -1899,7 +1920,7 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
  const vs={},rg={},regTot={},tg=[0],to=[0],tkRows=[];DIV.forEach((d,di)=>rg[di]={g:0,o:0});S.seats.forEach((_,i)=>{const di=dv(i);if(di>=0)regTot[di]=(regTot[di]||0)+1});
  const col=id=>{const z=P(id);return z?(typeof uiColor==="function"?uiColor(z.color):z.color):"#ccc"},ab=id=>{const z=P(id);return z?esc(z.abbr):"?"},isGv=q=>{const p=P(q.party);return !!(p&&p.coal==="gov")};
  const X=i=>30+i/n*320,Y=v=>140-v/n*120,pts=a=>a.map((v,i)=>X(i).toFixed(1)+","+Y(v).toFixed(1)).join(" ");
- const skip=document.createElement("button");skip.className="btn";skip.id="elskip";skip.textContent=B("Skip \u23e9","Langkau \u23e9");
+ const skip=document.createElement("button");skip.className="btn";skip.id="elskip";skip.textContent=B("Skip to results","Langkau ke keputusan")+" \u23e9";
  const paint=(i,q,anim)=>{const el=$("#ed"+i);if(!el)return;el.classList.remove("cand");el.setAttribute("fill",col(q.party));if(q.party===S.game.player){el.setAttribute("stroke","#e8c36a");el.setAttribute("stroke-width","3")}if(anim){el.classList.remove("pop");void el.getBoundingClientRect();el.classList.add("pop")}};
  const take=quiet=>{const i=seq[k],q=S.seats[i],gv=isGv(q);paint(i,q,!quiet);if(gv)gc++;else oc++;if(q.party)window.__pt[q.party]=(window.__pt[q.party]||0)+1;
   (q.vote||[]).forEach(x=>{vs[x.id]=(vs[x.id]||0)+x.pct});const di=dv(i);if(di>=0&&rg[di]){if(gv)rg[di].g++;else rg[di].o++}tg.push(gc);to.push(oc);k++;
@@ -1918,7 +1939,7 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
   if(k===1)return B(`First result in: ${nm} goes to ${ab(q.party)}.`,`Keputusan pertama: ${nm} dimenangi ${ab(q.party)}.`);
   if(k%9===0){const need=Math.max(0,mj-gc);return need?B(`Government on ${gc}, ${need} short of a majority. ${n-k} seats still to come.`,`Kerajaan ${gc}, kurang ${need} untuk majoriti. ${n-k} kerusi lagi.`):B(`Government is past the line on ${gc}. ${n-k} seats still to come.`,`Kerajaan melepasi garis dengan ${gc}. ${n-k} kerusi lagi.`)}
   return B(`${nm}: ${ab(q.party)} holds with ${x.pct}%.`,`${nm}: ${ab(q.party)} kekal dengan ${x.pct}%.`)};
- const end=()=>{if(ended)return;ended=true;stop=true;clearTimeout(tmr);if(skip.parentNode)skip.remove();if(typeof nextB!=="undefined"&&nextB.parentNode)nextB.remove();const e=$("#elt");if(e)e.innerHTML=B("All "+n+" seats declared.","Semua "+n+" kerusi diumumkan.");done()};
+ const end=()=>{if(ended)return;ended=true;stop=true;clearTimeout(tmr);if(skip.parentNode)skip.remove();if(typeof nextB!=="undefined"&&nextB.parentNode)nextB.remove();{const eb=document.querySelector(".elctl");if(eb)eb.remove()}const e=$("#elt");if(e)e.innerHTML=B("All "+n+" seats declared.","Semua "+n+" kerusi diumumkan.");done()};
  const dn_=i=>{const di=dv(i);return di>=0&&DIV[di]?DIV[di].n:""};
  const RH=36,NB=8,rng=sd=>{let a=sd>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}},gauss=r=>{let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
  let cs=null,phase="idle";
@@ -1950,18 +1971,53 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
  const next=()=>{if(stop||!$("#elr"))return;
   if(red){step();if(!stop&&k<n)tmr=setTimeout(next,40);return}
   phase="count";showCand(seq[k]);let last=performance.now();const tick=()=>{if(stop||!$("#elr"))return;const now=performance.now(),dt=now-last;last=now;cs.m=Math.min(NB,cs.m+(dt/(7200*unit()))*NB);if(cs.m>=NB-1e-6||cs.skip){cs.m=NB;applyB(NB);cs.done=1;tmr=setTimeout(commit,900*unit())}else{applyB(cs.m);tmr=setTimeout(tick,90)}};tmr=setTimeout(tick,500*unit())};
- const nextB=document.createElement("button");nextB.className="btn";nextB.id="elnext";nextB.textContent=B("Next seat ⏭","Kerusi seterusnya ⏭");
+ const nextB=document.createElement("button");nextB.className="btn";nextB.id="elnext";nextB.textContent=B("Next seat","Kerusi seterusnya")+" ⏭";
  nextB.onclick=()=>{if(stop||ended||!cs)return;clearTimeout(tmr);if(phase==="hold"){next()}else if(phase==="count"&&!cs.done){cs.m=NB;applyB(NB);cs.done=1;tmr=setTimeout(commit,500)}};
- window.__elSpd=window.__elSpd||.4;document.querySelectorAll("#night .elspd button").forEach(b=>{b.classList.toggle("on",+b.dataset.spd===window.__elSpd);b.onclick=()=>{window.__elSpd=+b.dataset.spd;document.querySelectorAll("#night .elspd button").forEach(z=>z.classList.toggle("on",z===b))}});
+ window.__elSpd=window.__elSpd||.15;document.querySelectorAll("#night .elspd button").forEach(b=>{b.classList.toggle("on",+b.dataset.spd===window.__elSpd);b.onclick=()=>{window.__elSpd=+b.dataset.spd;document.querySelectorAll("#night .elspd button").forEach(z=>z.classList.toggle("on",z===b))}});
  tmr=setTimeout(next,red?60:2800);
  skip.onclick=()=>{clearTimeout(tmr);document.querySelectorAll(".elh circle.cand").forEach(c=>c.classList.remove("cand"));while(k<n&&$("#elr"))take(true);refresh();const tk=$("#tk");if(tk)tk.innerHTML=tkRows.slice(-7).reverse().join("");end()};
- $("#elr").before(nextB);$("#elr").before(skip);nextB.style.margin=skip.style.margin="6px 8px 6px 0"}
-function hungModal(){const o=$("#modal");o.hidden=false;const hc=hungCost();
+ {const bar=document.createElement("div");bar.className="elctl";bar.appendChild(nextB);bar.appendChild(skip);(document.querySelector(".nl-banner")||$("#elr")).after(bar);skip.style.margin=nextB.style.margin="0"}}
+function hungModalOld(){const o=$("#modal");o.hidden=false;const hc=hungCost();
  const ch=[[B("Offer posts and projects to independents","Tawar jawatan dan projek kepada Bebas"),()=>{S.lv.money-=hc.price;flip("o");flip("o")},B("Two seats cross over for a price (-RM"+hc.price+"m).","Dua kerusi menyeberang dengan harga tertentu (-RM"+hc.price+" juta).")],
   [B("Invite an opposition party into the coalition","Jemput satu parti pembangkang menyertai gabungan"),()=>{const q=S.parties.find(x=>x.coal==="opp");if(q){q.coal="gov";govLoy(-hc.loy)}},B("A rival joins the government, but loyalty drops (-"+hc.loy+").","Seorang pesaing menyertai kerajaan, tetapi kesetiaan jatuh (-"+hc.loy+").")],
   [B("Form a fragile minority government","Bentuk kerajaan minoriti yang rapuh"),()=>{S.lv.approval=clamp(S.lv.approval-hc.hit);S.lv.unrest=clamp(S.lv.unrest+hc.hit)},B("You govern, but the public is uneasy (-"+hc.hit+" approval, +"+hc.hit+" unrest).","Anda memerintah, tetapi rakyat resah (-"+hc.hit+" sokongan, +"+hc.hit+" keresahan).")]];
  window.__hung=ch;
  o.innerHTML=`<div class="dlg wide" role="dialog" aria-modal="true"><h3>◇ ${B("Hung assembly","DUN tergantung")}</h3><p>${B("Nobody has a majority. You have a few days to secure the numbers.","Tiada pihak mempunyai majoriti. Anda ada beberapa hari untuk mendapatkan bilangan.")}</p>${ch.map((c,i)=>`<button class="btn chb" data-hung="${i}">${esc(c[0])}<br><span class="mu">${esc(c[2])}</span></button>`).join("")}</div>`}
+
+/* ---------- coalition negotiation (hung assembly) ---------- */
+const NEG_THR=100,NEG_AP=6;
+function negState(){const g=S.game;if(!g.neg||g.neg.term!==g.term)g.neg={term:g.term,ap:NEG_AP,will:{},used:{},log:[]};return g.neg}
+function negCands(){const c=cnt();return S.parties.filter(p=>p.coal!=="gov"&&(c[p.id]||0)>0)}
+function negBase(p){const g=S.game;return Math.max(10,Math.min(45,18+(hsh2("neg"+g.term+p.id)%22)+Math.round(((p.loy||50)-50)/5)))}
+function negWill(p){const n=negState();return(n.will[p.id]!=null?n.will[p.id]:(n.will[p.id]=negBase(p)))}
+function negDemand(p){const m={dap:["Anti-corruption reform and open tenders","Reformasi anti-rasuah dan tender terbuka"],pbds:["Native customary land (NCR) rights","Hak tanah adat bumiputera (NCR)"],pkr:["Fair federal and state allocations","Peruntukan persekutuan dan negeri yang adil"],ind:["Projects for their constituencies","Projek untuk kawasan mereka"]};const d=m[p.id];return d?B(d[0],d[1]):esc(p.ideo||"")}
+function negStance(w){return w>=NEG_THR?[B("Ready to join","Bersedia menyertai"),"ok"]:w>=80?[B("Leaning yes","Condong setuju"),"warm"]:w>=55?[B("Open to talks","Terbuka untuk rundingan"),"mid"]:w>=35?[B("Cool","Dingin"),"cool"]:[B("Hostile","Bermusuhan"),"cold"]}
+function negOffers(){const hc=hungCost(),fc=Math.round(hc.price*.6);return[
+ {k:"post",ic:"◈",n:B("Cabinet post","Jawatan kabinet"),d:B("Allies lose loyalty (-3)","Sekutu hilang kesetiaan (-3)"),v:24,can:()=>true,pay:()=>govLoy(-3)},
+ {k:"fund",ic:"◆",n:B("Development funds","Dana pembangunan"),d:"RM"+fc+"m",v:20,can:()=>S.lv.money>=fc,pay:()=>{S.lv.money-=fc}},
+ {k:"pledge",ic:"◉",n:B("Policy pledge","Janji dasar"),d:B("Public trust (-1)","Kepercayaan rakyat (-1)"),v:30,can:()=>true,pay:()=>{S.lv.approval=clamp(S.lv.approval-1)}}]}
+function negFinish(minor){if(minor){const hc=hungCost();S.lv.approval=clamp(S.lv.approval-hc.hit);S.lv.unrest=clamp(S.lv.unrest+hc.hit)}S.game.neg=null;closeM();render();mandateModal()}
+function hungModal(){negRender(true)}
+function negRender(first){const o=$("#modal"),n=negState(),g=side("gov"),m=maj(),tot=S.seats.length,done=g>=m,cands=negCands(),offs=negOffers(),sc=o.querySelector(".dlg")?o.querySelector(".dlg").scrollTop:0;
+ if(!o.hidden){o.dataset.quiet="1";o.classList.add("swap")}o.hidden=false;
+ const c=cnt(),allies=S.parties.filter(p=>p.coal==="gov"&&c[p.id]>0);
+ const card=p=>{const w=negWill(p),st=negStance(w),u=n.used[p.id]||{},ready=w>=NEG_THR,pc=Math.min(100,w);
+  return `<div class="ngc ${st[1]}" style="--pc:${esc(p.color)}"><div class="ngh"><span class="ngf">${flagHTML(p,40)}</span><div class="ngt"><b>${esc(p.name)}</b><span>${esc(p.leader||"")}</span></div><div class="ngs"><b>${c[p.id]}</b><small>${B("seats","kerusi")}</small></div></div>
+  <p class="ngd"><small>${B("Key demand","Tuntutan utama")}</small>${negDemand(p)}</p>
+  <div class="ngm"><div class="ngl"><span>${B("Willingness","Kesediaan")}</span><b class="${st[1]}">${st[0]} · ${Math.round(pc)}%</b></div><div class="ngb"><i style="width:${pc}%"></i></div></div>
+  <div class="ngo">${offs.map(f=>{const dis=u[f.k]||n.ap<=0||ready||done||!f.can();return `<button type="button" class="btn ngbtn${u[f.k]?" used":""}" data-neg="o" data-p="${esc(p.id)}" data-k="${f.k}" ${dis?"disabled":""}><span class="ngi">${f.ic}</span><b>${f.n}</b><small>${u[f.k]?B("Offered","Ditawarkan"):f.d}</small></button>`}).join("")}</div>
+  <button type="button" class="btn p ngj" data-neg="j" data-p="${esc(p.id)}" ${ready&&!done?"":"disabled"}>${B("Invite into coalition","Jemput ke dalam gabungan")} ▶</button></div>`};
+ const pct=Math.min(100,g/tot*100),mp=m/tot*100;
+ o.innerHTML=`<div class="dlg wide neg" role="dialog" aria-modal="true"><div class="negh"><div><p class="eyebrow">${B("Hung assembly","DUN tergantung")} · ${B("Term","Penggal")} ${S.game.term}</p><h3>${B("Coalition negotiations","Rundingan gabungan")}</h3><p class="mu">${B("No bloc holds a simple majority. Win over other parties to reach ","Tiada blok memegang majoriti mudah. Pikat parti lain untuk mencapai ")}<b>${m}</b> ${B("seats.","kerusi.")}</p></div><div class="negap"><b>${n.ap}</b><small>${B("approaches left","pendekatan berbaki")}</small></div></div>
+  <div class="negbar"><div class="negbt"><span>${B("Your bloc","Blok anda")} <b>${g}</b> / ${m} ${B("needed","diperlukan")}</span>${done?`<span class="nok">✓ ${B("Majority secured","Majoriti dicapai")}</span>`:`<span>${B("Short by","Kurang")} <b>${m-g}</b></span>`}</div><div class="negtr"><i style="width:${pct}%"></i><s style="left:${mp}%"></s></div>${allies.length?`<div class="negal">${allies.map(p=>`<span>${flagHTML(p,18)}${esc(p.abbr)} <b>${c[p.id]}</b></span>`).join("")}</div>`:""}</div>
+  <div class="nggrid">${cands.map(card).join("")||`<p class="mu">${B("No other party holds seats.","Tiada parti lain memegang kerusi.")}</p>`}</div>
+  ${n.log.length?`<div class="neglog"><small>${B("Latest","Terkini")}</small><p>${n.log.slice(-1)[0]}</p></div>`:""}
+  <div class="negf">${done?`<button type="button" class="btn p" data-neg="f">${B("Form government","Bentuk kerajaan")} ▶</button>`:`<button type="button" class="btn" data-neg="m">${B("Govern as a minority","Perintah sebagai minoriti")}<small>${B("-approval, +unrest","-sokongan, +keresahan")}</small></button>`}</div></div>`;
+ const d=o.querySelector(".dlg");if(d&&!first)d.scrollTop=sc;
+ if(!window.__negBound){window.__negBound=1;o.addEventListener("click",e=>{const b=e.target.closest("[data-neg]");if(!b||b.disabled||!o.querySelector(".neg"))return;e.stopPropagation();const a=b.dataset.neg,n=negState(),p=P(b.dataset.p);
+  if(a==="o"&&p){const f=negOffers().find(x=>x.k===b.dataset.k);if(!f||n.ap<=0||(n.used[p.id]||{})[f.k])return;f.pay();n.ap--;(n.used[p.id]=n.used[p.id]||{})[f.k]=1;const dv=f.v+(hsh2("o"+p.id+f.k+S.game.term)%9)-4;n.will[p.id]=negWill(p)+dv;n.log.push(esc(p.abbr)+": "+f.n+" → +"+dv+"% "+B("willingness","kesediaan"));negRender()}
+  else if(a==="j"&&p){p.coal="gov";p.loy=Math.max(p.loy||0,55);n.log.push(esc(p.abbr)+" "+B("joined your coalition","menyertai gabungan anda"));negRender()}
+  else if(a==="f")negFinish(false);else if(a==="m")negFinish(true)},true)}}
 function mandateModal(){const g=S.game,pool=MAND.filter(m=>!g.perks.includes(m.id)||m.id==="fiscal"||m.id==="welfare").sort(()=>Math.random()-.5).slice(0,3);window.__mand=pool;
  const o=$("#modal");o.hidden=false;
  o.innerHTML=`<div class="dlg wide" role="dialog" aria-modal="true"><h3>§ ${B("Choose your mandate","Pilih mandat anda")} · ${B("Term","Penggal")} ${g.term+1}</h3><p class="mu">${B("Each new term lets you pick one permanent boost.","Setiap penggal baharu membolehkan satu bonus kekal.")}</p>${pool.map((m,i)=>`<button class="btn chb" data-perk="${i}">${m.ic} <b>${m.n[L()]}</b><br><span class="mu">${m.d[L()]}</span></button>`).join("")}</div>`}
