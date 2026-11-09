@@ -438,6 +438,13 @@ body.theme-dark .hemi .tile span,body.theme-dark main.tab-dun .hemi .tile span,b
 .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.cgrid>div{border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:7px 10px;background:rgba(255,255,255,.05)}.cgrid small{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}.cgrid b{font-size:20px;font-variant-numeric:tabular-nums}
 body.theme-dark .filt input,body.theme-dark .filt select,body.theme-dark main.tab-dun .filt input,body.theme-dark main.tab-dun .filt select{background:#fff!important;color:#111!important}
 body.theme-dark .chb .mu,body.theme-dark .dlg .btn:not(.p) .mu{color:#444!important}
+
+.dcrow{display:grid!important;grid-template-columns:34px minmax(0,1fr) 60px;gap:12px;align-items:center;padding:0 8px;border-radius:8px;transition:transform .7s cubic-bezier(.3,.8,.3,1),background .4s}
+.dcrow.lead{background:rgba(255,255,255,.07)}.dcrow b{font-variant-numeric:tabular-nums;font-size:15px}
+.dcfl{display:flex;align-items:center;justify-content:center}
+.dcbar{height:8px!important;background:rgba(255,255,255,.1)!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+.dcbar i{transition:width .12s linear!important;box-shadow:0 0 8px rgba(255,255,255,.12)}
+.cbar i{transition:width .12s linear!important}
 </style></head><body class="pre"><div id="front"></div><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="sk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></defs></svg>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main"></main></div>
 <div class="ov" id="modal" hidden></div><div id="toast" aria-live="polite"></div>
@@ -963,7 +970,7 @@ function chart(){dunHall();
  const pos=[];radii.forEach((r,i)=>{for(let j=0;j<c[i];j++){const a=Math.PI-Math.PI*j/(c[i]-1);pos.push({a,x:300+r*Math.cos(a),y:300-r*Math.sin(a)})}});
  pos.sort((p,q)=>q.a-p.a);
  const pi={};S.parties.forEach((p,i)=>pi[p.id]=i);
- const g=s=>P(s.party)&&P(s.party).coal==="gov"?0:1;
+ const gv=S.seats.filter(s=>P(s.party)&&P(s.party).coal==="gov").length,flip=(n-gv)>gv,g=s=>(P(s.party)&&P(s.party).coal==="gov")!==flip?0:1;
  const co={pbb:0,prs:1,pdp:2,supp:3};
  const ord=S.seats.map((s,i)=>({s,i})).sort((a,b)=>{const ga=g(a.s),gb=g(b.s);if(ga!==gb)return ga-gb;if(a.s.party==="gps"&&b.s.party==="gps")return (co[a.s.comp]??9)-(co[b.s.comp]??9)||a.i-b.i;return (pi[a.s.party]??99)-(pi[b.s.party]??99)||a.i-b.i});
  const cs=ord.map((o,k)=>{const s=o.s,p=P(s.party),ch=s.party!==BASE.seats[o.i].party;
@@ -1921,17 +1928,17 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
   return {fin,w,d}};
  const showCand=i=>{const q=S.seats[i],fin=q.vote||[],kk=$("#dck"),nm=$("#dcn"),ds=$("#dcd"),bx=$("#dcb"),w=$("#dcw");if(!nm)return;const ed=$("#ed"+i);if(ed)ed.classList.add("cand");
   kk.textContent=B("Now counting","Sedang dikira")+" · N."+q.id;nm.textContent=q.name;ds.textContent=(dn_(i)?dn_(i)+" · ":"")+B("Held by ","Dipegang oleh ")+ab(prev[i]).replace(/&amp;/g,"&");
-  cs={i,m:0,tr:mkTraj(i),lead:null};bx.style.height=(fin.length*RH)+"px";
-  bx.innerHTML=fin.map((x,ix)=>`<div class="dcrow" style="transform:translateY(${ix*RH}px)"><span class="dcab" style="--c:${col(x.id)}">${ab(x.id)}</span><div class="dcbar"><i style="width:0;background:${col(x.id)}"></i></div><b>0.0%</b></div>`).join("");
+  cs={i,m:0,tr:mkTraj(i),lead:null,done:0};bx.style.height=(fin.length*RH)+"px";
+  bx.innerHTML=fin.map((x,ix)=>`<div class="dcrow" style="transform:translateY(${ix*RH}px)"><span class="dcfl" title="${esc(P(x.id)?P(x.id).abbr:x.id)}">${P(x.id)?flagHTML(P(x.id),26):ab(x.id)}</span><div class="dcbar"><i style="width:0;background:linear-gradient(90deg,color-mix(in srgb,${col(x.id)} 70%,#000),${col(x.id)})"></i></div><b>0.0%</b></div>`).join("");
   w.innerHTML=`<div class="cnt"><div class="cnth"><span>${B("Live count","Kiraan langsung")}</span><i class="livedot"></i></div><div class="cgrid"><div><small>${B("Counted","Dikira")}</small><b id="cc">0%</b></div><div><small>${B("Leading","Mendahului")}</small><b id="cl">\u2014</b></div><div><small>${B("Lead","Majoriti")}</small><b id="cg">\u2014</b></div></div><div class="cbar"><i id="cbi"></i></div></div>`};
  const applyB=m=>{if(!cs)return;const t=cs.tr,P_=t.fin.length,bx=$("#dcb");if(!bx||!P_)return;let sw=0;const acc=new Array(P_).fill(0);
-  for(let b=0;b<m;b++){sw+=t.w[b];for(let p=0;p<P_;p++)acc[p]+=t.w[b]*(t.fin[p].pct+t.d[b][p])}
-  let v=acc.map(x=>Math.max(.5,x/sw));if(m<NB){const s2=v.reduce((a,b)=>a+b,0);v=v.map(x=>x*100/s2)}else v=t.fin.map(x=>x.pct);
+  for(let b=0;b<NB;b++){const wt=t.w[b]*Math.max(0,Math.min(1,m-b));if(wt<=0)continue;sw+=wt;for(let p=0;p<P_;p++)acc[p]+=wt*(t.fin[p].pct+t.d[b][p])}
+  if(sw<=0)return;let v=acc.map(x=>Math.max(.5,x/sw));if(m<NB){const s2=v.reduce((a,b)=>a+b,0);v=v.map(x=>x*100/s2)}else v=t.fin.map(x=>x.pct);
   const ord=v.map((_,p)=>p).sort((a,b)=>v[b]-v[a]);
   ord.forEach((p,rank)=>{const row=bx.children[p];if(!row)return;row.style.transform=`translateY(${rank*RH}px)`;row.querySelector("i").style.width=v[p]+"%";row.querySelector("b").textContent=(m<NB?v[p].toFixed(1):v[p])+"%";row.classList.toggle("lead",rank===0)});
   const ld=t.fin[ord[0]].id,gap=v[ord[0]]-(P_>1?v[ord[1]]:0),bar=$("#cbi");
   if(bar)bar.style.width=(m/NB*100)+"%";
-  const cc=$("#cc"),cl=$("#cl"),cg=$("#cg");if(cc)cc.textContent=Math.round(m/NB*100)+"%";if(cl){cl.textContent=ab(ld)}if(cg)cg.textContent="+"+gap.toFixed(1)+" "+B("pts","mata");
+  const cc=$("#cc"),cl=$("#cl"),cg=$("#cg");if(cc)cc.textContent=Math.floor(m/NB*100)+"%";if(cl){cl.textContent=ab(ld)}if(cg)cg.textContent="+"+gap.toFixed(1)+" "+B("pts","mata");
   if(cs.lead&&cs.lead!==ld&&m<NB){const e=$("#elt"),nmS=esc(S.seats[cs.i].name);if(e)e.innerHTML=B(`${ab(ld)} overtakes ${ab(cs.lead)} in <b>${nmS}</b>!`,`${ab(ld)} memintas ${ab(cs.lead)} di <b>${nmS}</b>!`);const r0=bx.children[ord[0]];if(r0){r0.classList.remove("flash");void r0.offsetWidth;r0.classList.add("flash")}}
   cs.lead=ld};
  const showWin=x=>{const w=$("#dcw");if(!w)return;const c=col(x.q.party),nm=esc(x.q.name);
@@ -1942,9 +1949,9 @@ function elReveal(prev,done){const n=S.seats.length,mj=maj(),red=document.body.c
  const commit=()=>{if(stop||!$("#elr"))return;phase="hold";step();if(!stop&&k<n)tmr=setTimeout(next,1800*unit())};
  const next=()=>{if(stop||!$("#elr"))return;
   if(red){step();if(!stop&&k<n)tmr=setTimeout(next,40);return}
-  phase="count";showCand(seq[k]);const tick=()=>{if(stop||!$("#elr"))return;cs.m++;applyB(cs.m);if(cs.m<NB)tmr=setTimeout(tick,900*unit());else tmr=setTimeout(commit,900*unit())};tmr=setTimeout(tick,600*unit())};
+  phase="count";showCand(seq[k]);let last=performance.now();const tick=()=>{if(stop||!$("#elr"))return;const now=performance.now(),dt=now-last;last=now;cs.m=Math.min(NB,cs.m+(dt/(7200*unit()))*NB);if(cs.m>=NB-1e-6||cs.skip){cs.m=NB;applyB(NB);cs.done=1;tmr=setTimeout(commit,900*unit())}else{applyB(cs.m);tmr=setTimeout(tick,90)}};tmr=setTimeout(tick,500*unit())};
  const nextB=document.createElement("button");nextB.className="btn";nextB.id="elnext";nextB.textContent=B("Next seat ⏭","Kerusi seterusnya ⏭");
- nextB.onclick=()=>{if(stop||ended||!cs)return;clearTimeout(tmr);if(phase==="hold"){next()}else if(phase==="count"){cs.m=NB;applyB(NB);tmr=setTimeout(commit,500)}};
+ nextB.onclick=()=>{if(stop||ended||!cs)return;clearTimeout(tmr);if(phase==="hold"){next()}else if(phase==="count"&&!cs.done){cs.m=NB;applyB(NB);cs.done=1;tmr=setTimeout(commit,500)}};
  window.__elSpd=window.__elSpd||.4;document.querySelectorAll("#night .elspd button").forEach(b=>{b.classList.toggle("on",+b.dataset.spd===window.__elSpd);b.onclick=()=>{window.__elSpd=+b.dataset.spd;document.querySelectorAll("#night .elspd button").forEach(z=>z.classList.toggle("on",z===b))}});
  tmr=setTimeout(next,red?60:2800);
  skip.onclick=()=>{clearTimeout(tmr);document.querySelectorAll(".elh circle.cand").forEach(c=>c.classList.remove("cand"));while(k<n&&$("#elr"))take(true);refresh();const tk=$("#tk");if(tk)tk.innerHTML=tkRows.slice(-7).reverse().join("");end()};
