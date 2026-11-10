@@ -1498,7 +1498,7 @@ function topbar(){const l=S.lv,f=fin(),opp=playerBloc()==="opp",m=opp?[["approva
  <div class="card stat fin"${opp?"":` data-fin="1" role="button" tabindex="0" title="${B("Open financial planning","Buka perancangan kewangan")}"`}><span>◈ ${opp?B("Campaign fund","Dana kempen"):B("Financial Planning","Perancangan Kewangan")}</span><b style="color:${(opp?S.game.chest:l.money)<40?"#d62839":"inherit"}">RM${opp?(S.game.chest||0):l.money}m</b><span style="color:${f.net<0?"#d62839":"#1a9d57"}">${f.net>0?"+":""}${f.net}/${B("mo","bln")}</span><span style="color:${dc}">${t("debtR")} ${f.ratio}%</span></div></div>`}
 function pollProj(){const l=S.lv,g=S.game,f=fin(),dOff=diffProfile().swing,MS=manifestoShift();
  const shift=MS.v+(l.approval-65)*.25+(l.economy-60)*.1-(l.unrest-30)*.15+(loyalty()-75)*.1+(l.autonomy-55)*.05+g.mom*1.5-Math.max(0,f.ratio-80)*.08-(S.opp.str-40)*.16-(g.term-1)*3.5-7+dOff;
- let gv=0;S.seats.forEach(q=>{const hg=P(q.party)&&P(q.party).coal==="gov",eff=50+(q.sup-50)*.5+shift+(q.inc||0)*.08*(hg?1:-1);if(eff>=50)gv++});
+ let gv=0;S.seats.forEach(q=>{const hg=P(q.party)&&P(q.party).coal==="gov",eff=50+(q.sup-50)*.5+shift+(q.inc||0)*.08*(hg?1:-1)+(q.sh?(playerBloc()==="gov"?-25:25):0);if(eff>=50)gv++});
  const nz=(hsh2("poll"+g.term+"_"+(g.wk||0))%7)-3;return {gv:Math.max(0,Math.min(S.seats.length,gv+nz)),shift}}
 function pollCard(){const r=pollProj(),n=S.seats.length,m=maj(),lo=Math.max(0,r.gv-6),hi=Math.min(n,r.gv+6),st=lo>=m?B("Comfortable majority","Majoriti selesa"):hi<m?B("Opposition would win","Pembangkang akan menang"):B("Too close to call","Terlalu rapat untuk dipastikan");
  return `<div class="card sp"><h3>▮ ${B("Opinion poll (if the election were today)","Tinjauan pendapat (jika pilihan raya hari ini)")}</h3><div class="stack" style="height:20px"><div class="seg" style="width:${r.gv/n*100}%;background:#1f4fb2">${r.gv}</div><div class="seg" style="width:${(n-r.gv)/n*100}%;background:#d62839">${n-r.gv}</div></div><p class="mu" style="margin:6px 0 0">${B("Government bloc about","Blok kerajaan kira-kira")} <b>${lo}–${hi}</b> ${B("seats","kerusi")} (${B("majority","majoriti")} ${m}) · <b>${st}</b></p></div>`}
@@ -1839,9 +1839,9 @@ function markSVG(){const g=S.game,w=g.wk||0;return g.marks.filter(m=>m.until>=w)
 function feedCard(){const f=S.game.feed.slice(-4).reverse();if(!f.length)return "";return `<div class="card sp"><h3>▤ ${B("Briefing","Taklimat")}</h3>${f.map((x,i)=>`<div class="feeditem" style="animation-delay:${i*70}ms"><span class="mu">${B("Wk","Mgu")} ${x.wk+1}</span> ${esc(L()?x.ms:x.en)}</div>`).join("")||`<p class="mu">${t("ph")}</p>`}</div>`}
 function weekly(){const g=S.game,l=S.lv,dp=diffProfile(),w=dp.weekly;
  l.unrest=clamp(l.unrest+Math.round(((60-l.approval)*.02+.6)*w+(Math.random()-.5)*2));
- l.approval=clamp(l.approval+Math.round((Math.random()-(dp.id==="h"?.9:dp.id==="e"?.65:.8))*2.4));
+ l.approval=clamp(l.approval+Math.round((Math.random()-(dp.eid==="h"?.9:dp.eid==="e"?.65:.8))*2.4));
  l.economy=clamp(l.economy+Math.round(((Math.random()-.5)*2-(l.economy-60)*.04)*w));
- S.seats.forEach(q=>{if(Math.random()<(dp.id==="h"?.22:dp.id==="e"?.08:.15))q.sup=Math.max(5,Math.min(95,q.sup+(Math.random()<.5?-1:1)));if(Math.random()<.25)q.sup=Math.max(5,Math.min(95,q.sup+(q.sup>58?-1:q.sup<42?1:0)))});
+ S.seats.forEach(q=>{if(Math.random()<(dp.eid==="h"?.22:dp.eid==="e"?.08:.15))q.sup=Math.max(5,Math.min(95,q.sup+(Math.random()<.5?-1:1)));if(Math.random()<.25)q.sup=Math.max(5,Math.min(95,q.sup+(q.sup>58?-1:q.sup<42?1:0)))});
  g.hist.push({d:g.day,a:l.approval,u:l.unrest,e:l.economy});if(g.hist.length>60)g.hist.shift()}
 function endWeek(){const g=S.game,l=S.lv;if(document.body.classList.contains("pre")||g.over)return;const hold=typeof weekHolds==="function"?weekHolds():"";if(hold){toast(hold);return}if(g.press&&!g.press.answered)g.press.answered=1;if(typeof fileWeekNews==="function")fileWeekNews();
  g.snap={a:l.approval,u:l.unrest,e:l.economy,m:l.money};
@@ -2004,7 +2004,7 @@ function electionDay(){applyPromises();const g=S.game,l=S.lv,f=fin();
  const dOff=diffProfile().swing;
  const MS=manifestoShift(),shift=MS.v+(l.approval-65)*.25+(l.economy-60)*.1-(l.unrest-30)*.15+(loyalty()-75)*.1+(l.autonomy-55)*.05+g.mom*1.5-Math.max(0,f.ratio-80)*.08-(S.opp.str-40)*.16-(g.term-1)*3.5-7+dOff;
  let flips=0;pulse=[];const prev=S.seats.map(q=>q.party);
- S.seats.forEach((q,i)=>{const hg=P(q.party)&&P(q.party).coal==="gov",span=(q.sup>=64||q.sup<=36)?10:18,roll=50+(q.sup-50)*.5+shift+q.inc*.08*(hg?1:-1)+(Math.random()-.5)*span;
+ S.seats.forEach((q,i)=>{const hg=P(q.party)&&P(q.party).coal==="gov",span=(q.sup>=64||q.sup<=36)?10:18,roll=50+(q.sup-50)*.5+shift+q.inc*.08*(hg?1:-1)+(q.sh?(playerBloc()==="gov"?-25:25):0)+(Math.random()-.5)*span;
   if(roll>=50&&!hg&&govP.length){q.party=govP[0].id;reRep(q);flips++;pulse.push(i)}
   else if(roll<50&&hg&&oppP.length){q.party=oppP[0].id;reRep(q);flips++;pulse.push(i)}
   q.vote=voteSplit(q.party,roll)});
@@ -2305,10 +2305,10 @@ document.addEventListener("focusout",e=>{if(e.target.closest&&e.target.closest("
 /* Phase 3.3 — Sarawak Mandate presentation and difficulty */
 let pendingParty="gps", pendingCustom=null, frontScreen="menu";
 function diffProfile(){
- const id=(S.game&&S.game.diff)||"n";
- if(id==="e") return {id:"e",swing:6,ai:.55,neg:.7,pos:1.1,weekly:.65,ap:4,rally:.25};
- if(id==="h") return {id:"h",swing:-8,ai:1.5,neg:1.35,pos:.85,weekly:1.35,ap:2,rally:.62};
- return {id:"n",swing:0,ai:1,neg:1,pos:1,weekly:1,ap:3,rally:.4};
+ const id=(S.game&&S.game.diff)||"n",opp=!!(S.game&&S.game.player&&playerBloc()==="opp");
+ if(id==="e") return opp?{id:"e",eid:"h",swing:-8,ai:1.5,neg:1.35,pos:.85,weekly:1.35,ap:4,rally:.62}:{id:"e",eid:"e",swing:6,ai:.55,neg:.7,pos:1.1,weekly:.65,ap:4,rally:.25};
+ if(id==="h") return opp?{id:"h",eid:"e",swing:5,ai:.5,neg:.7,pos:1.1,weekly:.65,ap:2,rally:.2}:{id:"h",eid:"h",swing:-8,ai:1.5,neg:1.35,pos:.85,weekly:1.35,ap:2,rally:.62};
+ return {id:"n",eid:"n",swing:0,ai:1,neg:1,pos:1,weekly:1,ap:3,rally:.4};
 }
 function tuneFx(fx){
  const dp=diffProfile(),o={};
@@ -2320,14 +2320,19 @@ function applyStartDiff(d){
  S.game.diff=d==="e"||d==="h"?d:"n";
  const l=S.lv,dp=diffProfile();
  S.res.ap=dp.ap;
- if(d==="e"){
-  l.approval=clamp(l.approval+8);l.unrest=clamp(l.unrest-8);l.economy=clamp(l.economy+5);l.money+=180;S.opp.str=28;S.res.cap=42;
-  S.seats.forEach(q=>{const p=P(q.party);if(p&&p.coal==="gov")q.sup=Math.min(92,q.sup+4)});
- }else if(d==="h"){
-  l.approval=clamp(l.approval-10);l.unrest=clamp(l.unrest+12);l.economy=clamp(l.economy-6);l.money=Math.max(80,l.money-160);l.debt+=250;S.opp.str=62;S.res.cap=18;
+ const inv=playerBloc()==="opp",env=inv?(d==="e"?"h":d==="h"?"e":d):d;
+ if(env==="e"){
+  l.approval=clamp(l.approval+8);l.unrest=clamp(l.unrest-8);l.economy=clamp(l.economy+5);S.opp.str=inv&&d==="h"?24:28;
+  S.seats.forEach(q=>{const p=P(q.party);if(p&&p.coal==="gov")q.sup=Math.min(92,q.sup+(inv&&d==="h"?5:4))});
+ }else if(env==="h"){
+  l.approval=clamp(l.approval-10);l.unrest=clamp(l.unrest+12);l.economy=clamp(l.economy-6);S.opp.str=62;
   S.seats.forEach(q=>{const p=P(q.party);if(p&&p.coal==="gov")q.sup=Math.max(8,q.sup-6);else q.sup=Math.min(90,q.sup+3)});
   S.parties.forEach(p=>{if(p.coal==="gov")p.loy=clamp((p.loy||0)-12)});
  }
+ const nS=d==="e"?0:d==="h"?32:22;
+ if(nS){S.seats.map((q,i)=>[hsh2("sh"+(q.id||i)),i]).sort((a,b)=>a[0]-b[0]).slice(0,nS).forEach(x=>{const q=S.seats[x[1]];q.sh=1;q.sup=inv?92:10})}
+ if(d==="e"){l.money+=180;S.res.cap=42}
+ else if(d==="h"){l.money=Math.max(80,l.money-160);l.debt+=250;S.res.cap=18}
  if(S.game.hist&&S.game.hist[0]){const h0=S.game.hist[0];h0.a=l.approval;h0.u=l.unrest;h0.e=l.economy}
  S.game.chest=d==="e"?96:d==="h"?42:64;
 }
@@ -2390,7 +2395,7 @@ function diffCards(){
   ["n",B("Veteran","Veteran"),[B("Election swing modifier 0, the original rate.","Pengubah ayunan pilihan raya 0, kadar asal."),B("Opening position stays at approval 70, unrest 25, economy 65, funds RM500m, debt RM1000m, opposition strength 40.","Kedudukan awal kekal pada sokongan 70, keresahan 25, ekonomi 65, dana RM500 juta, hutang RM1000 juta, kekuatan pembangkang 40."),B("3 actions a week and 30 political capital. Seat support is unchanged from the baseline.","3 tindakan seminggu dan 30 modal politik. Sokongan kerusi tidak berubah daripada asas."),B("Opposition rallies on about 40% of weeks. Decision effects use the original size.","Pembangkang berkempen pada kira-kira 40% minggu. Kesan keputusan menggunakan saiz asal."),B("Hung-assembly talks stay at RM40m, loyalty −8, or −6 approval and +6 unrest.","Rundingan DUN tergantung kekal pada RM40 juta, kesetiaan −8, atau −6 sokongan dan +6 keresahan.")]],
   ["h",B("Elite","Elit"),[B("Election swing −8 against the government.","Ayunan pilihan raya −8 menentang kerajaan."),B("Opening position: approval 60, unrest 37, economy 59, funds RM340m, debt RM1250m, opposition strength 62.","Kedudukan awal: sokongan 60, keresahan 37, ekonomi 59, dana RM340 juta, hutang RM1250 juta, kekuatan pembangkang 62."),B("2 actions a week and 18 political capital. Government seat support starts 6 points lower, and government loyalty starts 12 points lower.","2 tindakan seminggu dan 18 modal politik. Sokongan kerusi kerajaan bermula 6 mata lebih rendah, dan kesetiaan kerajaan bermula 12 mata lebih rendah."),B("Opposition rallies on about 62% of weeks and hits harder. Harmful decision effects are ×1.35.","Pembangkang berkempen pada kira-kira 62% minggu dan kesannya lebih kuat. Kesan keputusan yang memudaratkan ialah ×1.35."),B("If the assembly is hung: crossover costs RM70m, loyalty −14, minority government −10 approval and +10 unrest.","Jika DUN tergantung: kerusi menyeberang berharga RM70 juta, kesetiaan −14, kerajaan minoriti −10 sokongan dan +10 keresahan.")]]
  ];
- return `<div class="diff-grid">${rows.map(r=>`<button type="button" data-front="diff" data-level="${r[0]}"><b>${r[1]}</b>${r[2].map(x=>`<span>${x}</span>`).join("")}</button>`).join("")}</div>`;
+ return `<div class="diff-grid">${rows.map(r=>`<button type="button" data-front="diff" data-level="${r[0]}"><b>${r[1]}</b>${r[2].concat([{e:B("Every seat can be won, whichever party you lead.","Setiap kerusi boleh dimenangi, parti mana pun yang anda pimpin."),n:B("22 seats are rival strongholds, so about 60 of the 82 seats can be yours.","22 kerusi ialah kubu saingan, jadi kira-kira 60 daripada 82 kerusi boleh menjadi milik anda."),h:B("32 seats are rival strongholds, so at most about 50 of 82 can be yours. If you lead an opposition party, the swing, rallies and starting strengths above work against you.","32 kerusi ialah kubu saingan, jadi paling banyak kira-kira 50 daripada 82 boleh menjadi milik anda. Jika anda memimpin parti pembangkang, ayunan, ceramah dan kekuatan awal di atas berpihak kepada kerajaan.")}[r[0]]]).map(x=>`<span>${x}</span>`).join("")}</button>`).join("")}</div>`;
 }
 function menuScreen(){
  return `<div class="mm"><p class="eyebrow">${B("An Independent Game Project","Projek Permainan Bebas")}</p><h1>SARAWAK MANDATE</h1><p class="sub">${B("THE POLITICAL STRATEGY SIMULATOR","SIMULATOR STRATEGI POLITIK")}</p><p class="tag">${B("Shape the Politics. Secure the Mandate. Govern Sarawak.","Bentuk politik. Kukuhkan mandat. Tadbir Sarawak.")}</p><p class="lead">${B("Step into the dynamic world of Sarawak politics. Build political parties, contest state elections, compete for constituencies, negotiate coalitions, form governments, and shape the future of Sarawak through strategic decisions.","Masuki dunia politik Sarawak. Bina parti, bertanding dalam pilihan raya negeri, bersaing untuk kawasan, runding gabungan, bentuk kerajaan, dan tentukan masa depan Sarawak melalui keputusan strategik.")}</p><div class="mm-actions"><button type="button" class="gold" data-front="start">${B("Start","Mula")}</button><button type="button" data-front="settings">${B("Settings","Tetapan")}</button><button type="button" data-front="how">${B("How to play","Cara bermain")}</button>${hasSave()?`<button type="button" data-front="continue">${B("Continue","Sambung")}</button>`:""}</div><p class="credit"><b>${B("Developed by Elvine anak Jacklin","Dibangunkan oleh Elvine anak Jacklin")}</b>${B("A proud Sarawakian studying at UNIMAS, who fills spare time by building this project.","Warga Sarawak yang bangga, belajar di UNIMAS, dan mengisi masa lapang dengan membina projek ini.")}</p></div>`;
